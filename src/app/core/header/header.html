@@ -17,9 +17,9 @@ matTooltip="Menu">
 </button>
 <!-- Menús desplegables -->
 <mat-menu #menu1="matMenu">
-    <button mat-menu-item>Inicio</button>
+<button mat-menu-item [routerLink]= "['/inicio']" [routerLinkActive]="'active-link'">Inicio</button>
 <button mat-menu-item>Acerca de</button>
-<button mat-menu-item>Videojuego</button>
+<button mat-menu-item [routerLink]= "['/tecnico']" [routerLinkActive]="'active-link'">Tecnicos</button>
 </mat-menu>
 <mat-menu #menu2="matMenu">
 <button mat-menu-item>Videojuegos</button>
