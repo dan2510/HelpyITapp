@@ -6,8 +6,12 @@ import { PageNotFound } from './share/page-not-found/page-not-found';
 const routes: Routes = [
   { path: 'inicio', component: Inicio },
   { path: '', redirectTo: '/inicio', pathMatch: 'full' },
+  
+  { 
+    path: 'tecnicos', 
+    loadChildren: () => import('./tecnicos/tecnicos-module').then(m => m.TecnicosModule) 
+  },
   { path: '**', component: PageNotFound }
-
 ];
 
 @NgModule({
@@ -15,4 +19,3 @@ const routes: Routes = [
   exports: [RouterModule]
 })
 export class AppRoutingModule { }
-

@@ -11,8 +11,6 @@ import { TiqueteModule } from './tiquete/tiquete-module';
 import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { NgxSonnerToaster } from 'ngx-sonner'
 import { HttpErrorInterceptorService } from './share/interceptor/http-error-interceptor.service';
-import { TecnicoModule } from './tecnico/tecnico-module';
-import { TecnicosModule } from './tecnicos/tecnicos-module';
 
 
 @NgModule({
@@ -27,17 +25,16 @@ import { TecnicosModule } from './tecnicos/tecnicos-module';
     UsuariosModule,
     TiqueteModule,
     NgxSonnerToaster,
-     AppRoutingModule,
-     TecnicoModule,
-     TecnicosModule
+    AppRoutingModule,
+
   ],
   providers: [
     provideBrowserGlobalErrorListeners(),
-      provideHttpClient(withInterceptorsFromDi()),
+    provideHttpClient(withInterceptorsFromDi()),
     {
       provide: HTTP_INTERCEPTORS, 
       useClass: HttpErrorInterceptorService, 
-      multi:true
+      multi: true
     }
   ],
   bootstrap: [App]

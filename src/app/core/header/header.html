@@ -2,11 +2,9 @@
 <!--https://fonts.google.com/icons-->
 <mat-toolbar class="header primary-gradient">
 <!-- Logo -->
-<button mat-icon-button class="example-header-image" matTooltip="App
-Videojuegos"></button>
+<button mat-icon-button class="example-header-image" matTooltip="App Videojuegos"></button>
 <!-- Menú principal -->
-<button [matMenuTriggerFor]="menu1" mat-icon-button class="example-icon"
-matTooltip="Menu">
+<button [matMenuTriggerFor]="menu1" mat-icon-button class="example-icon" matTooltip="Menu">
 <mat-icon>menu</mat-icon>
 </button>
 <button mat-icon-button matTooltip="Mantenimientos" [matMenuTriggerFor]="menu2">
@@ -15,11 +13,12 @@ matTooltip="Menu">
 <button mat-icon-button matTooltip="Reportes" [matMenuTriggerFor]="menu4">
 <mat-icon>monitoring</mat-icon>
 </button>
+
 <!-- Menús desplegables -->
 <mat-menu #menu1="matMenu">
-<button mat-menu-item [routerLink]= "['/inicio']" [routerLinkActive]="'active-link'">Inicio</button>
+<button mat-menu-item [routerLink]="['/inicio']" [routerLinkActive]="'active-link'">Inicio</button>
 <button mat-menu-item>Acerca de</button>
-<button mat-menu-item [routerLink]= "['/tecnico']" [routerLinkActive]="'active-link'">Tecnicos</button>
+<button mat-menu-item [routerLink]="['/tecnicos']" [routerLinkActive]="'active-link'">Técnicos</button>
 </mat-menu>
 <mat-menu #menu2="matMenu">
 <button mat-menu-item>Videojuegos</button>
@@ -29,13 +28,12 @@ matTooltip="Menu">
 <button mat-menu-item>Ordenes x Mes</button>
 <button mat-menu-item>Videojuegos vendidos x Mes</button>
 </mat-menu>
+
 <!-- Spacer -->
 <div class="example-spacer"></div>
 <!-- Carrito y usuario -->
 <div class="user-section">
-<button mat-icon-button matBadge="3" matBadgeColor="accent" class="small-text">
-<mat-icon>shopping_cart</mat-icon>
-</button>
+
 <span class="small-text user-email">Email</span>
 <button mat-icon-button [matMenuTriggerFor]="menu3">
 <mat-icon>person</mat-icon>
