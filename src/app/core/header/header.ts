@@ -7,5 +7,7 @@ import { Component } from '@angular/core';
   styleUrl: './header.css',
 })
 export class Header {
+  // Contador de notificaciones para el badge
+  notificationCount = 3; // Puedes conectar esto con un servicio real
 
 }

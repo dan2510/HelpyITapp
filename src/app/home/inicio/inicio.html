@@ -1,12 +1,129 @@
-<mat-card appearance="outlined" >
-<mat-card-header class="primary-title">
-<div mat-card-avatar class="example-header-image"></div>
-<mat-card-title>HelpyIT</mat-card-title>
-<mat-card-subtitle>Incident</mat-card-subtitle>
-</mat-card-header>
-<img mat-card-image src="/images/game.jpg" />
-<mat-card-content class="secondary-title">
-<p class="text">Aplicación Angular para consumo de API NodeJS</p>
-</mat-card-content>
-</mat-card>
+<div class="hero-section">
+  <div class="hero-content">
+    <div class="hero-text">
+      <h1 class="hero-title">HelpyIT</h1>
+      <p class="hero-subtitle">Sistema de Gestión de Incidentes Técnicos</p>
+      <p class="hero-description">
+        Plataforma moderna para la gestión eficiente de tickets de soporte técnico, 
+        asignación de técnicos y seguimiento de incidentes.
+      </p>
+      <div class="hero-actions">
+        <button mat-raised-button color="primary" class="cta-button">
+          <mat-icon>add_circle</mat-icon>
+          Crear Ticket
+        </button>
+        <button mat-stroked-button color="primary" class="secondary-button" [routerLink]="['/tecnicos']">
+          <mat-icon>group</mat-icon>
+          Ver Técnicos
+        </button>
+      </div>
+    </div>
+    <div class="hero-image">
+      <div class="feature-card">
+        <mat-icon class="feature-icon">support_agent</mat-icon>
+        <h3>Soporte 24/7</h3>
+        <p>Atención continua para resolver tus incidentes</p>
+      </div>
+    </div>
+  </div>
+</div>
 
+<div class="features-section">
+  <div class="container">
+    <h2 class="section-title">¿Por qué elegir HelpyIT?</h2>
+    <div class="features-grid">
+      
+      <mat-card class="feature-card-modern">
+        <mat-card-content>
+          <div class="feature-header">
+            <mat-icon class="feature-icon-large primary">flash_on</mat-icon>
+            <h3>Resolución Rápida</h3>
+          </div>
+          <p>Asignación automática y seguimiento en tiempo real para resolver incidentes más rápido.</p>
+          <div class="feature-stats">
+            <span class="stat">
+              <strong>95%</strong>
+              <small>Satisfacción</small>
+            </span>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="feature-card-modern">
+        <mat-card-content>
+          <div class="feature-header">
+            <mat-icon class="feature-icon-large success">groups</mat-icon>
+            <h3>Equipo Especializado</h3>
+          </div>
+          <p>Técnicos certificados con diferentes niveles de experiencia para cada tipo de incidente.</p>
+          <div class="feature-stats">
+            <span class="stat">
+              <strong>50+</strong>
+              <small>Técnicos</small>
+            </span>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="feature-card-modern">
+        <mat-card-content>
+          <div class="feature-header">
+            <mat-icon class="feature-icon-large warning">analytics</mat-icon>
+            <h3>Reportes Detallados</h3>
+          </div>
+          <p>Análisis completo de métricas de rendimiento y estadísticas de resolución.</p>
+          <div class="feature-stats">
+            <span class="stat">
+              <strong>24h</strong>
+              <small>Promedio</small>
+            </span>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="feature-card-modern">
+        <mat-card-content>
+          <div class="feature-header">
+            <mat-icon class="feature-icon-large accent">security</mat-icon>
+            <h3>Seguridad Total</h3>
+          </div>
+          <p>Protección de datos y seguimiento completo de todas las actividades del sistema.</p>
+          <div class="feature-stats">
+            <span class="stat">
+              <strong>100%</strong>
+              <small>Seguro</small>
+            </span>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+    </div>
+  </div>
+</div>
+
+<div class="stats-section">
+  <div class="container">
+    <div class="stats-grid">
+      <div class="stat-item">
+        <mat-icon class="stat-icon">confirmation_number</mat-icon>
+        <div class="stat-number">1,247</div>
+        <div class="stat-label">Tickets Resueltos</div>
+      </div>
+      <div class="stat-item">
+        <mat-icon class="stat-icon">schedule</mat-icon>
+        <div class="stat-number">2.3h</div>
+        <div class="stat-label">Tiempo Promedio</div>
+      </div>
+      <div class="stat-item">
+        <mat-icon class="stat-icon">trending_up</mat-icon>
+        <div class="stat-number">98.5%</div>
+        <div class="stat-label">Uptime</div>
+      </div>
+      <div class="stat-item">
+        <mat-icon class="stat-icon">star</mat-icon>
+        <div class="stat-number">4.9/5</div>
+        <div class="stat-label">Valoración</div>
+      </div>
+    </div>
+  </div>
+</div>

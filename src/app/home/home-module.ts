@@ -1,11 +1,14 @@
+
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 
 import { HomeRoutingModule } from './home-routing-module';
 import { Inicio } from './inicio/inicio';
 import { AcercaDe } from './acerca-de/acerca-de';
-import {MatCardModule} from '@angular/material/card';
-
+import { MatCardModule } from '@angular/material/card';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 
 @NgModule({
   declarations: [
@@ -14,8 +17,11 @@ import {MatCardModule} from '@angular/material/card';
   ],
   imports: [
     CommonModule,
+    RouterModule,
     HomeRoutingModule,
-    MatCardModule
+    MatCardModule,
+    MatButtonModule,
+    MatIconModule
   ]
 })
 export class HomeModule { }

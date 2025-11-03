@@ -1,52 +1,154 @@
-<!-- https://material.angular.dev/components/menu/overview -->
-<!--https://fonts.google.com/icons-->
-<mat-toolbar class="header primary-gradient">
-<!-- Logo -->
-<button mat-icon-button class="example-header-image" matTooltip="App Videojuegos"></button>
-<!-- Menú principal -->
-<button [matMenuTriggerFor]="menu1" mat-icon-button class="example-icon" matTooltip="Menu">
-<mat-icon>menu</mat-icon>
-</button>
-<button mat-icon-button matTooltip="Mantenimientos" [matMenuTriggerFor]="menu2">
-<mat-icon>save_as</mat-icon>
-</button>
-<button mat-icon-button matTooltip="Reportes" [matMenuTriggerFor]="menu4">
-<mat-icon>monitoring</mat-icon>
-</button>
+<mat-toolbar class="header modern-header">
+  <!-- Logo y título -->
+  <div class="logo-section">
+    <button mat-icon-button class="logo-button" matTooltip="HelpyIT - Inicio" [routerLink]="['/inicio']">
+      <div class="logo-image"></div>
+    </button>
+    <span class="app-title">HelpyIT</span>
+  </div>
 
-<!-- Menús desplegables -->
-<mat-menu #menu1="matMenu">
-<button mat-menu-item [routerLink]="['/inicio']" [routerLinkActive]="'active-link'">Inicio</button>
-<button mat-menu-item>Acerca de</button>
-<button mat-menu-item [routerLink]="['/tecnicos']" [routerLinkActive]="'active-link'">Técnicos</button>
-</mat-menu>
-<mat-menu #menu2="matMenu">
-<button mat-menu-item>Videojuegos</button>
-</mat-menu>
-<mat-menu #menu4="matMenu">
-<button mat-menu-item>Videojuegos x Genero</button>
-<button mat-menu-item>Ordenes x Mes</button>
-<button mat-menu-item>Videojuegos vendidos x Mes</button>
-</mat-menu>
+  <!-- Navegación principal -->
+  <nav class="main-navigation">
+    <button mat-button [routerLink]="['/inicio']" [routerLinkActive]="'active-nav-item'" class="nav-item">
+      <mat-icon>home</mat-icon>
+      <span>Inicio</span>
+    </button>
 
-<!-- Spacer -->
-<div class="example-spacer"></div>
-<!-- Carrito y usuario -->
-<div class="user-section">
+    <!-- Menú Tickets -->
+    <button mat-button [matMenuTriggerFor]="ticketsMenu" class="nav-item">
+      <mat-icon>confirmation_number</mat-icon>
+      <span>Tickets</span>
+      <mat-icon class="dropdown-icon">keyboard_arrow_down</mat-icon>
+    </button>
+    <mat-menu #ticketsMenu="matMenu" class="modern-menu">
+      <button mat-menu-item>
+        <mat-icon>add_circle_outline</mat-icon>
+        <span>Crear Ticket</span>
+      </button>
+      <button mat-menu-item>
+        <mat-icon>list</mat-icon>
+        <span>Mis Tickets</span>
+      </button>
+      <button mat-menu-item>
+        <mat-icon>assignment</mat-icon>
+        <span>Tickets Asignados</span>
+      </button>
+      <mat-divider></mat-divider>
+      <button mat-menu-item>
+        <mat-icon>search</mat-icon>
+        <span>Buscar Tickets</span>
+      </button>
+    </mat-menu>
 
-<span class="small-text user-email">Email</span>
-<button mat-icon-button [matMenuTriggerFor]="menu3">
-<mat-icon>person</mat-icon>
-</button>
-<mat-menu #menu3="matMenu">
-<button mat-menu-item>
-<mat-icon>person_add</mat-icon>
-<span>Login</span>
-</button>
-<button mat-menu-item>
-<mat-icon>person_remove</mat-icon>
-<span>Logout</span>
-</button>
-</mat-menu>
-</div>
+    <!-- Menú Técnicos -->
+    <button mat-button [matMenuTriggerFor]="tecnicosMenu" class="nav-item">
+      <mat-icon>engineering</mat-icon>
+      <span>Técnicos</span>
+      <mat-icon class="dropdown-icon">keyboard_arrow_down</mat-icon>
+    </button>
+    <mat-menu #tecnicosMenu="matMenu" class="modern-menu">
+      <button mat-menu-item [routerLink]="['/tecnicos']" [routerLinkActive]="'active-link'">
+        <mat-icon>list</mat-icon>
+        <span>Lista de Técnicos</span>
+      </button>
+      <button mat-menu-item>
+        <mat-icon>person_add</mat-icon>
+        <span>Agregar Técnico</span>
+      </button>
+      <button mat-menu-item>
+        <mat-icon>schedule</mat-icon>
+        <span>Disponibilidad</span>
+      </button>
+    </mat-menu>
+
+    <!-- Menú Reportes -->
+    <button mat-button [matMenuTriggerFor]="reportesMenu" class="nav-item">
+      <mat-icon>analytics</mat-icon>
+      <span>Reportes</span>
+      <mat-icon class="dropdown-icon">keyboard_arrow_down</mat-icon>
+    </button>
+    <mat-menu #reportesMenu="matMenu" class="modern-menu">
+      <button mat-menu-item>
+        <mat-icon>pie_chart</mat-icon>
+        <span>Dashboard</span>
+      </button>
+      <button mat-menu-item>
+        <mat-icon>trending_up</mat-icon>
+        <span>Métricas de Rendimiento</span>
+      </button>
+      <button mat-menu-item>
+        <mat-icon>schedule</mat-icon>
+        <span>Tiempos de Resolución</span>
+      </button>
+      <button mat-menu-item>
+        <mat-icon>star</mat-icon>
+        <span>Satisfacción Cliente</span>
+      </button>
+    </mat-menu>
+  </nav>
+
+  <!-- Spacer -->
+  <div class="spacer"></div>
+
+  <!-- Sección de usuario y notificaciones -->
+  <div class="user-section">
+    <!-- Notificaciones -->
+    <button mat-icon-button class="notification-button" matTooltip="Notificaciones" [matBadge]="notificationCount" matBadgeColor="warn" [matBadgeHidden]="notificationCount === 0">
+      <mat-icon>notifications</mat-icon>
+    </button>
+
+    <!-- Ayuda -->
+    <button mat-icon-button matTooltip="Ayuda" [matMenuTriggerFor]="helpMenu">
+      <mat-icon>help_outline</mat-icon>
+    </button>
+    <mat-menu #helpMenu="matMenu" class="modern-menu">
+      <button mat-menu-item>
+        <mat-icon>book</mat-icon>
+        <span>Documentación</span>
+      </button>
+      <button mat-menu-item>
+        <mat-icon>support</mat-icon>
+        <span>Soporte Técnico</span>
+      </button>
+      <button mat-menu-item>
+        <mat-icon>info</mat-icon>
+        <span>Acerca de</span>
+      </button>
+    </mat-menu>
+
+    <!-- Usuario -->
+    <div class="user-profile">
+      <span class="user-email">usuario@empresa.com</span>
+      <button mat-icon-button [matMenuTriggerFor]="userMenu" class="user-avatar">
+        <div class="avatar-circle">
+          <span>U</span>
+        </div>
+      </button>
+      <mat-menu #userMenu="matMenu" class="modern-menu user-menu">
+        <div class="user-info">
+          <div class="user-avatar-large">
+            <span>U</span>
+          </div>
+          <div class="user-details">
+            <div class="user-name">Usuario Admin</div>
+            <div class="user-role">Administrador</div>
+          </div>
+        </div>
+        <mat-divider></mat-divider>
+        <button mat-menu-item>
+          <mat-icon>person</mat-icon>
+          <span>Mi Perfil</span>
+        </button>
+        <button mat-menu-item>
+          <mat-icon>settings</mat-icon>
+          <span>Configuración</span>
+        </button>
+        <mat-divider></mat-divider>
+        <button mat-menu-item>
+          <mat-icon>logout</mat-icon>
+          <span>Cerrar Sesión</span>
+        </button>
+      </mat-menu>
+    </div>
+  </div>
 </mat-toolbar>

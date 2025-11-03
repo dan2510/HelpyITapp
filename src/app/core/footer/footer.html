@@ -1,6 +1,88 @@
-<mat-toolbar layout-align="start center" class="footer primary-gradient">
-<mat-toolbar-row>
-<p>ISW-811 Aplicaciones Web Utilizando Software Libre</p>
-<p>{{ today | date : "yyyy" }}</p>
-</mat-toolbar-row>
-</mat-toolbar>
+<footer class="modern-footer">
+  <div class="footer-container">
+    <!-- Sección principal del footer -->
+    <div class="footer-content">
+      
+      <!-- Logo y descripción -->
+      <div class="footer-brand">
+        <div class="footer-logo">
+          <mat-icon class="footer-icon">support_agent</mat-icon>
+          <span class="footer-title">HelpyIT</span>
+        </div>
+        <p class="footer-description">
+          Sistema de gestión de incidentes técnicos para equipos de soporte eficientes.
+        </p>
+      </div>
+
+      <!-- Enlaces rápidos -->
+      <div class="footer-links">
+        <div class="footer-column">
+          <h4 class="footer-heading">Producto</h4>
+          <ul class="footer-list">
+            <li><a href="#" class="footer-link">Tickets</a></li>
+            <li><a href="#" class="footer-link">Técnicos</a></li>
+            <li><a href="#" class="footer-link">Reportes</a></li>
+            <li><a href="#" class="footer-link">Dashboard</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-column">
+          <h4 class="footer-heading">Soporte</h4>
+          <ul class="footer-list">
+            <li><a href="#" class="footer-link">Documentación</a></li>
+            <li><a href="#" class="footer-link">API</a></li>
+            <li><a href="#" class="footer-link">Centro de Ayuda</a></li>
+            <li><a href="#" class="footer-link">Contacto</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-column">
+          <h4 class="footer-heading">Empresa</h4>
+          <ul class="footer-list">
+            <li><a href="#" class="footer-link">Acerca de</a></li>
+            <li><a href="#" class="footer-link">Blog</a></li>
+            <li><a href="#" class="footer-link">Carreras</a></li>
+            <li><a href="#" class="footer-link">Privacidad</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Redes sociales -->
+      <div class="footer-social">
+        <h4 class="footer-heading">Síguenos</h4>
+        <div class="social-links">
+          <button mat-icon-button class="social-btn" matTooltip="LinkedIn">
+            <mat-icon>work</mat-icon>
+          </button>
+          <button mat-icon-button class="social-btn" matTooltip="Twitter">
+            <mat-icon>alternate_email</mat-icon>
+          </button>
+          <button mat-icon-button class="social-btn" matTooltip="GitHub">
+            <mat-icon>code</mat-icon>
+          </button>
+          <button mat-icon-button class="social-btn" matTooltip="YouTube">
+            <mat-icon>play_arrow</mat-icon>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Línea divisoria -->
+    <mat-divider class="footer-divider"></mat-divider>
+
+    <!-- Copyright y información legal -->
+    <div class="footer-bottom">
+      <div class="footer-copyright">
+        <p>&copy; {{ today | date : "yyyy" }} HelpyIT. Todos los derechos reservados.</p>
+        <p class="footer-course">ISW-811 Aplicaciones Web Utilizando Software Libre</p>
+      </div>
+      <div class="footer-legal">
+        <a href="#" class="footer-legal-link">Términos</a>
+        <span class="footer-separator">|</span>
+        <a href="#" class="footer-legal-link">Privacidad</a>
+        <span class="footer-separator">|</span>
+        <a href="#" class="footer-legal-link">Cookies</a>
+      </div>
+    </div>
+  </div>
+</footer>

@@ -1,7 +1,19 @@
+/* Estructura principal de la aplicación */
 .body-container {
-padding-top: 64px; /* altura del header */
-padding-bottom: 60px; /* altura del footer */
-width: 100%;
-box-sizing: border-box;
-min-height: calc(100vh - 64px); /* garantiza al menos toda la ventana */
+  padding-top: 64px; /* altura del header fijo */
+  width: 100%;
+  box-sizing: border-box;
+  min-height: calc(100vh - 64px); /* altura mínima sin el header */
+  display: flex;
+  flex-direction: column;
+}
+
+/* Asegurar que el contenido principal tome el espacio disponible */
+.body-container > * {
+  flex: 1;
+}
+
+/* El router-outlet debe expandirse */
+router-outlet + * {
+  flex: 1;
 }

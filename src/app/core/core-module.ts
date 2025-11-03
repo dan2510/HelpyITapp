@@ -3,15 +3,14 @@ import { CommonModule } from '@angular/common';
 import { Header } from './header/header';
 import { Footer } from './footer/footer';
 import { RouterModule } from '@angular/router';
-import {MatIconModule} from '@angular/material/icon';
-import {MatButtonModule} from '@angular/material/button';
-import {MatToolbarModule} from '@angular/material/toolbar';
-import {MatMenuModule} from '@angular/material/menu';
-import {MatBadgeModule} from '@angular/material/badge'
-import {MatGridListModule} from '@angular/material/grid-list';
-
-
-
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatBadgeModule } from '@angular/material/badge';
+import { MatGridListModule } from '@angular/material/grid-list';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @NgModule({
   declarations: [
@@ -26,8 +25,9 @@ import {MatGridListModule} from '@angular/material/grid-list';
     MatToolbarModule,
     MatMenuModule,
     MatBadgeModule,
-    MatGridListModule
-
+    MatGridListModule,
+    MatDividerModule,
+    MatTooltipModule
   ],
   exports: [
     Header,

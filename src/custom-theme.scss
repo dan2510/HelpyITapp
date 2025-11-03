@@ -1,38 +1,169 @@
-
-// Include theming for Angular Material with `mat.theme()`.
-// This Sass mixin will define CSS variables that are used for styling Angular Material
-// components according to the Material 3 design spec.
-// Learn more about theming and how to use it for your application's
-// custom components at https://material.angular.dev/guide/theming
 @use '@angular/material' as mat;
 
+// Tema simple usando solo paletas predefinidas de Angular Material
 html {
   @include mat.theme((
     color: (
-      primary: mat.$azure-palette,
-      tertiary: mat.$blue-palette,
+      primary: mat.$blue-palette,
+      accent: mat.$green-palette,
+      warn: mat.$red-palette,
     ),
     typography: Roboto,
     density: 0,
   ));
- // @include mat.toolbar-overrides((container-background-color: c(colors.$primary-palette,
-//40),
-//));
 }
 
 body {
-  // Default the application to a light color theme. This can be changed to
-  // `dark` to enable the dark color theme, or to `light dark` to defer to the
-  // user's system settings.
   color-scheme: light;
-
-  // Set a default background, font and text colors for the application using
-  // Angular Material's system-level CSS variables. Learn more about these
-  // variables at https://material.angular.dev/guide/system-variables
-  background-color: var(--mat-sys-surface);
-  color: var(--mat-sys-on-surface);
-  font: var(--mat-sys-body-medium);
-
-  // Reset the user agent margin.
+  background-color: #f4f5f7;
+  color: #172b4d;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
   margin: 0;
+  line-height: 1.5;
+}
+
+// Variables CSS personalizadas tipo Jira
+:root {
+  --jira-primary: #0052cc;
+  --jira-primary-light: #0065ff;
+  --jira-primary-dark: #003d80;
+  --jira-success: #36b37e;
+  --jira-warning: #ffab00;
+  --jira-error: #de350b;
+  --jira-info: #0052cc;
+  
+  // Backgrounds
+  --jira-bg-primary: #f4f5f7;
+  --jira-bg-secondary: #ffffff;
+  --jira-bg-elevated: #ffffff;
+  
+  // Text colors
+  --jira-text-primary: #172b4d;
+  --jira-text-secondary: #5e6c84;
+  --jira-text-tertiary: #8993a4;
+  
+  // Borders
+  --jira-border-light: #ebecf0;
+  --jira-border-medium: #dfe1e6;
+  
+  // Shadows
+  --jira-shadow-small: 0 1px 3px rgba(0, 0, 0, 0.1);
+  --jira-shadow-medium: 0 4px 12px rgba(0, 0, 0, 0.15);
+  --jira-shadow-large: 0 8px 25px rgba(0, 0, 0, 0.2);
+
+  // Overrides para colores de Material Design
+  --mat-sys-primary: #0052cc;
+  --mat-sys-on-primary: #ffffff;
+  --mat-sys-primary-container: #b3d4ff;
+  --mat-sys-on-primary-container: #001c3a;
+  
+  --mat-sys-secondary: #36b37e;
+  --mat-sys-on-secondary: #ffffff;
+  --mat-sys-secondary-container: #b3e5cc;
+  --mat-sys-on-secondary-container: #002e19;
+  
+  --mat-sys-error: #de350b;
+  --mat-sys-on-error: #ffffff;
+  --mat-sys-error-container: #ffebe6;
+  --mat-sys-on-error-container: #410002;
+  
+  --mat-sys-surface: #ffffff;
+  --mat-sys-on-surface: #172b4d;
+  --mat-sys-surface-variant: #f4f5f7;
+  --mat-sys-on-surface-variant: #5e6c84;
+  
+  --mat-sys-background: #f4f5f7;
+  --mat-sys-on-background: #172b4d;
+  
+  --mat-sys-outline: #dfe1e6;
+  --mat-sys-outline-variant: #ebecf0;
+}
+
+// Clases de utilidad para colores Jira
+.primary-gradient {
+  background: linear-gradient(90deg, var(--jira-primary) 0%, var(--jira-primary-light) 100%) !important;
+}
+
+.secondary-title {
+  background: var(--jira-bg-secondary) !important;
+}
+
+.primary-title {
+  background: var(--jira-primary) !important;
+  color: white !important;
+}
+
+// Personalización básica de componentes Material
+.mat-mdc-card {
+  border-radius: 8px !important;
+  box-shadow: var(--jira-shadow-small) !important;
+  border: 1px solid var(--jira-border-light) !important;
+}
+
+.mat-mdc-button {
+  border-radius: 6px !important;
+  text-transform: none !important;
+  font-weight: 500 !important;
+}
+
+.mat-mdc-raised-button {
+  box-shadow: var(--jira-shadow-small) !important;
+}
+
+.mat-mdc-raised-button:hover {
+  box-shadow: var(--jira-shadow-medium) !important;
+}
+
+.mat-mdc-outlined-button {
+  border-radius: 6px !important;
+}
+
+// Personalización del toolbar
+.mat-toolbar {
+  box-shadow: var(--jira-shadow-small) !important;
+}
+
+// Personalización de menús
+.mat-mdc-menu-panel {
+  border-radius: 8px !important;
+  box-shadow: var(--jira-shadow-medium) !important;
+}
+
+// Enlaces activos
+.active-link {
+  color: var(--jira-primary) !important;
+  font-weight: 600 !important;
+}
+
+// Personalización de badges
+.mat-badge-content {
+  background: var(--jira-error) !important;
+  color: white !important;
+  border-radius: 10px !important;
+  font-weight: 600 !important;
+}
+
+// Colores de estado para iconos
+.mat-icon.primary {
+  color: var(--jira-primary) !important;
+}
+
+.mat-icon.success {
+  color: var(--jira-success) !important;
+}
+
+.mat-icon.warning {
+  color: var(--jira-warning) !important;
+}
+
+.mat-icon.error {
+  color: var(--jira-error) !important;
+}
+
+// Personalización de tooltips
+.mat-mdc-tooltip {
+  background: var(--jira-text-primary) !important;
+  color: white !important;
+  border-radius: 4px !important;
+  font-size: 12px !important;
 }
