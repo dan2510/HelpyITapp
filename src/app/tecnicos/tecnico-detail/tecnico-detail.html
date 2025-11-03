@@ -1,1 +1,326 @@
-<p>tecnico-detail works!</p>
+<!-- Detalle de Técnico - Cumple requerimientos Avance 3 -->
+<div class="tecnico-detail-container">
+  <!-- Header con navegación -->
+  <div class="header-navigation">
+    <button 
+      mat-button 
+      color="primary" 
+      (click)="regresarAlListado()"
+      class="back-button">
+      <mat-icon>arrow_back</mat-icon>
+      Volver al listado
+    </button>
+  </div>
+
+  <!-- Loading -->
+  @if (loading()) {
+    <div class="loading-container">
+      <mat-spinner diameter="60"></mat-spinner>
+      <p>Cargando información del técnico...</p>
+    </div>
+  }
+
+  <!-- Error -->
+  @if (error() && !loading()) {
+    <div class="error-container">
+      <mat-icon color="warn" class="error-icon">error_outline</mat-icon>
+      <h3>Error al cargar los datos</h3>
+      <p>{{ error() }}</p>
+      <div class="error-actions">
+        <button 
+          mat-raised-button 
+          color="primary" 
+          (click)="retry()"
+          class="retry-button">
+          <mat-icon>refresh</mat-icon>
+          Reintentar
+        </button>
+        <button 
+          mat-button 
+          (click)="regresarAlListado()"
+          class="back-button-error">
+          <mat-icon>arrow_back</mat-icon>
+          Volver
+        </button>
+      </div>
+    </div>
+  }
+
+  <!-- Contenido del detalle -->
+  @if (!loading() && !error() && tecnico()) {
+    <div class="detail-content">
+      <!-- Información Personal del Técnico -->
+      <mat-card class="info-card personal-info">
+        <mat-card-header class="card-header">
+          <div mat-card-avatar class="avatar-large">
+            <mat-icon class="avatar-icon">person</mat-icon>
+          </div>
+          <mat-card-title>{{ tecnico()!.nombrecompleto }}</mat-card-title>
+          <mat-card-subtitle>{{ tecnico()!.rol?.descripcion || 'Técnico de soporte' }}</mat-card-subtitle>
+        </mat-card-header>
+
+        <mat-card-content>
+          <div class="info-grid">
+            <!-- Email -->
+            <div class="info-item">
+              <mat-icon class="info-icon">email</mat-icon>
+              <div class="info-content">
+                <span class="info-label">Correo electrónico</span>
+                <span class="info-value">{{ tecnico()!.correo }}</span>
+              </div>
+            </div>
+
+            <!-- Teléfono -->
+            <div class="info-item">
+              <mat-icon class="info-icon">phone</mat-icon>
+              <div class="info-content">
+                <span class="info-label">Teléfono</span>
+                <span class="info-value">{{ tecnico()!.telefono || 'No disponible' }}</span>
+              </div>
+            </div>
+
+            <!-- Estado -->
+            <div class="info-item">
+              <mat-icon class="info-icon">verified</mat-icon>
+              <div class="info-content">
+                <span class="info-label">Estado</span>
+                <mat-chip 
+                  [color]="tecnico()!.activo ? 'primary' : 'warn'"
+                  class="status-chip">
+                  {{ tecnico()!.activo ? 'Activo' : 'Inactivo' }}
+                </mat-chip>
+              </div>
+            </div>
+
+            <!-- Último inicio de sesión -->
+            <div class="info-item">
+              <mat-icon class="info-icon">schedule</mat-icon>
+              <div class="info-content">
+                <span class="info-label">Último acceso</span>
+                <span class="info-value">
+                  {{ formatearFecha(tecnico()!.ultimoiniciosesion) }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Carga de Trabajo y Disponibilidad -->
+      <mat-card class="info-card workload-info">
+        <mat-card-header class="card-header">
+          <div mat-card-avatar class="avatar-workload">
+            <mat-icon class="avatar-icon">assignment</mat-icon>
+          </div>
+          <mat-card-title>Carga de Trabajo y Disponibilidad</mat-card-title>
+        </mat-card-header>
+
+        <mat-card-content>
+          <!-- Disponibilidad actual -->
+          <div class="availability-section">
+            <h4 class="section-title">Estado Actual</h4>
+            <div class="availability-display">
+              <mat-icon 
+                [class]="getDisponibilidadColor(tecnico()!.disponibilidad)"
+                class="availability-icon">
+                {{ getDisponibilidadIcon(tecnico()!.disponibilidad) }}
+              </mat-icon>
+              <span 
+                [class]="getDisponibilidadColor(tecnico()!.disponibilidad)"
+                class="availability-text">
+                {{ tecnico()!.disponibilidad }}
+              </span>
+            </div>
+          </div>
+
+          <!-- Carga de tickets -->
+          <div class="workload-section">
+            <h4 class="section-title">Carga de Tickets</h4>
+            <div class="workload-stats">
+              <div class="stat-item">
+                <span class="stat-label">Tickets Activos</span>
+                <span class="stat-value primary">{{ tecnico()!.cargaactual }}</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-label">Capacidad Máxima</span>
+                <span class="stat-value">{{ tecnico()!.maxticketsimultaneos }}</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-label">Disponibilidad</span>
+                <span class="stat-value">
+                  {{ getPorcentajeCarga(tecnico()!.cargaactual, tecnico()!.maxticketsimultaneos) }}%
+                </span>
+              </div>
+            </div>
+
+            <!-- Barra de progreso -->
+            <mat-progress-bar 
+              mode="determinate"
+              [value]="getPorcentajeCarga(tecnico()!.cargaactual, tecnico()!.maxticketsimultaneos)"
+              [color]="getColorBarraCarga(getPorcentajeCarga(tecnico()!.cargaactual, tecnico()!.maxticketsimultaneos))"
+              class="workload-bar">
+            </mat-progress-bar>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Lista de Especialidades -->
+      <mat-card class="info-card specialties-info">
+        <mat-card-header class="card-header">
+          <div mat-card-avatar class="avatar-specialties">
+            <mat-icon class="avatar-icon">star</mat-icon>
+          </div>
+          <mat-card-title>Especialidades Técnicas</mat-card-title>
+        </mat-card-header>
+
+        <mat-card-content>
+          @if (tecnico()!.especialidades && tecnico()!.especialidades.length > 0) {
+            <div class="specialties-grid">
+              @for (especialidad of tecnico()!.especialidades; track especialidad.id) {
+                <div class="specialty-card">
+                  <div class="specialty-header">
+                    <h4 class="specialty-name">{{ especialidad.nombre }}</h4>
+                    <mat-chip 
+                      [color]="getNivelExperienciaColor(especialidad.nivelexperiencia)"
+                      class="experience-chip">
+                      {{ especialidad.nivelexperiencia }}
+                    </mat-chip>
+                  </div>
+                  <p class="specialty-description">{{ especialidad.descripcion }}</p>
+                  <div class="specialty-date">
+                    <mat-icon class="date-icon">event</mat-icon>
+                    <span>Desde: {{ formatearFecha(especialidad.asignadoen) }}</span>
+                  </div>
+                </div>
+              }
+            </div>
+          } @else {
+            <div class="no-specialties">
+              <mat-icon>info</mat-icon>
+              <span>No hay especialidades asignadas</span>
+            </div>
+          }
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Tickets Activos -->
+      <mat-card class="info-card tickets-info">
+        <mat-card-header class="card-header">
+          <div mat-card-avatar class="avatar-tickets">
+            <mat-icon class="avatar-icon">confirmation_number</mat-icon>
+          </div>
+          <mat-card-title>Tickets Activos</mat-card-title>
+        </mat-card-header>
+
+        <mat-card-content>
+          @if (tecnico()!.ticketsActivos && tecnico()!.ticketsActivos.length > 0) {
+            <div class="tickets-list">
+              @for (ticket of tecnico()!.ticketsActivos; track ticket.id) {
+                <div class="ticket-item">
+                  <div class="ticket-header">
+                    <span class="ticket-id">#{{ ticket.id }}</span>
+                    <div class="ticket-badges">
+                      <mat-chip 
+                        [color]="getEstadoTicketColor(ticket.estado)"
+                        class="ticket-chip">
+                        {{ ticket.estado }}
+                      </mat-chip>
+                      <mat-chip 
+                        [color]="getPrioridadColor(ticket.prioridad)"
+                        class="priority-chip">
+                        {{ ticket.prioridad }}
+                      </mat-chip>
+                    </div>
+                  </div>
+                  <h5 class="ticket-title">{{ ticket.titulo }}</h5>
+                </div>
+              }
+            </div>
+          } @else {
+            <div class="no-tickets">
+              <mat-icon>assignment_turned_in</mat-icon>
+              <span>No hay tickets activos asignados</span>
+            </div>
+          }
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Estadísticas del Técnico -->
+      @if (tecnico()!.estadisticas) {
+        <mat-card class="info-card stats-info">
+          <mat-card-header class="card-header">
+            <div mat-card-avatar class="avatar-stats">
+              <mat-icon class="avatar-icon">analytics</mat-icon>
+            </div>
+            <mat-card-title>Estadísticas de Rendimiento</mat-card-title>
+          </mat-card-header>
+
+          <mat-card-content>
+            <div class="stats-grid">
+              <div class="stat-card">
+                <mat-icon class="stat-icon">confirmation_number</mat-icon>
+                <div class="stat-content">
+                  <span class="stat-number">{{ tecnico()!.estadisticas.ticketsTotal }}</span>
+                  <span class="stat-label">Total de Tickets</span>
+                </div>
+              </div>
+              
+              <div class="stat-card">
+                <mat-icon class="stat-icon success">check_circle</mat-icon>
+                <div class="stat-content">
+                  <span class="stat-number">{{ tecnico()!.estadisticas.ticketsResueltos }}</span>
+                  <span class="stat-label">Tickets Resueltos</span>
+                </div>
+              </div>
+              
+              <div class="stat-card">
+                <mat-icon class="stat-icon primary">hourglass_empty</mat-icon>
+                <div class="stat-content">
+                  <span class="stat-number">{{ tecnico()!.estadisticas.ticketsEnProgreso }}</span>
+                  <span class="stat-label">En Progreso</span>
+                </div>
+              </div>
+              
+              <div class="stat-card">
+                <mat-icon class="stat-icon warning">percent</mat-icon>
+                <div class="stat-content">
+                  <span class="stat-number">{{ tecnico()!.estadisticas.porcentajeEfectividad }}%</span>
+                  <span class="stat-label">Efectividad</span>
+                </div>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      }
+
+      <!-- Información de Fechas -->
+      <mat-card class="info-card dates-info">
+        <mat-card-header class="card-header">
+          <div mat-card-avatar class="avatar-dates">
+            <mat-icon class="avatar-icon">history</mat-icon>
+          </div>
+          <mat-card-title>Información de Fechas</mat-card-title>
+        </mat-card-header>
+
+        <mat-card-content>
+          <div class="dates-grid">
+            <div class="date-item">
+              <mat-icon class="date-icon">person_add</mat-icon>
+              <div class="date-content">
+                <span class="date-label">Registrado</span>
+                <span class="date-value">{{ formatearFecha(tecnico()!.creadoen) }}</span>
+              </div>
+            </div>
+            <div class="date-item">
+              <mat-icon class="date-icon">update</mat-icon>
+              <div class="date-content">
+                <span class="date-label">Última actualización</span>
+                <span class="date-value">{{ formatearFecha(tecnico()!.actualizadoen) }}</span>
+              </div>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  }
+</div>

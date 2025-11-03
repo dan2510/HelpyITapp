@@ -12,6 +12,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { TecnicosRoutingModule } from './tecnicos-routing-module';
 import { TecnicoIndex } from './tecnico-index/tecnico-index';
 import { TecnicoDetail } from './tecnico-detail/tecnico-detail';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 
 @NgModule({
   declarations: [
@@ -30,6 +31,7 @@ import { TecnicoDetail } from './tecnico-detail/tecnico-detail';
     MatChipsModule,
     MatListModule,
     MatDividerModule,
+      MatProgressBarModule,
   ]
 })
 export class TecnicosModule { }

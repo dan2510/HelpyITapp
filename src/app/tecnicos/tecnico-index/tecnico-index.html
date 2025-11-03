@@ -1,81 +1,125 @@
-<!-- Listado de Técnicos para Avance 3 -->
+<!-- Listado de Técnicos - Cumple requerimientos Avance 3 -->
 <div class="tecnicos-container">
-  <mat-card>
-    <mat-card-header>
-      <mat-card-title>
+  <mat-card class="main-card">
+    <mat-card-header class="header-section">
+      <div mat-card-avatar class="header-icon">
         <mat-icon>engineering</mat-icon>
-        Lista de Técnicos
-      </mat-card-title>
+      </div>
+      <mat-card-title>Lista de Técnicos</mat-card-title>
       <mat-card-subtitle>
-        Personal técnico disponible para soporte
+        Personal técnico disponible para soporte - Máximo 3 campos mostrados
       </mat-card-subtitle>
     </mat-card-header>
 
     <mat-card-content>
-      <!-- Loading spinner -->
-      <div *ngIf="loading" class="loading-container">
-      
-      </div>
+      <!-- Estado de carga -->
+      @if (loading()) {
+        <div class="loading-container">
+          <mat-spinner diameter="50"></mat-spinner>
+          <p>Cargando técnicos...</p>
+        </div>
+      }
 
-      <!-- Error message -->
-      <div *ngIf="error && !loading" class="error-container">
-        <mat-icon color="warn">error</mat-icon>
-        <p>{{ error }}</p>
-        <button mat-button color="primary" (click)="loadTecnicos()">
-          Reintentar
-        </button>
-      </div>
+      <!-- Estado de error -->
+      @if (error() && !loading()) {
+        <div class="error-container">
+          <mat-icon color="warn" class="error-icon">error_outline</mat-icon>
+          <h3>Error al cargar los datos</h3>
+          <p>{{ error() }}</p>
+          <button 
+            mat-raised-button 
+            color="primary" 
+            (click)="retry()"
+            class="retry-button">
+            <mat-icon>refresh</mat-icon>
+            Reintentar
+          </button>
+        </div>
+      }
 
-      <!-- Lista de técnicos (máximo 3 campos según avance 3) -->
-      <div *ngIf="!loading && !error" class="tecnicos-grid">
-        <mat-card 
-          *ngFor="let tecnico of tecnicos" 
-          class="tecnico-card"
-          (click)="verDetalle(tecnico.id)"
-          matRipple>
-          
-          <!-- Campo 1: Nombre completo -->
-          <mat-card-header>
-            <mat-icon mat-card-avatar>person</mat-icon>
-            <mat-card-title>{{ tecnico.nombrecompleto }}</mat-card-title>
-          </mat-card-header>
+      <!-- Lista de técnicos -->
+      @if (!loading() && !error() && tecnicos().length > 0) {
+        <div class="tecnicos-grid">
+          @for (tecnico of tecnicos(); track tecnico.id) {
+            <mat-card 
+              class="tecnico-card"
+              (click)="verDetalle(tecnico.id)"
+              matRipple
+              [matRippleColor]="'rgba(0, 82, 204, 0.1)'">
+              
+              <!-- Campo 1: Nombre completo (requerimiento: máx. 3 campos) -->
+              <mat-card-header>
+                <div mat-card-avatar class="avatar-container">
+                  <mat-icon class="person-icon">person</mat-icon>
+                </div>
+                <mat-card-title class="tecnico-name">
+                  {{ tecnico.nombrecompleto }}
+                </mat-card-title>
+              </mat-card-header>
 
-          <mat-card-content>
-            <!-- Campo 2: Disponibilidad -->
-            <div class="availability-section">
-              <mat-icon [color]="getDisponibilidadColor(tecnico.disponibilidad)">
-                {{ tecnico.disponibilidad === 'DISPONIBLE' ? 'check_circle' : 
-                   tecnico.disponibilidad === 'OCUPADO' ? 'schedule' : 'cancel' }}
-              </mat-icon>
-              <span [class]="'status-' + tecnico.disponibilidad.toLowerCase()">
-                {{ tecnico.disponibilidad }}
-              </span>
-            </div>
+              <mat-card-content>
+                <!-- Campo 2: Disponibilidad -->
+                <div class="info-row availability-section">
+                  <mat-icon 
+                    [color]="getDisponibilidadColor(tecnico.disponibilidad)"
+                    class="status-icon">
+                    {{ getDisponibilidadIcon(tecnico.disponibilidad) }}
+                  </mat-icon>
+                  <span 
+                    class="status-text"
+                    [ngClass]="'status-' + tecnico.disponibilidad.toLowerCase()">
+                    {{ getDisponibilidadText(tecnico.disponibilidad) }}
+                  </span>
+                </div>
 
-            <!-- Campo 3: Carga actual -->
-            <div class="workload-section">
-              <mat-icon>assignment</mat-icon>
-              <span>Tickets: {{ tecnico.cargaactual }}</span>
-            </div>
-          </mat-card-content>
+                <!-- Campo 3: Carga actual -->
+                <div class="info-row workload-section">
+                  <mat-icon 
+                    [color]="getCargaColor(tecnico.cargaactual)"
+                    class="workload-icon">
+                    assignment
+                  </mat-icon>
+                  <span class="workload-text">
+                    Tickets activos: 
+                    <strong [ngClass]="'carga-' + getCargaColor(tecnico.cargaactual)">
+                      {{ tecnico.cargaactual }}
+                    </strong>
+                  </span>
+                </div>
+              </mat-card-content>
 
-          <mat-card-actions align="end">
-            <button 
-              mat-button 
-              color="primary"
-              (click)="verDetalle(tecnico.id); $event.stopPropagation()">
-              <mat-icon>visibility</mat-icon>
-              Ver Detalle
-            </button>
-          </mat-card-actions>
-        </mat-card>
-      </div>
+              <!-- Acciones - Enlace al detalle (requerimiento) -->
+              <mat-card-actions align="end">
+                <button 
+                  mat-button 
+                  color="primary"
+                  (click)="verDetalle(tecnico.id); $event.stopPropagation()"
+                  class="detail-button">
+                  <mat-icon>visibility</mat-icon>
+                  Ver Detalle
+                </button>
+              </mat-card-actions>
+            </mat-card>
+          }
+        </div>
+      }
 
-      <!-- Mensaje si no hay técnicos -->
-      <div *ngIf="!loading && !error && tecnicos.length === 0" class="no-data">
-        <mat-icon>person_off</mat-icon>
-        <p>No se encontraron técnicos</p>
-      </div>
+      <!-- Estado vacío -->
+      @if (!loading() && !error() && tecnicos().length === 0) {
+        <div class="empty-state">
+          <mat-icon class="empty-icon">person_off</mat-icon>
+          <h3>No hay técnicos disponibles</h3>
+          <p>No se encontraron técnicos registrados en el sistema.</p>
+          <button 
+            mat-raised-button 
+            color="primary" 
+            (click)="retry()"
+            class="refresh-button">
+            <mat-icon>refresh</mat-icon>
+            Actualizar
+          </button>
+        </div>
+      }
     </mat-card-content>
   </mat-card>
 </div>

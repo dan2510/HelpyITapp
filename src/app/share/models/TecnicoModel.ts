@@ -3,7 +3,7 @@ import { Disponibilidad } from './EnumsModel';
 import { Rol } from './RolModel';
 import { UsuarioEspecialidad } from './UsuarioEspecialidad';
 
-export interface Tecnico {
+export interface TecnicoModel {
   id: number;
   correo: string;
   nombrecompleto: string;
