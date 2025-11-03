@@ -4,10 +4,11 @@ import { TecnicoIndex } from './tecnico-index/tecnico-index';
 import { TecnicoDetail } from './tecnico-detail/tecnico-detail';
 
 const routes: Routes = [
-{ path: 'tecnicos',component: TecnicoIndex},
-
-{path:'tecnicos/:id',component:TecnicoDetail},
-
+  // Ruta vacía para mostrar el listado en /tecnicos
+  { path: '', component: TecnicoIndex },
+  
+  // Ruta para el detalle en /tecnicos/:id  
+  { path: ':id', component: TecnicoDetail },
 ];
 
 @NgModule({

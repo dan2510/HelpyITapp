@@ -20,7 +20,7 @@ apiURL:"http://localhost:3000",
   endPointCategoriaEtiqueta: 'categoria-etiqueta',
   endPointUsuarioEspecialidad: 'usuario-especialidad',
 
-  endPointTecnico: 'tecnico',
+  endPointTecnico: 'tecnicos',
   endPointCliente: 'cliente', 
   endPointAdmin: 'admin',
 
