@@ -34,10 +34,10 @@ export class TecnicoIndex implements OnInit {
     this.loading.set(true);
     this.error.set('');
 
-    // Usa el método get() heredado de tu BaseAPI
+    // Usa el método get() heredado de baseAPI)
     this.tecnicoService.get().subscribe({
       next: (response: any) => {
-        // Tu backend debería retornar { success: boolean, data: { tecnicos: [...] } }
+        // E backend debería retornar { success: boolean, data: { tecnicos: [...] } }
         if (response.success) {
           this.tecnicos.set(response.data.tecnicos);
           console.log('Técnicos cargados:', response.data.tecnicos);
