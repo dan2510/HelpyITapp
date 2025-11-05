@@ -1,20 +1,18 @@
+// src/app/share/services/api/categoria.service.ts
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BaseAPI } from './base-api';
-import { TecnicoModel  } from '../../models/TecnicoModel';
+import { CategoriaModel } from '../../models/CategoriaModel';
 import { environment } from '../../../../environments/environment.development';
 
 @Injectable({
   providedIn: 'root'
 })
-export class TecnicoService extends BaseAPI<TecnicoModel> {
+export class CategoriaService extends BaseAPI<CategoriaModel> {
 
     constructor(httpClient: HttpClient) { 
         super(
           httpClient,
-          environment.endPointTecnico);
+          environment.endPointCategoria); // ← CORREGIDO: era endPointTecnico
       }
-
-      
 }
-
