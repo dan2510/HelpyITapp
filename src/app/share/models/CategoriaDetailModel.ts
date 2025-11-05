@@ -4,7 +4,7 @@ export interface EtiquetaDetalle {
   descripcion: string;
 }
 
-// Modelo para especialidad en el detalle (REQUERIMIENTO: Lista de especialidades)
+// Modelo para especialidad en el detalle
 export interface EspecialidadDetalle {
   id: number;
   nombre: string;
@@ -12,15 +12,15 @@ export interface EspecialidadDetalle {
   activo: boolean;
 }
 
-// Modelo para SLA completo (REQUERIMIENTO ESPECÍFICO: SLA tiempo máximo respuesta y resolución)
+// Modelo para SLA 
 export interface SlaDetalle {
   id: number;
   nombre: string;
   descripcion: string;
-  maxminutosrespuesta: number;      // REQUERIMIENTO: tiempo máximo de respuesta
-  maxminutosresolucion: number;     // REQUERIMIENTO: tiempo máximo de resolución
-  tiempoRespuestaHoras: number;     // Calculado para mostrar en horas
-  tiempoResolucionHoras: number;    // Calculado para mostrar en horas
+  maxminutosrespuesta: number;      
+  maxminutosresolucion: number;    
+  tiempoRespuestaHoras: number;     
+  tiempoResolucionHoras: number;    
   activo: boolean;
   vigentedesde: Date;
   vigentehasta: Date;
@@ -39,18 +39,18 @@ export interface EstadisticasCategoria {
 export interface CategoriaDetalle {
   // Información básica de la categoría
   id: number;
-  nombre: string;                    // REQUERIMIENTO: Nombre de la categoría
+  nombre: string;                    
   descripcion: string;
   idsla: number;
   activo: boolean;
   
-  // REQUERIMIENTO ESPECÍFICO: SLA con tiempo máximo de respuesta y resolución
+  //SLA con tiempo máximo de respuesta y resolución
   sla: SlaDetalle;
   
-  // REQUERIMIENTO ESPECÍFICO: Lista de etiquetas
+  //  Lista de etiquetas
   etiquetas: EtiquetaDetalle[];
   
-  // REQUERIMIENTO ESPECÍFICO: Lista de especialidades  
+  //  Lista de especialidades  
   especialidades: EspecialidadDetalle[];
   
   // Estadísticas adicionales (valor agregado)

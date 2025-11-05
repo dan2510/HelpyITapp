@@ -6,10 +6,10 @@ export interface SlaBasico {
 
 // Modelo para elementos del listado 
 export interface CategoriaListItem {
-  id: number;                    // Campo 1: ID para navegación
-  nombre: string;               // Campo 2: Nombre de la categoría
-  activo: boolean;             // Campo 3: Estado activo/inactivo
-  politicaSla: SlaBasico;      // Información adicional del SLA (no cuenta como campo extra)
+  id: number;        
+  nombre: string;         
+  activo: boolean;             
+  politicaSla: SlaBasico;     
 }
 
 // Modelo para la respuesta del backend del listado
