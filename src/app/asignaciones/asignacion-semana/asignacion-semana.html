@@ -1,0 +1,154 @@
+<!-- Vista de Asignaciones por Semana -->
+<div class="asignaciones-container">
+  <mat-card class="main-card">
+    <!-- Header -->
+    <mat-card-header class="header-section">
+      <div mat-card-avatar class="header-icon">
+        <mat-icon>calendar_month</mat-icon>
+      </div>
+      <mat-card-title>Vista de Asignaciones - {{ tecnicoNombre() }}</mat-card-title>
+      <mat-card-subtitle>
+        @if (semanaActual()) {
+          Semana del {{ formatearFecha(semanaActual()!.inicio) }} al {{ formatearFecha(semanaActual()!.fin) }}
+        }
+      </mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <!-- Loading -->
+      @if (loading()) {
+        <div class="loading-container">
+          <mat-spinner diameter="60"></mat-spinner>
+          <p>Cargando asignaciones de la semana...</p>
+        </div>
+      }
+
+      <!-- Error -->
+      @if (error() && !loading()) {
+        <div class="error-container">
+          <mat-icon color="warn" class="error-icon">error_outline</mat-icon>
+          <h3>Error al cargar los datos</h3>
+          <p>{{ error() }}</p>
+          <button 
+            mat-raised-button 
+            color="primary" 
+            (click)="retry()"
+            class="retry-button">
+            <mat-icon>refresh</mat-icon>
+            Reintentar
+          </button>
+        </div>
+      }
+
+      <!-- Tablero Semanal -->
+      @if (!loading() && !error()) {
+        <div class="semana-tablero">
+          @for (dia of diasSemana(); track dia.fecha) {
+            <div class="dia-column">
+              <!-- Header del día -->
+              <div class="dia-header">
+                <h3 class="dia-nombre">{{ dia.diaNombre }}</h3>
+                <span class="dia-fecha">{{ formatearFecha(dia.fecha) }}</span>
+                <span class="tickets-count">{{ dia.tickets.length }} ticket(s)</span>
+              </div>
+
+              <!-- Tarjetas de tickets -->
+              <div class="tickets-list">
+                @if (dia.tickets.length > 0) {
+                  @for (ticket of dia.tickets; track ticket.id) {
+                    <mat-card 
+                      class="ticket-card"
+                      [class]="'priority-' + ticket.prioridad.toLowerCase()"
+                      (click)="verDetalle(ticket.id)"
+                      matRipple>
+                      
+                      <!-- Header de la tarjeta -->
+                      <div class="ticket-header">
+                        <span class="ticket-id">#{{ ticket.id }}</span>
+                        <mat-icon 
+                          [matTooltip]="ticket.categoria.nombre"
+                          class="categoria-icon">
+                          {{ getCategoriaIcon(ticket.categoria.nombre) }}
+                        </mat-icon>
+                      </div>
+
+                      <!-- Título -->
+                      <h4 class="ticket-titulo">{{ ticket.titulo }}</h4>
+
+                      <!-- Categoría -->
+                      <div class="ticket-info-row">
+                        <mat-icon class="info-icon-small">category</mat-icon>
+                        <span class="info-text">{{ ticket.categoria.nombre }}</span>
+                      </div>
+
+                      <!-- Estado -->
+                      <div class="ticket-info-row">
+                        <mat-chip 
+                          [color]="getEstadoColor(ticket.estado)"
+                          class="estado-chip">
+                          {{ ticket.estado }}
+                        </mat-chip>
+                      </div>
+
+                      <!-- SLA - Tiempo restante -->
+                      <div class="sla-section">
+                        <div class="sla-header">
+                          <mat-icon 
+                            [color]="getSLAColor(ticket.sla.estadoSLA)"
+                            class="sla-icon">
+                            {{ getSLAIcon(ticket.sla.estadoSLA) }}
+                          </mat-icon>
+                          <span class="sla-label">SLA:</span>
+                          <span 
+                            [class]="'sla-tiempo ' + ticket.sla.estadoSLA.toLowerCase()">
+                            {{ ticket.sla.horasRestantes }}h restantes
+                          </span>
+                        </div>
+                        
+                        <!-- Barra de progreso de urgencia -->
+                        <mat-progress-bar 
+                          mode="determinate"
+                          [value]="ticket.sla.porcentajeUrgencia"
+                          [color]="getSLAColor(ticket.sla.estadoSLA)"
+                          class="urgencia-bar">
+                        </mat-progress-bar>
+                      </div>
+
+                      <!-- Acciones rápidas -->
+                      <mat-card-actions class="ticket-actions">
+                        <button 
+                          mat-icon-button 
+                          (click)="verDetalle(ticket.id); $event.stopPropagation()"
+                          matTooltip="Ver Detalle"
+                          color="primary">
+                          <mat-icon>visibility</mat-icon>
+                        </button>
+                        <button 
+                          mat-icon-button 
+                          matTooltip="Cambiar Estado"
+                          disabled>
+                          <mat-icon>edit</mat-icon>
+                        </button>
+                        <button 
+                          mat-icon-button 
+                          matTooltip="Agregar Comentario"
+                          disabled>
+                          <mat-icon>comment</mat-icon>
+                        </button>
+                      </mat-card-actions>
+                    </mat-card>
+                  }
+                } @else {
+                  <div class="dia-vacio">
+                    <mat-icon>event_available</mat-icon>
+                    <span>Sin asignaciones</span>
+                  </div>
+                }
+              </div>
+            </div>
+          }
+        </div>
+      }
+    </mat-card-content>
+  </mat-card>
+</div>

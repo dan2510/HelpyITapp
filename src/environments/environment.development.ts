@@ -10,7 +10,7 @@ apiURL:"http://localhost:3000",
 
 
   //getion y seguimiento
-  endPointAsignacion: 'asignacion',
+  endPointAsignacion: 'asignaciones',
   endPointHistorial: 'historial',
   endPointImagen: 'imagen',
   endPointNotificacion: 'notificacion',

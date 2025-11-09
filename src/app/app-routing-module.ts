@@ -19,6 +19,11 @@ const routes: Routes = [
     path: 'tiquetes', 
     loadChildren: () => import('./tiquetes/tiquete-module').then(m => m.TiqueteModule) 
   },
+
+  { 
+    path: 'asignaciones', 
+    loadChildren: () => import('./asignaciones/asignaciones-module').then(m => m.AsignacionesModule) 
+  },
   
   { path: '**', component: PageNotFound }
 ];
