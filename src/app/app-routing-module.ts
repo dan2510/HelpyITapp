@@ -3,20 +3,26 @@ import { RouterModule, Routes } from '@angular/router';
 import { Inicio } from './home/inicio/inicio';
 import { PageNotFound } from './share/page-not-found/page-not-found';
 
-import { TecnicosModule } from './tecnicos/tecnicos-module';
-import { CategoriasModule } from './categorias/categorias-module';
-import { TiqueteModule } from './tiquetes/tiquete-module';
 const routes: Routes = [
   { path: '', redirectTo: '/inicio', pathMatch: 'full' },
   { path: 'inicio', component: Inicio },
   
-  // Sin lazy loading:
-  { path: 'tecnicos', loadChildren: () => TecnicosModule },
-  { path: 'categorias', loadChildren: () => CategoriasModule },
-  { path: 'tiquetes', loadChildren: () => TiqueteModule },
+  { 
+    path: 'tecnicos', 
+    loadChildren: () => import('./tecnicos/tecnicos-module').then(m => m.TecnicosModule) 
+  },
+  { 
+    path: 'categorias', 
+    loadChildren: () => import('./categorias/categorias-module').then(m => m.CategoriasModule) 
+  },
+  { 
+    path: 'tiquetes', 
+    loadChildren: () => import('./tiquetes/tiquete-module').then(m => m.TiqueteModule) 
+  },
   
   { path: '**', component: PageNotFound }
 ];
+
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule]
