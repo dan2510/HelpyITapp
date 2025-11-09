@@ -7,7 +7,7 @@ import { CoreModule } from './core/core-module';
 import { ShareModule } from './share/share-module';
 import { HomeModule } from './home/home-module';
 import { UsuariosModule } from './usuarios/usuarios-module';
-import { TiqueteModule } from './tiquete/tiquete-module';
+import { TiqueteModule } from './tiquetes/tiquete-module';
 import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { NgxSonnerToaster } from 'ngx-sonner'
 import { HttpErrorInterceptorService } from './share/interceptor/http-error-interceptor.service';

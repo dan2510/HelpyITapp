@@ -14,31 +14,31 @@
       <span>Inicio</span>
     </button>
 
-    <!-- Menú Tickets -->
-    <button mat-button [matMenuTriggerFor]="ticketsMenu" class="nav-item">
-      <mat-icon>confirmation_number</mat-icon>
-      <span>Tickets</span>
-      <mat-icon class="dropdown-icon">keyboard_arrow_down</mat-icon>
-    </button>
-    <mat-menu #ticketsMenu="matMenu" class="modern-menu">
-      <button mat-menu-item>
-        <mat-icon>add_circle_outline</mat-icon>
-        <span>Crear Ticket</span>
-      </button>
-      <button mat-menu-item>
-        <mat-icon>list</mat-icon>
-        <span>Mis Tickets</span>
-      </button>
-      <button mat-menu-item>
-        <mat-icon>assignment</mat-icon>
-        <span>Tickets Asignados</span>
-      </button>
-      <mat-divider></mat-divider>
-      <button mat-menu-item>
-        <mat-icon>search</mat-icon>
-        <span>Buscar Tickets</span>
-      </button>
-    </mat-menu>
+<!-- Menú Tickets -->
+<button mat-button [matMenuTriggerFor]="ticketsMenu" class="nav-item">
+  <mat-icon>confirmation_number</mat-icon>
+  <span>Tickets</span>
+  <mat-icon class="dropdown-icon">keyboard_arrow_down</mat-icon>
+</button>
+<mat-menu #ticketsMenu="matMenu" class="modern-menu">
+  <button mat-menu-item [routerLink]="['/tiquetes']" [routerLinkActive]="'active-link'">
+    <mat-icon>list</mat-icon>
+    <span>Lista de Tickets</span>
+  </button>
+  <button mat-menu-item>
+    <mat-icon>add_circle_outline</mat-icon>
+    <span>Crear Ticket</span>
+  </button>
+  <button mat-menu-item>
+    <mat-icon>assignment</mat-icon>
+    <span>Tickets Asignados</span>
+  </button>
+  <mat-divider></mat-divider>
+  <button mat-menu-item>
+    <mat-icon>search</mat-icon>
+    <span>Buscar Tickets</span>
+  </button>
+</mat-menu>
 
     <!-- Menú Técnicos -->
     <button mat-button [matMenuTriggerFor]="tecnicosMenu" class="nav-item">
@@ -60,7 +60,7 @@
         <span>Disponibilidad</span>
       </button>
     </mat-menu>
-    
+
     <!-- Menú Categorías -->
 <button mat-button [matMenuTriggerFor]="categoriasMenu" class="nav-item">
   <mat-icon>category</mat-icon>

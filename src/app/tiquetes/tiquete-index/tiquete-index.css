@@ -1,0 +1,386 @@
+/* Contenedor principal */
+.tiquetes-container {
+  padding: 24px;
+  max-width: 1400px;
+  margin: 0 auto;
+  background: var(--jira-bg-primary, #f4f5f7);
+  min-height: calc(100vh - 140px);
+}
+
+/* Tarjeta principal */
+.main-card {
+  border-radius: 12px !important;
+  box-shadow: var(--jira-shadow-medium, 0 4px 12px rgba(0, 0, 0, 0.15)) !important;
+  border: 1px solid var(--jira-border-light, #ebecf0) !important;
+  overflow: hidden;
+}
+
+/* Header de la tarjeta */
+.header-section {
+  background: linear-gradient(90deg, var(--jira-primary, #0052cc) 0%, var(--jira-primary-light, #0065ff) 100%);
+  color: white;
+  padding: 24px;
+}
+
+.header-icon {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.header-icon mat-icon {
+  color: white;
+  font-size: 24px;
+}
+
+.header-section .mat-mdc-card-title {
+  color: white !important;
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.header-section .mat-mdc-card-subtitle {
+  color: rgba(255, 255, 255, 0.9) !important;
+  font-size: 0.95rem;
+  margin-top: 4px;
+}
+
+/* Selector de usuario para debug */
+.user-selector-debug {
+  padding: 20px;
+  background: #fff3cd;
+  border: 2px dashed #ffc107;
+  border-radius: 8px;
+  margin: 20px 20px 0;
+}
+
+.debug-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  color: #856404;
+  margin: 0 0 12px 0;
+  font-size: 0.95rem;
+}
+
+.debug-label mat-icon {
+  color: #ffc107;
+}
+
+.user-buttons {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+
+.user-btn {
+  border-radius: 6px !important;
+  font-weight: 500 !important;
+  text-transform: none !important;
+  gap: 8px;
+}
+
+.current-user {
+  margin: 0;
+  padding: 8px 12px;
+  background: white;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  color: #495057;
+  border: 1px solid #dee2e6;
+}
+
+/* Grid de tiquetes */
+.tiquetes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+  gap: 24px;
+  margin-top: 24px;
+  padding: 0 24px 24px;
+}
+
+/* Tarjetas individuales de tiquetes */
+.tiquete-card {
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  border-radius: 8px !important;
+  border: 2px solid transparent !important;
+  background: white;
+  position: relative;
+  overflow: hidden;
+}
+
+.tiquete-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--jira-primary, #0052cc), var(--jira-success, #36b37e));
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.tiquete-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
+  border-color: var(--jira-primary, #0052cc) !important;
+}
+
+.tiquete-card:hover::before {
+  opacity: 1;
+}
+
+/* Avatar del tiquete */
+.avatar-container {
+  background: linear-gradient(135deg, var(--jira-primary, #0052cc), var(--jira-primary-light, #0065ff));
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.ticket-icon {
+  color: white;
+  font-size: 24px;
+}
+
+/* Título del tiquete */
+.tiquete-title {
+  color: var(--jira-text-primary, #172b4d) !important;
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0;
+  line-height: 1.3;
+}
+
+.tiquete-subtitle {
+  color: var(--jira-text-secondary, #5e6c84) !important;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+/* Filas de información */
+.info-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+  padding: 8px 0;
+}
+
+.info-row:last-child {
+  margin-bottom: 0;
+}
+
+/* Sección de prioridad */
+.priority-section {
+  align-items: center;
+}
+
+.priority-icon {
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+}
+
+.priority-chip {
+  font-size: 0.75rem !important;
+  height: 24px !important;
+  border-radius: 12px !important;
+  font-weight: 600 !important;
+}
+
+/* Sección de estado */
+.status-section {
+  align-items: center;
+}
+
+.status-icon {
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+}
+
+.status-chip {
+  font-size: 0.75rem !important;
+  height: 24px !important;
+  border-radius: 12px !important;
+  font-weight: 600 !important;
+}
+
+/* Sección de fecha */
+.date-section .date-icon {
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+  color: var(--jira-text-secondary, #5e6c84);
+}
+
+.date-text {
+  font-size: 0.9rem;
+  color: var(--jira-text-secondary, #5e6c84);
+}
+
+/* Sección de usuario */
+.user-section .user-icon {
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+  color: var(--jira-primary, #0052cc);
+}
+
+.user-text {
+  font-size: 0.9rem;
+  color: var(--jira-text-secondary, #5e6c84);
+}
+
+/* Botón de detalle */
+.detail-button {
+  border-radius: 6px !important;
+  font-weight: 500 !important;
+  text-transform: none !important;
+  gap: 8px;
+  transition: all 0.2s ease;
+}
+
+.detail-button:hover {
+  background-color: rgba(0, 82, 204, 0.1) !important;
+}
+
+/* Estados de carga y error */
+.loading-container, 
+.error-container, 
+.empty-state {
+  text-align: center;
+  padding: 60px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.loading-container p,
+.error-container p,
+.empty-state p {
+  color: var(--jira-text-secondary, #5e6c84);
+  font-size: 1rem;
+  margin: 0;
+}
+
+/* Error */
+.error-container {
+  color: var(--jira-error, #de350b);
+}
+
+.error-icon {
+  font-size: 48px !important;
+  width: 48px !important;
+  height: 48px !important;
+}
+
+.error-container h3 {
+  color: var(--jira-text-primary, #172b4d);
+  margin: 0;
+  font-size: 1.3rem;
+}
+
+.retry-button {
+  margin-top: 8px;
+  border-radius: 6px !important;
+  font-weight: 500 !important;
+  text-transform: none !important;
+}
+
+/* Estado vacío */
+.empty-icon {
+  font-size: 64px !important;
+  width: 64px !important;
+  height: 64px !important;
+  color: var(--jira-text-tertiary, #8993a4);
+  margin-bottom: 8px;
+}
+
+.empty-state h3 {
+  color: var(--jira-text-primary, #172b4d);
+  margin: 0;
+  font-size: 1.3rem;
+}
+
+.refresh-button {
+  border-radius: 6px !important;
+  font-weight: 500 !important;
+  text-transform: none !important;
+  margin-top: 8px;
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
+  .tiquetes-container {
+    padding: 16px;
+  }
+  
+  .header-section {
+    padding: 16px;
+  }
+  
+  .tiquetes-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    padding: 0 16px 16px;
+  }
+  
+  .tiquete-title {
+    font-size: 1rem;
+  }
+
+  .user-buttons {
+    flex-direction: column;
+  }
+
+  .user-btn {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .tiquetes-container {
+    padding: 12px;
+  }
+  
+  .info-row {
+    gap: 8px;
+  }
+}
+
+/* Animaciones */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.tiquete-card {
+  animation: fadeInUp 0.4s ease-out;
+}
+
+.tiquete-card:nth-child(2) { animation-delay: 0.1s; }
+.tiquete-card:nth-child(3) { animation-delay: 0.2s; }
+.tiquete-card:nth-child(4) { animation-delay: 0.3s; }
+.tiquete-card:nth-child(5) { animation-delay: 0.4s; }

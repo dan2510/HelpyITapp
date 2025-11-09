@@ -1,12 +1,12 @@
 export const environment = {
 apiURL:"http://localhost:3000",
   endPointUsuario: 'usuario',
-  endPointCategoria: 'categoria',
+  endPointCategoria: 'categorias',
   endPointEspecialidad: 'especialidad',
   endPointEtiqueta: 'etiqueta',
   endPointPoliticaSla: 'politica-sla',
   endPointReglaAsignacion: 'regla-asignacion',
-  endPointTiquete: 'tiquete',
+  endPointTiquete: 'tiquetes',
   endPointTicket: 'ticket',
 
   //getion y seguimiento

@@ -15,6 +15,10 @@ const routes: Routes = [
     path: 'categorias', 
     loadChildren: () => import('./categorias/categorias-module').then(m => m.CategoriasModule) 
   },
+  { 
+    path: 'tiquetes', 
+    loadChildren: () => import('./tiquetes/tiquete-module').then(m => m.TiqueteModule) 
+  },
   { path: '**', component: PageNotFound }
 ];
 

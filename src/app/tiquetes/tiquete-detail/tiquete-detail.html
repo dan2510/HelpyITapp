@@ -1,0 +1,467 @@
+<!-- Detalle de Tiquete -->
+<div class="tiquete-detail-container">
+  <!-- Header con navegación -->
+  <div class="header-navigation">
+    <button 
+      mat-button 
+      color="primary" 
+      (click)="regresarAlListado()"
+      class="back-button">
+      <mat-icon>arrow_back</mat-icon>
+      Volver al listado
+    </button>
+  </div>
+
+  <!-- Loading -->
+  @if (loading()) {
+    <div class="loading-container">
+      <mat-spinner diameter="60"></mat-spinner>
+      <p>Cargando información del tiquete...</p>
+    </div>
+  }
+
+  <!-- Error -->
+  @if (error() && !loading()) {
+    <div class="error-container">
+      <mat-icon color="warn" class="error-icon">error_outline</mat-icon>
+      <h3>Error al cargar los datos</h3>
+      <p>{{ error() }}</p>
+      <div class="error-actions">
+        <button 
+          mat-raised-button 
+          color="primary" 
+          (click)="retry()"
+          class="retry-button">
+          <mat-icon>refresh</mat-icon>
+          Reintentar
+        </button>
+        <button 
+          mat-button 
+          (click)="regresarAlListado()"
+          class="back-button-error">
+          <mat-icon>arrow_back</mat-icon>
+          Volver
+        </button>
+      </div>
+    </div>
+  }
+
+  <!-- Contenido del detalle -->
+  @if (!loading() && !error() && tiquete()) {
+    <div class="detail-content">
+      
+      <!-- SECCIÓN 1: Información Básica del Ticket -->
+      <mat-card class="info-card basic-info">
+        <mat-card-header class="card-header">
+          <div mat-card-avatar class="avatar-large">
+            <mat-icon class="avatar-icon">confirmation_number</mat-icon>
+          </div>
+          <mat-card-title>Ticket #{{ tiquete()!.id }}</mat-card-title>
+          <mat-card-subtitle>{{ tiquete()!.titulo }}</mat-card-subtitle>
+        </mat-card-header>
+
+        <mat-card-content>
+          <div class="info-grid">
+            <!-- Descripción -->
+            <div class="info-item description-item">
+              <mat-icon class="info-icon">description</mat-icon>
+              <div class="info-content">
+                <span class="info-label">Descripción</span>
+                <p class="info-value description-text">{{ tiquete()!.descripcion }}</p>
+              </div>
+            </div>
+
+            <!-- Estado y Prioridad -->
+            <div class="info-item badges-item">
+              <mat-icon class="info-icon">local_offer</mat-icon>
+              <div class="info-content">
+                <span class="info-label">Estado y Prioridad</span>
+                <div class="badges-container">
+                  <mat-chip 
+                    [color]="getEstadoColor(tiquete()!.estado)"
+                    class="status-chip-large">
+                    <mat-icon>{{ getEstadoIcon(tiquete()!.estado) }}</mat-icon>
+                    {{ tiquete()!.estado }}
+                  </mat-chip>
+                  <mat-chip 
+                    [color]="getPrioridadColor(tiquete()!.prioridad)"
+                    class="priority-chip-large">
+                    <mat-icon>{{ getPrioridadIcon(tiquete()!.prioridad) }}</mat-icon>
+                    {{ tiquete()!.prioridad }}
+                  </mat-chip>
+                </div>
+              </div>
+            </div>
+
+            <!-- Categoría -->
+            <div class="info-item">
+              <mat-icon class="info-icon">category</mat-icon>
+              <div class="info-content">
+                <span class="info-label">Categoría</span>
+                <span class="info-value">{{ tiquete()!.categoria.nombre }}</span>
+                <span class="info-description">{{ tiquete()!.categoria.descripcion }}</span>
+              </div>
+            </div>
+
+            <!-- Usuario Solicitante -->
+            <div class="info-item">
+              <mat-icon class="info-icon">person</mat-icon>
+              <div class="info-content">
+                <span class="info-label">Usuario Solicitante</span>
+                <span class="info-value">{{ tiquete()!.cliente.nombrecompleto }}</span>
+                <span class="info-description">{{ tiquete()!.cliente.correo }}</span>
+              </div>
+            </div>
+
+            <!-- Técnico Asignado -->
+            <div class="info-item">
+              <mat-icon class="info-icon">engineering</mat-icon>
+              <div class="info-content">
+                <span class="info-label">Técnico Asignado</span>
+                @if (tiquete()!.tecnicoActual) {
+                  <span class="info-value">{{ tiquete()!.tecnicoActual?.nombrecompleto }}</span>
+                  <span class="info-description">{{ tiquete()!.tecnicoActual?.correo }}</span>
+                } @else {
+                  <span class="info-value no-asignado">Sin asignar</span>
+                }
+              </div>
+            </div>
+
+            <!-- Fecha de Creación -->
+            <div class="info-item">
+              <mat-icon class="info-icon">event</mat-icon>
+              <div class="info-content">
+                <span class="info-label">Fecha de Creación</span>
+                <span class="info-value">{{ formatearFecha(tiquete()!.creadoen) }}</span>
+              </div>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- SECCIÓN 2: SLA y Cumplimiento -->
+      <mat-card class="info-card sla-info">
+        <mat-card-header class="card-header">
+          <div mat-card-avatar class="avatar-sla">
+            <mat-icon class="avatar-icon">schedule</mat-icon>
+          </div>
+          <mat-card-title>SLA y Cumplimiento</mat-card-title>
+          <mat-card-subtitle>{{ tiquete()!.sla.nombre }}</mat-card-subtitle>
+        </mat-card-header>
+
+        <mat-card-content>
+          <div class="sla-section">
+            <p class="sla-description">{{ tiquete()!.sla.descripcion }}</p>
+
+            <!-- Métricas de SLA -->
+            <div class="sla-metrics">
+              <!-- SLA de Respuesta -->
+              <div class="metric-card">
+                <div class="metric-header">
+                  <mat-icon class="metric-icon response">speed</mat-icon>
+                  <h4>SLA de Respuesta</h4>
+                </div>
+                <div class="metric-content">
+                  <div class="metric-values">
+                    <div class="metric-value-primary">
+                      {{ tiquete()!.sla.tiempoRespuestaHoras }}h
+                    </div>
+                    <div class="metric-value-secondary">
+                      Tiempo máximo: {{ tiquete()!.sla.maxminutosrespuesta }} min
+                    </div>
+                  </div>
+                  
+                  <!-- Cumplimiento de Respuesta -->
+                  <div class="cumplimiento-badge">
+                    <mat-icon [class]="'cumplimiento-icon ' + getCumplimientoColor(tiquete()!.cumplimiento.cumplioslarespuesta)">
+                      {{ getCumplimientoIcon(tiquete()!.cumplimiento.cumplioslarespuesta) }}
+                    </mat-icon>
+                    <span [class]="'cumplimiento-text ' + getCumplimientoColor(tiquete()!.cumplimiento.cumplioslarespuesta)">
+                      {{ getCumplimientoTexto(tiquete()!.cumplimiento.cumplioslarespuesta) }}
+                    </span>
+                  </div>
+
+                  @if (tiquete()!.cumplimiento.horasRespuesta) {
+                    <p class="tiempo-real">
+                      Tiempo real: <strong>{{ tiquete()!.cumplimiento.horasRespuesta }}h</strong>
+                    </p>
+                  }
+
+                  <div class="fecha-info">
+                    <small>Vence: {{ formatearFechaCorta(tiquete()!.vencerespuesta) }}</small>
+                  </div>
+                </div>
+              </div>
+
+              <!-- SLA de Resolución -->
+              <div class="metric-card">
+                <div class="metric-header">
+                  <mat-icon class="metric-icon resolution">check_circle</mat-icon>
+                  <h4>SLA de Resolución</h4>
+                </div>
+                <div class="metric-content">
+                  <div class="metric-values">
+                    <div class="metric-value-primary">
+                      {{ tiquete()!.sla.tiempoResolucionHoras }}h
+                    </div>
+                    <div class="metric-value-secondary">
+                      Tiempo máximo: {{ tiquete()!.sla.maxminutosresolucion }} min
+                    </div>
+                  </div>
+                  
+                  <!-- Cumplimiento de Resolución -->
+                  <div class="cumplimiento-badge">
+                    <mat-icon [class]="'cumplimiento-icon ' + getCumplimientoColor(tiquete()!.cumplimiento.cumplioslaresolucion)">
+                      {{ getCumplimientoIcon(tiquete()!.cumplimiento.cumplioslaresolucion) }}
+                    </mat-icon>
+                    <span [class]="'cumplimiento-text ' + getCumplimientoColor(tiquete()!.cumplimiento.cumplioslaresolucion)">
+                      {{ getCumplimientoTexto(tiquete()!.cumplimiento.cumplioslaresolucion) }}
+                    </span>
+                  </div>
+
+                  @if (tiquete()!.cumplimiento.diasResolucion) {
+                    <p class="tiempo-real">
+                      Días de resolución: <strong>{{ tiquete()!.cumplimiento.diasResolucion }} días</strong>
+                    </p>
+                  }
+
+                  @if (tiquete()!.cumplimiento.horasResolucion) {
+                    <p class="tiempo-real">
+                      Horas totales: <strong>{{ tiquete()!.cumplimiento.horasResolucion }}h</strong>
+                    </p>
+                  }
+
+                  <div class="fecha-info">
+                    <small>Vence: {{ formatearFechaCorta(tiquete()!.venceresolucion) }}</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- SECCIÓN 3: Historial de Estados -->
+      <mat-card class="info-card history-info">
+        <mat-card-header class="card-header">
+          <div mat-card-avatar class="avatar-history">
+            <mat-icon class="avatar-icon">history</mat-icon>
+          </div>
+          <mat-card-title>Historial de Estados</mat-card-title>
+          <mat-card-subtitle>{{ tiquete()!.historiales.length }} cambios registrados</mat-card-subtitle>
+        </mat-card-header>
+
+        <mat-card-content>
+          @if (tiquete()!.historiales && tiquete()!.historiales.length > 0) {
+            <mat-accordion class="history-accordion">
+              @for (historial of tiquete()!.historiales; track historial.id) {
+                <mat-expansion-panel class="history-panel">
+                  <mat-expansion-panel-header>
+                    <mat-panel-title>
+                      <div class="history-title">
+                        <mat-chip 
+                          [color]="getEstadoColor(historial.estadoanterior)"
+                          class="estado-chip-small">
+                          {{ historial.estadoanterior }}
+                        </mat-chip>
+                        <mat-icon class="arrow-icon">arrow_forward</mat-icon>
+                        <mat-chip 
+                          [color]="getEstadoColor(historial.estadonuevo)"
+                          class="estado-chip-small">
+                          {{ historial.estadonuevo }}
+                        </mat-chip>
+                      </div>
+                    </mat-panel-title>
+                    <mat-panel-description>
+                      <span class="history-date">
+                        <mat-icon class="date-icon-small">schedule</mat-icon>
+                        {{ formatearFecha(historial.cambiadoen) }}
+                      </span>
+                    </mat-panel-description>
+                  </mat-expansion-panel-header>
+
+                  <div class="history-details">
+                    <!-- Información del cambio -->
+                    <div class="change-info">
+                      <div class="change-item">
+                        <mat-icon class="change-icon">person</mat-icon>
+                        <div class="change-content">
+                          <span class="change-label">Modificado por</span>
+                          <span class="change-value">{{ historial.cambiadopor.nombrecompleto }}</span>
+                          <span class="change-email">{{ historial.cambiadopor.correo }}</span>
+                        </div>
+                      </div>
+
+                      @if (historial.observacion) {
+                        <div class="change-item">
+                          <mat-icon class="change-icon">note</mat-icon>
+                          <div class="change-content">
+                            <span class="change-label">Observación</span>
+                            <p class="observacion-text">{{ historial.observacion }}</p>
+                          </div>
+                        </div>
+                      }
+                    </div>
+
+                    <!-- Evidencias (Imágenes) -->
+                    @if (historial.imagenes && historial.imagenes.length > 0) {
+                      <div class="evidencias-section">
+                        <h5 class="evidencias-title">
+                          <mat-icon>image</mat-icon>
+                          Evidencias ({{ historial.imagenes.length }})
+                        </h5>
+                        <div class="evidencias-grid">
+                          @for (imagen of historial.imagenes; track imagen.id) {
+                            <div class="evidencia-card">
+                              <div class="evidencia-header">
+                                <mat-icon class="file-icon">insert_drive_file</mat-icon>
+                                <span class="file-name">{{ imagen.rutaarchivo.split('/').pop() }}</span>
+                              </div>
+                              <div class="evidencia-meta">
+                                <span class="meta-item">
+                                  <mat-icon class="meta-icon">person</mat-icon>
+                                  {{ imagen.subidopor.nombrecompleto }}
+                                </span>
+                                <span class="meta-item">
+                                  <mat-icon class="meta-icon">schedule</mat-icon>
+                                  {{ formatearFechaCorta(imagen.subidoen) }}
+                                </span>
+                              </div>
+                              <div class="evidencia-path">
+                                <code>{{ imagen.rutaarchivo }}</code>
+                              </div>
+                            </div>
+                          }
+                        </div>
+                      </div>
+                    }
+                  </div>
+                </mat-expansion-panel>
+              }
+            </mat-accordion>
+          } @else {
+            <div class="no-items">
+              <mat-icon>info</mat-icon>
+              <span>No hay historial de cambios registrado</span>
+            </div>
+          }
+        </mat-card-content>
+      </mat-card>
+
+      <!-- SECCIÓN 4: Fechas Importantes -->
+      <mat-card class="info-card dates-info">
+        <mat-card-header class="card-header">
+          <div mat-card-avatar class="avatar-dates">
+            <mat-icon class="avatar-icon">event</mat-icon>
+          </div>
+          <mat-card-title>Fechas Importantes</mat-card-title>
+        </mat-card-header>
+
+        <mat-card-content>
+          <div class="dates-grid">
+            <div class="date-item">
+              <mat-icon class="date-icon">add_circle</mat-icon>
+              <div class="date-content">
+                <span class="date-label">Creado</span>
+                <span class="date-value">{{ formatearFecha(tiquete()!.creadoen) }}</span>
+              </div>
+            </div>
+
+            @if (tiquete()!.primerarespuestaen) {
+              <div class="date-item">
+                <mat-icon class="date-icon">reply</mat-icon>
+                <div class="date-content">
+                  <span class="date-label">Primera Respuesta</span>
+                  <span class="date-value">{{ formatearFecha(tiquete()!.primerarespuestaen) }}</span>
+                </div>
+              </div>
+            }
+
+            @if (tiquete()!.resueltoen) {
+              <div class="date-item">
+                <mat-icon class="date-icon">check_circle</mat-icon>
+                <div class="date-content">
+                  <span class="date-label">Resuelto</span>
+                  <span class="date-value">{{ formatearFecha(tiquete()!.resueltoen) }}</span>
+                </div>
+              </div>
+            }
+
+            @if (tiquete()!.cerradoen) {
+              <div class="date-item">
+                <mat-icon class="date-icon">done_all</mat-icon>
+                <div class="date-content">
+                  <span class="date-label">Cerrado</span>
+                  <span class="date-value">{{ formatearFecha(tiquete()!.cerradoen) }}</span>
+                </div>
+              </div>
+            }
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- SECCIÓN 5: Valoraciones -->
+      <mat-card class="info-card ratings-info">
+        <mat-card-header class="card-header">
+          <div mat-card-avatar class="avatar-ratings">
+            <mat-icon class="avatar-icon">star</mat-icon>
+          </div>
+          <mat-card-title>Valoraciones del Servicio</mat-card-title>
+          <mat-card-subtitle>
+            @if (tiquete()!.valoraciones && tiquete()!.valoraciones.length > 0) {
+              {{ tiquete()!.valoraciones.length }} valoración(es)
+            } @else {
+              Sin valoraciones
+            }
+          </mat-card-subtitle>
+        </mat-card-header>
+
+        <mat-card-content>
+          @if (tiquete()!.valoraciones && tiquete()!.valoraciones.length > 0) {
+            <div class="ratings-list">
+              @for (valoracion of tiquete()!.valoraciones; track valoracion.id) {
+                <div class="rating-card">
+                  <!-- Calificación con estrellas -->
+                  <div class="rating-header">
+                    <div class="stars-container">
+                      @for (estrella of getEstrellas(valoracion.calificacion); track $index) {
+                        <mat-icon 
+                          [class]="'star-icon ' + getColorCalificacion(valoracion.calificacion)">
+                          {{ estrella }}
+                        </mat-icon>
+                      }
+                    </div>
+                    <span class="rating-score">{{ valoracion.calificacion }}/5</span>
+                  </div>
+
+                  <!-- Comentario -->
+                  @if (valoracion.comentario) {
+                    <p class="rating-comment">{{ valoracion.comentario }}</p>
+                  }
+
+                  <!-- Info del cliente -->
+                  <div class="rating-footer">
+                    <div class="rating-client">
+                      <mat-icon class="client-icon">person</mat-icon>
+                      <span>{{ valoracion.cliente.nombrecompleto }}</span>
+                    </div>
+                    <div class="rating-date">
+                      <mat-icon class="date-icon-small">schedule</mat-icon>
+                      <span>{{ formatearFechaCorta(valoracion.creadaen) }}</span>
+                    </div>
+                  </div>
+                </div>
+              }
+            </div>
+          } @else {
+            <div class="no-items">
+              <mat-icon>star_border</mat-icon>
+              <span>Este ticket aún no ha sido valorado</span>
+            </div>
+          }
+        </mat-card-content>
+      </mat-card>
+
+    </div>
+  }
+</div>

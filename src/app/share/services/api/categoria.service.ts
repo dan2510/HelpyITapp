@@ -1,4 +1,4 @@
-// src/app/share/services/api/categoria.service.ts
+
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BaseAPI } from './base-api';
@@ -13,6 +13,6 @@ export class CategoriaService extends BaseAPI<CategoriaModel> {
     constructor(httpClient: HttpClient) { 
         super(
           httpClient,
-          environment.endPointCategoria); // ← CORREGIDO: era endPointTecnico
+          environment.endPointCategoria); 
       }
 }

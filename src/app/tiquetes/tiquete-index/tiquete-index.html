@@ -1,0 +1,198 @@
+<!-- Listado de Tiquetes filtrado por Rol -->
+<div class="tiquetes-container">
+  <mat-card class="main-card">
+    <mat-card-header class="header-section">
+      <div mat-card-avatar class="header-icon">
+        <mat-icon>confirmation_number</mat-icon>
+      </div>
+      <mat-card-title>{{ getTituloSegunRol() }}</mat-card-title>
+      <mat-card-subtitle>{{ getSubtituloSegunRol() }}</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <!-- Selector de Usuario para Pruebas (NO EDITABLE EN PRODUCCIÓN) -->
+      <div class="user-selector-debug">
+        <p class="debug-label">
+          <mat-icon>bug_report</mat-icon>
+          Modo Debug - Cambiar Usuario Activo:
+        </p>
+        <div class="user-buttons">
+          <button 
+            mat-raised-button 
+            [color]="idUsuarioActivo() === 1 ? 'primary' : 'basic'"
+            (click)="cambiarUsuario(1)"
+            class="user-btn">
+            <mat-icon>admin_panel_settings</mat-icon>
+            Admin (ID: 1)
+          </button>
+          <button 
+            mat-raised-button 
+            [color]="idUsuarioActivo() === 5 ? 'primary' : 'basic'"
+            (click)="cambiarUsuario(5)"
+            class="user-btn">
+            <mat-icon>person</mat-icon>
+            Cliente (ID: 5)
+          </button>
+          <button 
+            mat-raised-button 
+            [color]="idUsuarioActivo() === 3 ? 'primary' : 'basic'"
+            (click)="cambiarUsuario(3)"
+            class="user-btn">
+            <mat-icon>engineering</mat-icon>
+            Técnico (ID: 3)
+          </button>
+        </div>
+        <p class="current-user">Usuario Activo: <strong>ID {{ idUsuarioActivo() }}</strong> | Rol: <strong>{{ rolActual() }}</strong></p>
+      </div>
+
+      <mat-divider></mat-divider>
+
+      <!-- Estado de carga -->
+      @if (loading()) {
+        <div class="loading-container">
+          <mat-spinner diameter="50"></mat-spinner>
+          <p>Cargando tiquetes...</p>
+        </div>
+      }
+
+      <!-- Estado de error -->
+      @if (error() && !loading()) {
+        <div class="error-container">
+          <mat-icon color="warn" class="error-icon">error_outline</mat-icon>
+          <h3>Error al cargar los datos</h3>
+          <p>{{ error() }}</p>
+          <button 
+            mat-raised-button 
+            color="primary" 
+            (click)="retry()"
+            class="retry-button">
+            <mat-icon>refresh</mat-icon>
+            Reintentar
+          </button>
+        </div>
+      }
+
+      <!-- Lista de tiquetes -->
+      @if (!loading() && !error() && tiquetes().length > 0) {
+        <div class="tiquetes-grid">
+          @for (tiquete of tiquetes(); track tiquete.id) {
+            <mat-card 
+              class="tiquete-card"
+              (click)="verDetalle(tiquete.id)"
+              matRipple
+              [matRippleColor]="'rgba(0, 82, 204, 0.1)'">
+              
+              <!-- Header con badges de prioridad y estado -->
+              <mat-card-header>
+                <div mat-card-avatar class="avatar-container">
+                  <mat-icon class="ticket-icon">confirmation_number</mat-icon>
+                </div>
+                <mat-card-title class="tiquete-title">
+                  #{{ tiquete.id }} - {{ tiquete.titulo }}
+                </mat-card-title>
+                <mat-card-subtitle class="tiquete-subtitle">
+                  {{ tiquete.categoria.nombre }}
+                </mat-card-subtitle>
+              </mat-card-header>
+
+              <mat-card-content>
+                <!-- Campo 1: Prioridad -->
+                <div class="info-row priority-section">
+                  <mat-icon 
+                    [color]="getPrioridadColor(tiquete.prioridad)"
+                    class="priority-icon">
+                    {{ getPrioridadIcon(tiquete.prioridad) }}
+                  </mat-icon>
+                  <mat-chip 
+                    [color]="getPrioridadColor(tiquete.prioridad)"
+                    class="priority-chip">
+                    {{ tiquete.prioridad }}
+                  </mat-chip>
+                </div>
+
+                <!-- Campo 2: Estado -->
+                <div class="info-row status-section">
+                  <mat-icon 
+                    [color]="getEstadoColor(tiquete.estado)"
+                    class="status-icon">
+                    {{ getEstadoIcon(tiquete.estado) }}
+                  </mat-icon>
+                  <mat-chip 
+                    [color]="getEstadoColor(tiquete.estado)"
+                    class="status-chip">
+                    {{ tiquete.estado }}
+                  </mat-chip>
+                </div>
+
+                <!-- Campo 3: Fecha de creación -->
+                <div class="info-row date-section">
+                  <mat-icon class="date-icon">event</mat-icon>
+                  <span class="date-text">
+                    Creado: <strong>{{ formatearFecha(tiquete.creadoen) }}</strong>
+                  </span>
+                </div>
+
+                <!-- Campo 4 (condicional): Cliente o Técnico según rol -->
+                @if (rolActual() === 'ADMIN' && tiquete.cliente) {
+                  <div class="info-row user-section">
+                    <mat-icon class="user-icon">person</mat-icon>
+                    <span class="user-text">
+                      Cliente: <strong>{{ tiquete.cliente.nombrecompleto }}</strong>
+                    </span>
+                  </div>
+                }
+                
+                @if ((rolActual() === 'CLIENTE' || rolActual() === 'ADMIN') && tiquete.tecnicoActual) {
+                  <div class="info-row user-section">
+                    <mat-icon class="user-icon">engineering</mat-icon>
+                    <span class="user-text">
+                      Técnico: <strong>{{ tiquete.tecnicoActual.nombrecompleto }}</strong>
+                    </span>
+                  </div>
+                }
+
+                @if (rolActual() === 'TECNICO' && tiquete.cliente) {
+                  <div class="info-row user-section">
+                    <mat-icon class="user-icon">person</mat-icon>
+                    <span class="user-text">
+                      Solicitante: <strong>{{ tiquete.cliente.nombrecompleto }}</strong>
+                    </span>
+                  </div>
+                }
+              </mat-card-content>
+
+              <!-- Acciones -->
+              <mat-card-actions align="end">
+                <button 
+                  mat-button 
+                  color="primary"
+                  (click)="verDetalle(tiquete.id); $event.stopPropagation()"
+                  class="detail-button">
+                  <mat-icon>visibility</mat-icon>
+                  Ver Detalle
+                </button>
+              </mat-card-actions>
+            </mat-card>
+          }
+        </div>
+      }
+
+      <!-- Estado vacío -->
+      @if (!loading() && !error() && tiquetes().length === 0) {
+        <div class="empty-state">
+          <mat-icon class="empty-icon">inbox</mat-icon>
+          <h3>No hay tickets disponibles</h3>
+          <p>No se encontraron tickets para el usuario actual.</p>
+          <button 
+            mat-raised-button 
+            color="primary" 
+            (click)="retry()"
+            class="refresh-button">
+            <mat-icon>refresh</mat-icon>
+            Actualizar
+          </button>
+        </div>
+      }
+    </mat-card-content>
+  </mat-card>
+</div>
