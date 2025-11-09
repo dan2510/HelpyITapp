@@ -33,7 +33,7 @@
 }
 
 .logo-image {
-  background-image: url("/images/gamepad.png");
+  /* background-image: url("/images/gamepad.png"); */
   background-size: cover;
   background-position: center;
   height: 40px;

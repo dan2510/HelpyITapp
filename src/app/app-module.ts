@@ -1,6 +1,5 @@
 import { NgModule, provideBrowserGlobalErrorListeners } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-
 import { AppRoutingModule } from './app-routing-module';
 import { App } from './app';
 import { CoreModule } from './core/core-module';
@@ -8,6 +7,8 @@ import { ShareModule } from './share/share-module';
 import { HomeModule } from './home/home-module';
 import { UsuariosModule } from './usuarios/usuarios-module';
 import { TiqueteModule } from './tiquetes/tiquete-module';
+import { TecnicosModule } from './tecnicos/tecnicos-module';
+import { CategoriasModule } from './categorias/categorias-module';
 import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { NgxSonnerToaster } from 'ngx-sonner'
 import { HttpErrorInterceptorService } from './share/interceptor/http-error-interceptor.service';
@@ -24,6 +25,8 @@ import { HttpErrorInterceptorService } from './share/interceptor/http-error-inte
     HomeModule,
     UsuariosModule,
     TiqueteModule,
+    TecnicosModule,
+    CategoriasModule,
     NgxSonnerToaster,
     AppRoutingModule,
 

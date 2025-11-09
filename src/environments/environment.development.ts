@@ -7,7 +7,7 @@ apiURL:"http://localhost:3000",
   endPointPoliticaSla: 'politica-sla',
   endPointReglaAsignacion: 'regla-asignacion',
   endPointTiquete: 'tiquetes',
-  endPointTicket: 'ticket',
+
 
   //getion y seguimiento
   endPointAsignacion: 'asignacion',
