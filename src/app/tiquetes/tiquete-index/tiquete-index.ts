@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { TiqueteService } from '../../share/services/api/tiquete.service';
 import { TiqueteListItem } from '../../share/models/TiqueteListModel';
 import { NotificationService } from '../../share/services/app/notification.service';
-import { Prioridad, EstadoTiquete } from '../../share/models/EnumsModel';
+import { Prioridad, EstadoTiquete, RoleNombre } from '../../share/models/EnumsModel';
 
 @Component({
   selector: 'app-tiquete-index',
@@ -12,12 +12,12 @@ import { Prioridad, EstadoTiquete } from '../../share/models/EnumsModel';
   styleUrl: './tiquete-index.css',
 })
 export class TiqueteIndex implements OnInit {
+  // CAMBIAR ESTE VALOR: 1=Admin, 5=Cliente, 3=Técnico
+  private readonly ID_USUARIO_FIJO = 1;
+  
   protected readonly tiquetes = signal<TiqueteListItem[]>([]);
   protected readonly loading = signal<boolean>(false);
   protected readonly error = signal<string>('');
-  
-  // Variable de ID de usuario (NO EDITABLE en la interfaz)
-  protected readonly idUsuarioActivo = signal<number>(1); // 1=Admin, 5=Cliente, 3=Técnico
   protected readonly rolActual = signal<string>('');
 
   constructor(
@@ -30,17 +30,11 @@ export class TiqueteIndex implements OnInit {
     this.loadTiquetes();
   }
 
-  /**
-   * Carga los tiquetes usando getMethod() de BaseAPI
-   * URL: GET /tiquetes/usuario/:idUsuario
-   */
   loadTiquetes(): void {
     this.loading.set(true);
     this.error.set('');
 
-    // Usa getMethod() heredado de BaseAPI
-    // Esto llama a: GET http://localhost:3000/tiquetes/usuario/1 (por ejemplo)
-    this.tiqueteService.getMethod(`usuario/${this.idUsuarioActivo()}`).subscribe({
+    this.tiqueteService.getMethod(`usuario/${this.ID_USUARIO_FIJO}`).subscribe({
       next: (response: any) => {
         if (response.success) {
           this.tiquetes.set(response.data.tiquetes);
@@ -60,11 +54,7 @@ export class TiqueteIndex implements OnInit {
     });
   }
 
-  // Método para cambiar de usuario (simular diferentes roles)
-  cambiarUsuario(nuevoIdUsuario: number): void {
-    this.idUsuarioActivo.set(nuevoIdUsuario);
-    this.loadTiquetes();
-  }
+
 
   verDetalle(id: number): void {
     this.router.navigate(['/tiquetes', id]);
@@ -123,6 +113,17 @@ export class TiqueteIndex implements OnInit {
       year: 'numeric',
       month: 'short',
       day: 'numeric'
+    });
+  }
+
+  formatearFechaHora(fecha: Date | string): string {
+    const date = new Date(fecha);
+    return date.toLocaleDateString('es-ES', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
     });
   }
 

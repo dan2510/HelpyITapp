@@ -10,41 +10,7 @@
     </mat-card-header>
 
     <mat-card-content>
-      <!-- Selector de Usuario para Pruebas (NO EDITABLE EN PRODUCCIÓN) -->
-      <div class="user-selector-debug">
-        <p class="debug-label">
-          <mat-icon>bug_report</mat-icon>
-          Modo Debug - Cambiar Usuario Activo:
-        </p>
-        <div class="user-buttons">
-          <button 
-            mat-raised-button 
-            [color]="idUsuarioActivo() === 1 ? 'primary' : 'basic'"
-            (click)="cambiarUsuario(1)"
-            class="user-btn">
-            <mat-icon>admin_panel_settings</mat-icon>
-            Admin (ID: 1)
-          </button>
-          <button 
-            mat-raised-button 
-            [color]="idUsuarioActivo() === 5 ? 'primary' : 'basic'"
-            (click)="cambiarUsuario(5)"
-            class="user-btn">
-            <mat-icon>person</mat-icon>
-            Cliente (ID: 5)
-          </button>
-          <button 
-            mat-raised-button 
-            [color]="idUsuarioActivo() === 3 ? 'primary' : 'basic'"
-            (click)="cambiarUsuario(3)"
-            class="user-btn">
-            <mat-icon>engineering</mat-icon>
-            Técnico (ID: 3)
-          </button>
-        </div>
-        <p class="current-user">Usuario Activo: <strong>ID {{ idUsuarioActivo() }}</strong> | Rol: <strong>{{ rolActual() }}</strong></p>
-      </div>
-
+    
       <mat-divider></mat-divider>
 
       <!-- Estado de carga -->
