@@ -80,7 +80,7 @@
                   <mat-chip 
                     [color]="getEstadoColor(tiquete()!.estado)"
                     class="status-chip-large">
-                    <mat-icon>{{ getEstadoIcon(tiquete()!.estado) }}</mat-icon>
+                    <mat-icon [color]="getEstadoColor(tiquete()!.estado)">label</mat-icon>
                     {{ tiquete()!.estado }}
                   </mat-chip>
                   <mat-chip 

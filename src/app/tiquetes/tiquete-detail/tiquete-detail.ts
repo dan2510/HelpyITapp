@@ -145,4 +145,13 @@ export class TiqueteDetail implements OnInit {
     if (calificacion >= 2) return 'warn';
     return 'error';
   }
+
+  getPrioridadIcon(prioridad: string): string {
+  switch (prioridad.toLowerCase()) {
+    case 'alta': return 'priority_high';
+    case 'media': return 'warning';
+    case 'baja': return 'low_priority';
+    default: return 'help';
+  }
+}
 }

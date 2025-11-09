@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { TiqueteService } from '../../share/services/api/tiquete.service';
 import { TiqueteListItem } from '../../share/models/TiqueteListModel';
 import { NotificationService } from '../../share/services/app/notification.service';
-import { Prioridad, EstadoTiquete, RoleNombre } from '../../share/models/EnumsModel';
+import { Prioridad, EstadoTiquete } from '../../share/models/EnumsModel';
 
 @Component({
   selector: 'app-tiquete-index',
@@ -17,7 +17,6 @@ export class TiqueteIndex implements OnInit {
   protected readonly error = signal<string>('');
   
   // Variable de ID de usuario (NO EDITABLE en la interfaz)
-  // Este valor debe cambiar programáticamente para simular diferentes roles
   protected readonly idUsuarioActivo = signal<number>(1); // 1=Admin, 5=Cliente, 3=Técnico
   protected readonly rolActual = signal<string>('');
 
@@ -32,15 +31,16 @@ export class TiqueteIndex implements OnInit {
   }
 
   /**
-   * Carga los tiquetes según el ID del usuario activo
-   * El backend filtra automáticamente según el rol del usuario
+   * Carga los tiquetes usando getMethod() de BaseAPI
+   * URL: GET /tiquetes/usuario/:idUsuario
    */
   loadTiquetes(): void {
     this.loading.set(true);
     this.error.set('');
 
-    // Llamada al endpoint que filtra por usuario y rol
-    this.tiqueteService.getTiquetesPorRol(this.idUsuarioActivo()).subscribe({
+    // Usa getMethod() heredado de BaseAPI
+    // Esto llama a: GET http://localhost:3000/tiquetes/usuario/1 (por ejemplo)
+    this.tiqueteService.getMethod(`usuario/${this.idUsuarioActivo()}`).subscribe({
       next: (response: any) => {
         if (response.success) {
           this.tiquetes.set(response.data.tiquetes);
@@ -123,17 +123,6 @@ export class TiqueteIndex implements OnInit {
       year: 'numeric',
       month: 'short',
       day: 'numeric'
-    });
-  }
-
-  formatearFechaHora(fecha: Date | string): string {
-    const date = new Date(fecha);
-    return date.toLocaleDateString('es-ES', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
     });
   }
 
