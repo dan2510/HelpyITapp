@@ -1,0 +1,128 @@
+<!-- Listado de Categorías -->
+<div class="categorias-container">
+  <mat-card class="main-card">
+    <mat-card-header class="header-section">
+      <div mat-card-avatar class="header-icon">
+        <mat-icon>category</mat-icon>
+      </div>
+      <mat-card-title>Lista de Categorías</mat-card-title>
+      <mat-card-subtitle>
+        Categorías de tickets y sus políticas SLA
+      </mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <!-- Estado de carga -->
+      @if (loading()) {
+        <div class="loading-container">
+          <mat-spinner diameter="50"></mat-spinner>
+          <p>Cargando categorías...</p>
+        </div>
+      }
+
+      <!-- Estado de error -->
+      @if (error() && !loading()) {
+        <div class="error-container">
+          <mat-icon color="warn" class="error-icon">error_outline</mat-icon>
+          <h3>Error al cargar los datos</h3>
+          <p>{{ error() }}</p>
+          <button 
+            mat-raised-button 
+            color="primary" 
+            (click)="retry()"
+            class="retry-button">
+            <mat-icon>refresh</mat-icon>
+            Reintentar
+          </button>
+        </div>
+      }
+
+      <!-- Lista de categorías -->
+      @if (!loading() && !error() && categorias().length > 0) {
+        <div class="categorias-grid">
+          @for (categoria of categorias(); track categoria.id) {
+            <mat-card 
+              class="categoria-card"
+              (click)="verDetalle(categoria.id)"
+              matRipple
+              [matRippleColor]="'rgba(0, 82, 204, 0.1)'">
+              
+              <!-- Campo 1: Nombre de la categoría -->
+              <mat-card-header>
+                <div mat-card-avatar class="avatar-container">
+                  <mat-icon class="category-icon">folder</mat-icon>
+                </div>
+                <mat-card-title class="categoria-name">
+                  {{ categoria.nombre }}
+                </mat-card-title>
+              </mat-card-header>
+
+              <mat-card-content>
+                <!-- Campo 2: Estado (activo/inactivo) -->
+                <div class="info-row estado-section">
+                  <mat-icon 
+                    [color]="getEstadoColor(categoria.activo)"
+                    class="status-icon">
+                    {{ categoria.activo ? 'check_circle' : 'cancel' }}
+                  </mat-icon>
+                  <span 
+                    class="status-text"
+                    [ngClass]="categoria.activo ? 'status-activa' : 'status-inactiva'">
+                    {{ getEstadoText(categoria.activo) }}
+                  </span>
+                </div>
+
+                <!-- Campo 3: Política SLA -->
+                <div class="info-row sla-section">
+                  <mat-icon 
+                    [color]="getTiempoRespuestaColor(categoria.politicaSla.maxminutosrespuesta)"
+                    class="sla-icon">
+                    schedule
+                  </mat-icon>
+                  <div class="sla-info">
+                    <span class="sla-name">{{ categoria.politicaSla.nombre }}</span>
+                    <span class="sla-time">
+                      Respuesta: 
+                      <strong [ngClass]="'tiempo-' + getTiempoRespuestaColor(categoria.politicaSla.maxminutosrespuesta)">
+                        {{ formatearTiempoRespuesta(categoria.politicaSla.maxminutosrespuesta) }}
+                      </strong>
+                    </span>
+                  </div>
+                </div>
+              </mat-card-content>
+
+              <!-- Acciones - Enlace al detalle -->
+              <mat-card-actions align="end">
+                <button 
+                  mat-button 
+                  color="primary"
+                  (click)="verDetalle(categoria.id); $event.stopPropagation()"
+                  class="detail-button">
+                  <mat-icon>visibility</mat-icon>
+                  Ver Detalle
+                </button>
+              </mat-card-actions>
+            </mat-card>
+          }
+        </div>
+      }
+
+      <!-- Estado vacío -->
+      @if (!loading() && !error() && categorias().length === 0) {
+        <div class="empty-state">
+          <mat-icon class="empty-icon">folder_off</mat-icon>
+          <h3>No hay categorías disponibles</h3>
+          <p>No se encontraron categorías registradas en el sistema.</p>
+          <button 
+            mat-raised-button 
+            color="primary" 
+            (click)="retry()"
+            class="refresh-button">
+            <mat-icon>refresh</mat-icon>
+            Actualizar
+          </button>
+        </div>
+      }
+    </mat-card-content>
+  </mat-card>
+</div>

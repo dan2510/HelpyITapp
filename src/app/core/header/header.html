@@ -60,6 +60,32 @@
         <span>Disponibilidad</span>
       </button>
     </mat-menu>
+    
+    <!-- Menú Categorías -->
+<button mat-button [matMenuTriggerFor]="categoriasMenu" class="nav-item">
+  <mat-icon>category</mat-icon>
+  <span>Categorías</span>
+  <mat-icon class="dropdown-icon">keyboard_arrow_down</mat-icon>
+</button>
+<mat-menu #categoriasMenu="matMenu" class="modern-menu">
+  <button mat-menu-item [routerLink]="['/categorias']" [routerLinkActive]="'active-link'">
+    <mat-icon>list</mat-icon>
+    <span>Lista de Categorías</span>
+  </button>
+  <button mat-menu-item>
+    <mat-icon>add_circle_outline</mat-icon>
+    <span>Nueva Categoría</span>
+  </button>
+  <mat-divider></mat-divider>
+  <button mat-menu-item>
+    <mat-icon>policy</mat-icon>
+    <span>Políticas SLA</span>
+  </button>
+  <button mat-menu-item>
+    <mat-icon>label</mat-icon>
+    <span>Etiquetas</span>
+  </button>
+</mat-menu>
 
     <!-- Menú Reportes -->
     <button mat-button [matMenuTriggerFor]="reportesMenu" class="nav-item">

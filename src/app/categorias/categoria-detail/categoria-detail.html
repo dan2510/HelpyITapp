@@ -1,0 +1,304 @@
+<!-- Detalle de Categoría -->
+<div class="categoria-detail-container">
+  <!-- Header con navegación -->
+  <div class="header-navigation">
+    <button 
+      mat-button 
+      color="primary" 
+      (click)="regresarAlListado()"
+      class="back-button">
+      <mat-icon>arrow_back</mat-icon>
+      Volver al listado
+    </button>
+  </div>
+
+  <!-- Loading -->
+  @if (loading()) {
+    <div class="loading-container">
+      <mat-spinner diameter="60"></mat-spinner>
+      <p>Cargando información de la categoría...</p>
+    </div>
+  }
+
+  <!-- Error -->
+  @if (error() && !loading()) {
+    <div class="error-container">
+      <mat-icon color="warn" class="error-icon">error_outline</mat-icon>
+      <h3>Error al cargar los datos</h3>
+      <p>{{ error() }}</p>
+      <div class="error-actions">
+        <button 
+          mat-raised-button 
+          color="primary" 
+          (click)="retry()"
+          class="retry-button">
+          <mat-icon>refresh</mat-icon>
+          Reintentar
+        </button>
+        <button 
+          mat-button 
+          (click)="regresarAlListado()"
+          class="back-button-error">
+          <mat-icon>arrow_back</mat-icon>
+          Volver
+        </button>
+      </div>
+    </div>
+  }
+
+  <!-- Contenido del detalle -->
+  @if (!loading() && !error() && categoria()) {
+    <div class="detail-content">
+      <!-- Información Básica de la Categoría -->
+      <mat-card class="info-card basic-info">
+        <mat-card-header class="card-header">
+          <div mat-card-avatar class="avatar-large">
+            <mat-icon class="avatar-icon">category</mat-icon>
+          </div>
+          <mat-card-title>{{ categoria()!.nombre }}</mat-card-title>
+          <mat-card-subtitle>{{ categoria()!.descripcion }}</mat-card-subtitle>
+        </mat-card-header>
+
+        <mat-card-content>
+          <div class="info-grid">
+            <!-- ID -->
+            <div class="info-item">
+              <mat-icon class="info-icon">tag</mat-icon>
+              <div class="info-content">
+                <span class="info-label">ID de Categoría</span>
+                <span class="info-value">#{{ categoria()!.id }}</span>
+              </div>
+            </div>
+
+            <!-- Estado -->
+            <div class="info-item">
+              <mat-icon class="info-icon">verified</mat-icon>
+              <div class="info-content">
+                <span class="info-label">Estado</span>
+                <mat-chip 
+                  [color]="getEstadoColor(categoria()!.activo)"
+                  class="status-chip">
+                  {{ getEstadoText(categoria()!.activo) }}
+                </mat-chip>
+              </div>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Política SLA -->
+      <mat-card class="info-card sla-info">
+        <mat-card-header class="card-header">
+          <div mat-card-avatar class="avatar-sla">
+            <mat-icon class="avatar-icon">schedule</mat-icon>
+          </div>
+          <mat-card-title>Política SLA</mat-card-title>
+          <mat-card-subtitle>{{ categoria()!.sla.nombre }}</mat-card-subtitle>
+        </mat-card-header>
+
+        <mat-card-content>
+          <div class="sla-section">
+            <p class="sla-description">{{ categoria()!.sla.descripcion }}</p>
+            
+            <div class="sla-metrics">
+              <!-- Tiempo de Respuesta -->
+              <div class="metric-card">
+                <div class="metric-header">
+                  <mat-icon class="metric-icon response">speed</mat-icon>
+                  <h4>Tiempo de Respuesta</h4>
+                </div>
+                <div class="metric-values">
+                  <div class="metric-value-primary">
+                    {{ formatearHoras(categoria()!.sla.maxminutosrespuesta) }}
+                  </div>
+                  <div class="metric-value-secondary">
+                    {{ categoria()!.sla.tiempoRespuestaHoras }}h máximo
+                  </div>
+                </div>
+                <mat-progress-bar 
+                  mode="determinate"
+                  [value]="100"
+                  [color]="getColorBarraSLA(categoria()!.sla.maxminutosrespuesta)"
+                  class="metric-bar">
+                </mat-progress-bar>
+              </div>
+
+              <!-- Tiempo de Resolución -->
+              <div class="metric-card">
+                <div class="metric-header">
+                  <mat-icon class="metric-icon resolution">check_circle</mat-icon>
+                  <h4>Tiempo de Resolución</h4>
+                </div>
+                <div class="metric-values">
+                  <div class="metric-value-primary">
+                    {{ formatearHoras(categoria()!.sla.maxminutosresolucion) }}
+                  </div>
+                  <div class="metric-value-secondary">
+                    {{ categoria()!.sla.tiempoResolucionHoras }}h máximo
+                  </div>
+                </div>
+                <mat-progress-bar 
+                  mode="determinate"
+                  [value]="100"
+                  [color]="getColorBarraSLA(categoria()!.sla.maxminutosresolucion)"
+                  class="metric-bar">
+                </mat-progress-bar>
+              </div>
+            </div>
+
+            <!-- Vigencia del SLA -->
+            <div class="sla-validity">
+              <div class="validity-item">
+                <mat-icon class="validity-icon">event</mat-icon>
+                <div class="validity-content">
+                  <span class="validity-label">Vigente desde</span>
+                  <span class="validity-value">{{ formatearFecha(categoria()!.sla.vigentedesde) }}</span>
+                </div>
+              </div>
+              <div class="validity-item">
+                <mat-icon class="validity-icon">event_available</mat-icon>
+                <div class="validity-content">
+                  <span class="validity-label">Vigente hasta</span>
+                  <span class="validity-value">{{ formatearFecha(categoria()!.sla.vigentehasta) }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Etiquetas Asociadas -->
+      <mat-card class="info-card tags-info">
+        <mat-card-header class="card-header">
+          <div mat-card-avatar class="avatar-tags">
+            <mat-icon class="avatar-icon">label</mat-icon>
+          </div>
+          <mat-card-title>Etiquetas Asociadas</mat-card-title>
+        </mat-card-header>
+
+        <mat-card-content>
+          @if (categoria()!.etiquetas && categoria()!.etiquetas.length > 0) {
+            <div class="tags-grid">
+              @for (etiqueta of categoria()!.etiquetas; track etiqueta.id) {
+                <div class="tag-card">
+                  <div class="tag-header">
+                    <mat-icon class="tag-icon">label</mat-icon>
+                    <h4 class="tag-name">{{ etiqueta.nombre }}</h4>
+                  </div>
+                  <p class="tag-description">{{ etiqueta.descripcion }}</p>
+                </div>
+              }
+            </div>
+          } @else {
+            <div class="no-items">
+              <mat-icon>info</mat-icon>
+              <span>No hay etiquetas asociadas a esta categoría</span>
+            </div>
+          }
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Especialidades Requeridas -->
+      <mat-card class="info-card specialties-info">
+        <mat-card-header class="card-header">
+          <div mat-card-avatar class="avatar-specialties">
+            <mat-icon class="avatar-icon">engineering</mat-icon>
+          </div>
+          <mat-card-title>Especialidades Técnicas</mat-card-title>
+        </mat-card-header>
+
+        <mat-card-content>
+          @if (categoria()!.especialidades && categoria()!.especialidades.length > 0) {
+            <div class="specialties-grid">
+              @for (especialidad of categoria()!.especialidades; track especialidad.id) {
+                <div class="specialty-card">
+                  <div class="specialty-header">
+                    <mat-icon class="specialty-icon">psychology</mat-icon>
+                    <h4 class="specialty-name">{{ especialidad.nombre }}</h4>
+                  </div>
+                  <p class="specialty-description">{{ especialidad.descripcion }}</p>
+                  <mat-chip 
+                    [color]="especialidad.activo ? 'primary' : 'warn'"
+                    class="specialty-status">
+                    {{ especialidad.activo ? 'Activa' : 'Inactiva' }}
+                  </mat-chip>
+                </div>
+              }
+            </div>
+          } @else {
+            <div class="no-items">
+              <mat-icon>info</mat-icon>
+              <span>No hay especialidades requeridas para esta categoría</span>
+            </div>
+          }
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Estadísticas de Tickets -->
+      @if (categoria()!.estadisticas) {
+        <mat-card class="info-card stats-info">
+          <mat-card-header class="card-header">
+            <div mat-card-avatar class="avatar-stats">
+              <mat-icon class="avatar-icon">analytics</mat-icon>
+            </div>
+            <mat-card-title>Estadísticas de Tickets</mat-card-title>
+          </mat-card-header>
+
+          <mat-card-content>
+            <div class="stats-grid">
+              <!-- Total de Tickets -->
+              <div class="stat-card">
+                <mat-icon class="stat-icon primary">confirmation_number</mat-icon>
+                <div class="stat-content">
+                  <span class="stat-number">{{ categoria()!.estadisticas.ticketsTotal }}</span>
+                  <span class="stat-label">Total de Tickets</span>
+                </div>
+              </div>
+              
+              <!-- Tickets Abiertos -->
+              <div class="stat-card">
+                <mat-icon class="stat-icon warning">inbox</mat-icon>
+                <div class="stat-content">
+                  <span class="stat-number">{{ categoria()!.estadisticas.ticketsAbiertos }}</span>
+                  <span class="stat-label">Tickets Abiertos</span>
+                </div>
+              </div>
+              
+              <!-- Tickets Resueltos -->
+              <div class="stat-card">
+                <mat-icon class="stat-icon success">check_circle</mat-icon>
+                <div class="stat-content">
+                  <span class="stat-number">{{ categoria()!.estadisticas.ticketsResueltos }}</span>
+                  <span class="stat-label">Tickets Resueltos</span>
+                </div>
+              </div>
+              
+              <!-- Tickets Críticos -->
+              <div class="stat-card">
+                <mat-icon class="stat-icon error">priority_high</mat-icon>
+                <div class="stat-content">
+                  <span class="stat-number">{{ categoria()!.estadisticas.ticketsCriticos }}</span>
+                  <span class="stat-label">Tickets Críticos</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Porcentaje de Resolución -->
+            <div class="resolution-metric">
+              <div class="resolution-header">
+                <span class="resolution-label">Porcentaje de Resolución</span>
+                <span class="resolution-value">{{ categoria()!.estadisticas.porcentajeResolucion }}%</span>
+              </div>
+              <mat-progress-bar 
+                mode="determinate"
+                [value]="categoria()!.estadisticas.porcentajeResolucion"
+                [color]="categoria()!.estadisticas.porcentajeResolucion >= 70 ? 'primary' : 'warn'"
+                class="resolution-bar">
+              </mat-progress-bar>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      }
+    </div>
+  }
+</div>

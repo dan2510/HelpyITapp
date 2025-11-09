@@ -11,6 +11,10 @@ const routes: Routes = [
     path: 'tecnicos', 
     loadChildren: () => import('./tecnicos/tecnicos-module').then(m => m.TecnicosModule) 
   },
+  { 
+    path: 'categorias', 
+    loadChildren: () => import('./categorias/categorias-module').then(m => m.CategoriasModule) 
+  },
   { path: '**', component: PageNotFound }
 ];
 
