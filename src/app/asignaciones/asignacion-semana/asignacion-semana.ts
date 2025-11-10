@@ -18,8 +18,8 @@ interface DiaAsignaciones {
   styleUrl: './asignacion-semana.css',
 })
 export class AsignacionSemana implements OnInit {
-  // ID del técnico (hardcodeado según requerimiento)
-  private readonly ID_TECNICO = 3; // Carlos Rodríguez
+  // ID del técnico
+  private readonly ID_TECNICO = 2; // Carlos Rodríguez
 
   protected readonly asignaciones = signal<AsignacionItem[]>([]);
   protected readonly diasSemana = signal<DiaAsignaciones[]>([]);
