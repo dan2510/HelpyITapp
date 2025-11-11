@@ -1,7 +1,8 @@
+// src/app/tecnicos/tecnico-index/tecnico-index.ts
 import { Component, OnInit, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { TecnicoService } from '../../share/services/api/tecnico.service';
-import { TecnicoListItem, TecnicoListResponse } from '../../share/models/TecnicoListModel';
+import { UsuarioModel } from '../../share/models/UsuarioModel';
 import { NotificationService } from '../../share/services/app/notification.service';
 import { Disponibilidad } from '../../share/models/EnumsModel';
 
@@ -12,7 +13,7 @@ import { Disponibilidad } from '../../share/models/EnumsModel';
   styleUrl: './tecnico-index.css',
 })
 export class TecnicoIndex implements OnInit {
-  protected readonly tecnicos = signal<TecnicoListItem[]>([]);
+  protected readonly tecnicos = signal<UsuarioModel[]>([]);
   protected readonly loading = signal<boolean>(false);
   protected readonly error = signal<string>('');
 
@@ -26,18 +27,12 @@ export class TecnicoIndex implements OnInit {
     this.loadTecnicos();
   }
 
-  /**
-   * Usa el método get() heredado de BaseAPI
-   * Tu backend debe retornar: TecnicoListResponse
-   */
   loadTecnicos(): void {
     this.loading.set(true);
     this.error.set('');
 
-    // Usa el método get() heredado de baseAPI)
     this.tecnicoService.get().subscribe({
       next: (response: any) => {
-        // E backend debería retornar { success: boolean, data: { tecnicos: [...] } }
         if (response.success) {
           this.tecnicos.set(response.data.tecnicos);
           console.log('Técnicos cargados:', response.data.tecnicos);

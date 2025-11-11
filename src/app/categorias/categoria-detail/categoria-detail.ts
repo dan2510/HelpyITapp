@@ -1,7 +1,8 @@
+// src/app/categorias/categoria-detail/categoria-detail.ts
 import { Component, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CategoriaService } from '../../share/services/api/categoria.service';
-import { CategoriaDetalle, CategoriaDetailResponse } from '../../share/models/CategoriaDetailModel';
+import { CategoriaModel } from '../../share/models/CategoriaModel';
 import { NotificationService } from '../../share/services/app/notification.service';
 
 @Component({
@@ -11,7 +12,7 @@ import { NotificationService } from '../../share/services/app/notification.servi
   styleUrl: './categoria-detail.css',
 })
 export class CategoriaDetail implements OnInit {
-  protected readonly categoria = signal<CategoriaDetalle | null>(null);
+  protected readonly categoria = signal<CategoriaModel | null>(null);
   protected readonly loading = signal<boolean>(false);
   protected readonly error = signal<string>('');
   protected readonly categoriaId = signal<number>(0);
@@ -36,18 +37,12 @@ export class CategoriaDetail implements OnInit {
     });
   }
 
-  /**
-   * Usa el método getById() heredado de BaseAPI
-   * Tu backend debe retornar: CategoriaDetailResponse
-   */
   loadCategoriaDetail(id: number): void {
     this.loading.set(true);
     this.error.set('');
 
-    // Usa el método getById() heredado de BaseAPI
     this.categoriaService.getById(id).subscribe({
       next: (response: any) => {
-        // Backend retorna { success: boolean, data: { categoria: {...} } }
         if (response.success) {
           this.categoria.set(response.data.categoria);
           console.log('Detalle de la categoría cargado:', response.data.categoria);
@@ -75,7 +70,6 @@ export class CategoriaDetail implements OnInit {
     }
   }
 
-  // Métodos auxiliares para el template
   getEstadoColor(activo: boolean): string {
     return activo ? 'primary' : 'warn';
   }
@@ -107,10 +101,10 @@ export class CategoriaDetail implements OnInit {
   }
 
   getColorBarraSLA(tiempoMinutos: number): string {
-    if (tiempoMinutos <= 60) return 'accent'; // Muy rápido - rojo/crítico
-    if (tiempoMinutos <= 240) return 'warn'; // Rápido - amarillo
-    if (tiempoMinutos <= 480) return 'primary'; // Normal - azul
-    return 'basic'; // Lento - gris
+    if (tiempoMinutos <= 60) return 'accent';
+    if (tiempoMinutos <= 240) return 'warn';
+    if (tiempoMinutos <= 480) return 'primary';
+    return 'basic';
   }
 
   formatearHoras(minutos: number): string {

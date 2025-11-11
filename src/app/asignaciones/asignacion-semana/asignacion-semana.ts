@@ -1,14 +1,14 @@
+// src/app/asignaciones/asignacion-semana/asignacion-semana.ts
 import { Component, OnInit, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { AsignacionService } from '../../share/services/api/asignacion.service';
-import { AsignacionItem } from '../../share/models/AsignacionTiqueteModel';
 import { NotificationService } from '../../share/services/app/notification.service';
 import { EstadoTiquete, Prioridad } from '../../share/models/EnumsModel';
 
 interface DiaAsignaciones {
   fecha: Date;
   diaNombre: string;
-  tickets: AsignacionItem[];
+  tickets: any[]; // Sin tipado estricto
 }
 
 @Component({
@@ -19,9 +19,9 @@ interface DiaAsignaciones {
 })
 export class AsignacionSemana implements OnInit {
   // ID del técnico
-  private readonly ID_TECNICO = 2; // Carlos Rodríguez
+  private readonly ID_TECNICO = 3; // Carlos Rodríguez
 
-  protected readonly asignaciones = signal<AsignacionItem[]>([]);
+  protected readonly asignaciones = signal<any[]>([]);
   protected readonly diasSemana = signal<DiaAsignaciones[]>([]);
   protected readonly loading = signal<boolean>(false);
   protected readonly error = signal<string>('');
@@ -43,7 +43,7 @@ export class AsignacionSemana implements OnInit {
     this.error.set('');
 
     this.asignacionService.getAsignacionesPorSemana(this.ID_TECNICO).subscribe({
-      next: (response) => {
+      next: (response: any) => {
         if (response.success) {
           this.asignaciones.set(response.data.asignaciones);
           this.semanaActual.set(response.data.semana);
@@ -64,16 +64,14 @@ export class AsignacionSemana implements OnInit {
     });
   }
 
-  organizarPorDias(tickets: AsignacionItem[], semana: { inicio: Date; fin: Date }): void {
+  organizarPorDias(tickets: any[], semana: { inicio: Date; fin: Date }): void {
     const dias: DiaAsignaciones[] = [];
     const inicio = new Date(semana.inicio);
     
-    // Crear 7 días de la semana
     for (let i = 0; i < 7; i++) {
       const fecha = new Date(inicio);
       fecha.setDate(inicio.getDate() + i);
       
-      // Filtrar tickets de este día
       const ticketsDelDia = tickets.filter(ticket => {
         const ticketFecha = new Date(ticket.creadoen);
         return ticketFecha.toDateString() === fecha.toDateString();
@@ -98,7 +96,6 @@ export class AsignacionSemana implements OnInit {
     this.router.navigate(['/tiquetes', idTicket]);
   }
 
-  // Métodos auxiliares para colores y estilos
   getEstadoColor(estado: EstadoTiquete): string {
     switch (estado) {
       case EstadoTiquete.ABIERTO: return 'warn';

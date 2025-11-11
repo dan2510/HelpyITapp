@@ -1,7 +1,8 @@
+// src/app/tiquetes/tiquete-index/tiquete-index.ts
 import { Component, OnInit, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { TiqueteService } from '../../share/services/api/tiquete.service';
-import { TiqueteListItem } from '../../share/models/TiqueteListModel';
+import { TiqueteModel } from '../../share/models/TiqueteModel';
 import { NotificationService } from '../../share/services/app/notification.service';
 import { Prioridad, EstadoTiquete, RoleNombre } from '../../share/models/EnumsModel';
 
@@ -15,7 +16,7 @@ export class TiqueteIndex implements OnInit {
   // CAMBIAR ESTE VALOR: 1=Admin, 5=Cliente, 3=Técnico
   private readonly ID_USUARIO_FIJO = 1;
   
-  protected readonly tiquetes = signal<TiqueteListItem[]>([]);
+  protected readonly tiquetes = signal<TiqueteModel[]>([]);
   protected readonly loading = signal<boolean>(false);
   protected readonly error = signal<string>('');
   protected readonly rolActual = signal<string>('');
@@ -54,13 +55,11 @@ export class TiqueteIndex implements OnInit {
     });
   }
 
-
-
   verDetalle(id: number): void {
     this.router.navigate(['/tiquetes', id]);
   }
 
-  // Métodos auxiliares para el template
+  // Métodos auxiliares
   getPrioridadColor(prioridad: Prioridad): string {
     switch (prioridad) {
       case Prioridad.BAJA: return 'primary';

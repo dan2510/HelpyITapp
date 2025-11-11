@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BaseAPI } from './base-api';
-import { TecnicoModel  } from '../../models/TecnicoModel';
+import { UsuarioModel  } from '../../models/UsuarioModel';
 import { environment } from '../../../../environments/environment.development';
 
 @Injectable({
   providedIn: 'root'
 })
-export class TecnicoService extends BaseAPI<TecnicoModel> {
+export class TecnicoService extends BaseAPI<UsuarioModel> {
 
     constructor(httpClient: HttpClient) { 
         super(

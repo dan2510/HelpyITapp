@@ -1,7 +1,8 @@
+// src/app/categorias/categoria-index/categoria-index.ts
 import { Component, OnInit, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { CategoriaService } from '../../share/services/api/categoria.service';
-import { CategoriaListItem, CategoriaListResponse } from '../../share/models/CategoriaListModel';
+import { CategoriaModel } from '../../share/models/CategoriaModel';
 import { NotificationService } from '../../share/services/app/notification.service';
 
 @Component({
@@ -11,7 +12,7 @@ import { NotificationService } from '../../share/services/app/notification.servi
   styleUrl: './categoria-index.css',
 })
 export class CategoriaIndex implements OnInit {
-  protected readonly categorias = signal<CategoriaListItem[]>([]);
+  protected readonly categorias = signal<CategoriaModel[]>([]);
   protected readonly loading = signal<boolean>(false);
   protected readonly error = signal<string>('');
 
@@ -25,18 +26,12 @@ export class CategoriaIndex implements OnInit {
     this.loadCategorias();
   }
 
-  /**
-   * Usa el método get() heredado de BaseAPI
-   * El backend debe retornar: CategoriaListResponse
-   */
   loadCategorias(): void {
     this.loading.set(true);
     this.error.set('');
 
-    // Usa el método get() heredado de BaseAPI
     this.categoriaService.get().subscribe({
       next: (response: any) => {
-        // El backend retorna { success: boolean, data: { categorias: [...] } }
         if (response.success) {
           this.categorias.set(response.data.categorias);
           console.log('Categorías cargadas:', response.data.categorias);

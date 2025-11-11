@@ -1,7 +1,8 @@
+// src/app/tecnicos/tecnico-detail/tecnico-detail.ts
 import { Component, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TecnicoService } from '../../share/services/api/tecnico.service';
-import { TecnicoDetalle, TecnicoDetailResponse } from '../../share/models/TecnicoDetailModel';
+import { UsuarioModel } from '../../share/models/UsuarioModel';
 import { NotificationService } from '../../share/services/app/notification.service';
 import { Disponibilidad, NivelExperiencia } from '../../share/models/EnumsModel';
 
@@ -12,7 +13,7 @@ import { Disponibilidad, NivelExperiencia } from '../../share/models/EnumsModel'
   styleUrl: './tecnico-detail.css',
 })
 export class TecnicoDetail implements OnInit {
-  protected readonly tecnico = signal<TecnicoDetalle | null>(null);
+  protected readonly tecnico = signal<UsuarioModel | null>(null);
   protected readonly loading = signal<boolean>(false);
   protected readonly error = signal<string>('');
   protected readonly tecnicoId = signal<number>(0);
@@ -37,18 +38,12 @@ export class TecnicoDetail implements OnInit {
     });
   }
 
-  /**
-   * Usa el método getById() heredado de BaseAPI
-   * Tu backend debe retornar: TecnicoDetailResponse
-   */
   loadTecnicoDetail(id: number): void {
     this.loading.set(true);
     this.error.set('');
 
-    // Usa el método getById() heredado de tu BaseAPI
     this.tecnicoService.getById(id).subscribe({
       next: (response: any) => {
-        // Tu backend debería retornar { success: boolean, data: { tecnico: {...} } }
         if (response.success) {
           this.tecnico.set(response.data.tecnico);
           console.log('Detalle del técnico cargado:', response.data.tecnico);
@@ -76,7 +71,7 @@ export class TecnicoDetail implements OnInit {
     }
   }
 
-  // Métodos auxiliares para el template
+  // Métodos auxiliares
   getDisponibilidadColor(disponibilidad: Disponibilidad): string {
     switch (disponibilidad) {
       case Disponibilidad.DISPONIBLE: return 'success-color';

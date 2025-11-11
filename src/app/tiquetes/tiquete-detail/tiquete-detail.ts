@@ -1,7 +1,8 @@
+// src/app/tiquetes/tiquete-detail/tiquete-detail.ts
 import { Component, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TiqueteService } from '../../share/services/api/tiquete.service';
-import { TiqueteDetalle } from '../../share/models/TiqueteDetailModel';
+import { TiqueteModel } from '../../share/models/TiqueteModel';
 import { NotificationService } from '../../share/services/app/notification.service';
 import { Prioridad, EstadoTiquete } from '../../share/models/EnumsModel';
 
@@ -12,7 +13,7 @@ import { Prioridad, EstadoTiquete } from '../../share/models/EnumsModel';
   styleUrl: './tiquete-detail.css',
 })
 export class TiqueteDetail implements OnInit {
-  protected readonly tiquete = signal<TiqueteDetalle | null>(null);
+  protected readonly tiquete = signal<TiqueteModel | null>(null);
   protected readonly loading = signal<boolean>(false);
   protected readonly error = signal<string>('');
   protected readonly tiqueteId = signal<number>(0);
@@ -147,11 +148,11 @@ export class TiqueteDetail implements OnInit {
   }
 
   getPrioridadIcon(prioridad: string): string {
-  switch (prioridad.toLowerCase()) {
-    case 'alta': return 'priority_high';
-    case 'media': return 'warning';
-    case 'baja': return 'low_priority';
-    default: return 'help';
+    switch (prioridad.toLowerCase()) {
+      case 'alta': return 'priority_high';
+      case 'media': return 'warning';
+      case 'baja': return 'low_priority';
+      default: return 'help';
+    }
   }
-}
 }

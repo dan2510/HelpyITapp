@@ -1,7 +1,5 @@
-import { MetodoAsignacion } from './EnumsModel';
-import { TiqueteModel } from './TiqueteModel';
-import { UsuarioModel } from './UsuarioModel';
-import { ReglaAsignacion } from './ReglaAsignacionModel';
+// src/app/share/models/AsignacionTiqueteModel.ts
+import { Prioridad, EstadoTiquete, MetodoAsignacion } from './EnumsModel';
 
 export interface AsignacionTiquete {
   idasignacion: number;
@@ -14,8 +12,19 @@ export interface AsignacionTiquete {
   asignadopor: number;
   asignadoen: Date;
   
-  // Relaciones opcionales
-  tiquete?: TiqueteModel;
-  tecnico?: UsuarioModel;
-  regla?: ReglaAsignacion;
+  // Relaciones sin tipado estricto
+  tiquete?: any;
+  tecnico?: any;
+  regla?: any;
+}
+
+// Respuesta del endpoint de asignaciones
+export interface AsignacionesResponse {
+  success: boolean;
+  data: {
+    tecnico: any;
+    semana: any;
+    asignaciones: any[];
+    total: number;
+  };
 }

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment.development';
-import { AsignacionesResponse } from '../../models/AsignacionTiqueteModel';
+import { AsignacionTiquete } from '../../models/AsignacionTiqueteModel';
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +17,7 @@ export class AsignacionService {
     idTecnico: number, 
     fechaInicio?: string, 
     fechaFin?: string
-  ): Observable<AsignacionesResponse> {
+  ): Observable<AsignacionTiquete> {
     let url = `${this.urlAPI}/asignaciones/tecnico/${idTecnico}/semana`;
     
     // Agregar parámetros de fecha si existen
@@ -25,6 +25,6 @@ export class AsignacionService {
       url += `?fechaInicio=${fechaInicio}&fechaFin=${fechaFin}`;
     }
 
-    return this.http.get<AsignacionesResponse>(url);
+    return this.http.get<AsignacionTiquete>(url);
   }
 }

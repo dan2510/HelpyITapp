@@ -98,8 +98,7 @@
               <mat-icon class="info-icon">category</mat-icon>
               <div class="info-content">
                 <span class="info-label">Categoría</span>
-                <span class="info-value">{{ tiquete()!.categoria.nombre }}</span>
-                <span class="info-description">{{ tiquete()!.categoria.descripcion }}</span>
+                <span class="info-value">{{ tiquete()!.idcategoria }}</span>
               </div>
             </div>
 
@@ -409,7 +408,7 @@
           <mat-card-title>Valoraciones del Servicio</mat-card-title>
           <mat-card-subtitle>
             @if (tiquete()!.valoraciones && tiquete()!.valoraciones.length > 0) {
-              {{ tiquete()!.valoraciones.length }} valoración(es)
+              {{ tiquete()!.valoraciones }} valoración(es)
             } @else {
               Sin valoraciones
             }
