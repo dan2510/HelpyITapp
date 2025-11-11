@@ -1,7 +1,7 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { AsignacionService } from '../../share/services/api/asignacion.service';
-import { AsignacionItem } from '../../share/models/AsignacionModel';
+import { AsignacionItem } from '../../share/models/AsignacionTiqueteModel';
 import { NotificationService } from '../../share/services/app/notification.service';
 import { EstadoTiquete, Prioridad } from '../../share/models/EnumsModel';
 

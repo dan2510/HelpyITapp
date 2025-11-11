@@ -1,25 +1,25 @@
 import { Prioridad, EstadoTiquete } from './EnumsModel';
+import { CategoriaModel } from './CategoriaModel';
+import { UsuarioModel } from './UsuarioModel';
 
-// Modelo para categoría en asignación
-export interface CategoriaAsignacion {
+
+// Modelo para la vista de asignaciones semanales
+export interface AsignacionModel {
   id: number;
-  nombre: string;
-  politicaSla: {
-    nombre: string;
-    maxminutosrespuesta: number;
-    maxminutosresolucion: number;
-  };
+  titulo: string;
+  descripcion: string;
+  estado: EstadoTiquete;
+  prioridad: Prioridad;
+  creadoen: Date;
+  
+  // Relaciones simplificadas para la vista
+  categoria?: CategoriaModel;
+  cliente?: UsuarioModel;
+  sla?: SLAInfo;
 }
 
-// Modelo para cliente en asignación
-export interface ClienteAsignacion {
-  id: number;
-  nombrecompleto: string;
-  correo: string;
-}
-
-// Modelo para SLA de la asignación
-export interface SLAAsignacion {
+// Información del SLA para la vista (calculada en backend)
+export interface SLAInfo {
   nombre: string;
   venceresolucion: Date;
   horasRestantes: number;
@@ -27,38 +27,16 @@ export interface SLAAsignacion {
   estadoSLA: 'OK' | 'ADVERTENCIA' | 'CRITICO';
 }
 
-// Modelo para una asignación individual
-export interface AsignacionItem {
-  id: number;
-  titulo: string;
-  descripcion: string;
-  estado: EstadoTiquete;
-  prioridad: Prioridad;
-  creadoen: Date;
-  categoria: CategoriaAsignacion;
-  cliente: ClienteAsignacion;
-  sla: SLAAsignacion;
-}
-
-// Modelo para técnico
-export interface TecnicoAsignacion {
-  id: number;
-  nombrecompleto: string;
-}
-
-// Modelo para rango de semana
-export interface SemanaRango {
-  inicio: Date;
-  fin: Date;
-}
-
-// Modelo para la respuesta del backend
+// Para la respuesta del endpoint de asignaciones
 export interface AsignacionesResponse {
   success: boolean;
   data: {
-    tecnico: TecnicoAsignacion;
-    semana: SemanaRango;
-    asignaciones: AsignacionItem[];
+    tecnico: UsuarioModel;
+    semana: {
+      inicio: Date;
+      fin: Date;
+    };
+    asignaciones: AsignacionModel[];
     total: number;
   };
 }

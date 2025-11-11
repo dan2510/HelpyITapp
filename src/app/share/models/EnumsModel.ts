@@ -33,3 +33,21 @@ export enum EstadoTiquete {
   CANCELADO = 'CANCELADO',
   ASIGNADO = 'ASIGNADO'
 }
+
+export enum MetodoAsignacion {
+  MANUAL = 'MANUAL',
+  AUTOMATICO = 'AUTOMATICO',
+  REGLA = 'REGLA'
+}
+
+export enum TipoNotificacion {
+  ASIGNACION = 'ASIGNACION',
+  CAMBIO_ESTADO = 'CAMBIO_ESTADO',
+  MENSAJE = 'MENSAJE',
+  RECORDATORIO = 'RECORDATORIO'
+}
+
+export enum EstadoNotificacion {
+  NO_LEIDA = 'NO_LEIDA',
+  LEIDA = 'LEIDA'
+}
