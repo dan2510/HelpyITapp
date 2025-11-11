@@ -93,12 +93,12 @@
             <mat-icon class="avatar-icon">schedule</mat-icon>
           </div>
           <mat-card-title>Política SLA</mat-card-title>
-          <mat-card-subtitle>{{ categoria()!.sla.nombre }}</mat-card-subtitle>
+          <mat-card-subtitle>{{ categoria()!.sla?.nombre }}</mat-card-subtitle>
         </mat-card-header>
 
         <mat-card-content>
           <div class="sla-section">
-            <p class="sla-description">{{ categoria()!.sla.descripcion }}</p>
+            <p class="sla-description">{{ categoria()!.sla?.descripcion }}</p>
             
             <div class="sla-metrics">
               <!-- Tiempo de Respuesta -->
@@ -109,16 +109,16 @@
                 </div>
                 <div class="metric-values">
                   <div class="metric-value-primary">
-                    {{ formatearHoras(categoria()!.sla.maxminutosrespuesta) }}
+                    {{ formatearHoras(categoria()!.sla?.maxminutosrespuesta || 0) }}
                   </div>
                   <div class="metric-value-secondary">
-                    {{ categoria()!.sla.tiempoRespuestaHoras }}h máximo
+                    {{ categoria()!.sla?.tiempoRespuestaHoras || 0 }}h máximo
                   </div>
                 </div>
                 <mat-progress-bar 
                   mode="determinate"
                   [value]="100"
-                  [color]="getColorBarraSLA(categoria()!.sla.maxminutosrespuesta)"
+                  [color]="getColorBarraSLA(categoria()!.sla?.maxminutosrespuesta || 0)"
                   class="metric-bar">
                 </mat-progress-bar>
               </div>
@@ -131,16 +131,16 @@
                 </div>
                 <div class="metric-values">
                   <div class="metric-value-primary">
-                    {{ formatearHoras(categoria()!.sla.maxminutosresolucion) }}
+                    {{ formatearHoras(categoria()!.sla?.maxminutosresolucion || 0) }}
                   </div>
                   <div class="metric-value-secondary">
-                    {{ categoria()!.sla.tiempoResolucionHoras }}h máximo
+                    {{ categoria()!.sla?.tiempoResolucionHoras || 0 }}h máximo
                   </div>
                 </div>
                 <mat-progress-bar 
                   mode="determinate"
                   [value]="100"
-                  [color]="getColorBarraSLA(categoria()!.sla.maxminutosresolucion)"
+                  [color]="getColorBarraSLA(categoria()!.sla?.maxminutosresolucion || 0)"
                   class="metric-bar">
                 </mat-progress-bar>
               </div>
@@ -152,14 +152,14 @@
                 <mat-icon class="validity-icon">event</mat-icon>
                 <div class="validity-content">
                   <span class="validity-label">Vigente desde</span>
-                  <span class="validity-value">{{ formatearFecha(categoria()!.sla.vigentedesde) }}</span>
+                  <span class="validity-value">{{ formatearFecha(categoria()!.sla?.vigentedesde) }}</span>
                 </div>
               </div>
               <div class="validity-item">
                 <mat-icon class="validity-icon">event_available</mat-icon>
                 <div class="validity-content">
                   <span class="validity-label">Vigente hasta</span>
-                  <span class="validity-value">{{ formatearFecha(categoria()!.sla.vigentehasta) }}</span>
+                  <span class="validity-value">{{ formatearFecha(categoria()!.sla?.vigentehasta) }}</span>
                 </div>
               </div>
             </div>
@@ -177,9 +177,9 @@
         </mat-card-header>
 
         <mat-card-content>
-          @if (categoria()!.etiquetas && categoria()!.etiquetas.length > 0) {
+          @if ((categoria()!.etiquetas || []).length > 0) {
             <div class="tags-grid">
-              @for (etiqueta of categoria()!.etiquetas; track etiqueta.id) {
+              @for (etiqueta of categoria()!.etiquetas || []; track etiqueta.id) {
                 <div class="tag-card">
                   <div class="tag-header">
                     <mat-icon class="tag-icon">label</mat-icon>
@@ -208,9 +208,9 @@
         </mat-card-header>
 
         <mat-card-content>
-          @if (categoria()!.especialidades && categoria()!.especialidades.length > 0) {
+          @if ((categoria()!.especialidades || []).length > 0) {
             <div class="specialties-grid">
-              @for (especialidad of categoria()!.especialidades; track especialidad.id) {
+              @for (especialidad of categoria()!.especialidades || []; track especialidad.id) {
                 <div class="specialty-card">
                   <div class="specialty-header">
                     <mat-icon class="specialty-icon">psychology</mat-icon>

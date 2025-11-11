@@ -23,6 +23,7 @@ export interface TiqueteModel {
   cumplioslaresolucion?: boolean;
   
   // Relaciones sin tipado estricto 
+   categoria?: any; 
   cliente?: any;
   tecnicoActual?: any;
   asignaciones?: any[];

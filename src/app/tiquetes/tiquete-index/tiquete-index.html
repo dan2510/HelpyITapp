@@ -57,7 +57,7 @@
                   #{{ tiquete.id }} - {{ tiquete.titulo }}
                 </mat-card-title>
                 <mat-card-subtitle class="tiquete-subtitle">
-                  {{ tiquete.categoria.nombre }}
+                  {{ tiquete.categoria?.nombre }}
                 </mat-card-subtitle>
               </mat-card-header>
 
@@ -103,7 +103,7 @@
                   <div class="info-row user-section">
                     <mat-icon class="user-icon">person</mat-icon>
                     <span class="user-text">
-                      Cliente: <strong>{{ tiquete.cliente.nombrecompleto }}</strong>
+                      Cliente: <strong>{{ tiquete.cliente?.nombrecompleto }}</strong>
                     </span>
                   </div>
                 }
@@ -112,7 +112,7 @@
                   <div class="info-row user-section">
                     <mat-icon class="user-icon">engineering</mat-icon>
                     <span class="user-text">
-                      Técnico: <strong>{{ tiquete.tecnicoActual.nombrecompleto }}</strong>
+                      Técnico: <strong>{{ tiquete.tecnicoActual?.nombrecompleto }}</strong>
                     </span>
                   </div>
                 }
@@ -121,7 +121,7 @@
                   <div class="info-row user-section">
                     <mat-icon class="user-icon">person</mat-icon>
                     <span class="user-text">
-                      Solicitante: <strong>{{ tiquete.cliente.nombrecompleto }}</strong>
+                      Solicitante: <strong>{{ tiquete.cliente?.nombrecompleto }}</strong>
                     </span>
                   </div>
                 }

@@ -98,7 +98,8 @@
               <mat-icon class="info-icon">category</mat-icon>
               <div class="info-content">
                 <span class="info-label">Categoría</span>
-                <span class="info-value">{{ tiquete()!.idcategoria }}</span>
+                <span class="info-value">{{ tiquete()!.categoria?.nombre }}</span>
+                <span class="info-description">{{ tiquete()!.categoria?.descripcion }}</span>
               </div>
             </div>
 
@@ -107,8 +108,8 @@
               <mat-icon class="info-icon">person</mat-icon>
               <div class="info-content">
                 <span class="info-label">Usuario Solicitante</span>
-                <span class="info-value">{{ tiquete()!.cliente.nombrecompleto }}</span>
-                <span class="info-description">{{ tiquete()!.cliente.correo }}</span>
+                <span class="info-value">{{ tiquete()!.cliente?.nombrecompleto }}</span>
+                <span class="info-description">{{ tiquete()!.cliente?.correo }}</span>
               </div>
             </div>
 
@@ -145,12 +146,12 @@
             <mat-icon class="avatar-icon">schedule</mat-icon>
           </div>
           <mat-card-title>SLA y Cumplimiento</mat-card-title>
-          <mat-card-subtitle>{{ tiquete()!.sla.nombre }}</mat-card-subtitle>
+          <mat-card-subtitle>{{ tiquete()!.sla?.nombre }}</mat-card-subtitle>
         </mat-card-header>
 
         <mat-card-content>
           <div class="sla-section">
-            <p class="sla-description">{{ tiquete()!.sla.descripcion }}</p>
+            <p class="sla-description">{{ tiquete()!.sla?.descripcion }}</p>
 
             <!-- Métricas de SLA -->
             <div class="sla-metrics">
@@ -163,24 +164,24 @@
                 <div class="metric-content">
                   <div class="metric-values">
                     <div class="metric-value-primary">
-                      {{ tiquete()!.sla.tiempoRespuestaHoras }}h
+                      {{ tiquete()!.sla?.tiempoRespuestaHoras || 0 }}h
                     </div>
                     <div class="metric-value-secondary">
-                      Tiempo máximo: {{ tiquete()!.sla.maxminutosrespuesta }} min
+                      Tiempo máximo: {{ tiquete()!.sla?.maxminutosrespuesta || 0 }} min
                     </div>
                   </div>
                   
                   <!-- Cumplimiento de Respuesta -->
                   <div class="cumplimiento-badge">
-                    <mat-icon [class]="'cumplimiento-icon ' + getCumplimientoColor(tiquete()!.cumplimiento.cumplioslarespuesta)">
-                      {{ getCumplimientoIcon(tiquete()!.cumplimiento.cumplioslarespuesta) }}
+                    <mat-icon [class]="'cumplimiento-icon ' + getCumplimientoColor(tiquete()!.cumplimiento?.cumplioslarespuesta)">
+                      {{ getCumplimientoIcon(tiquete()!.cumplimiento?.cumplioslarespuesta) }}
                     </mat-icon>
-                    <span [class]="'cumplimiento-text ' + getCumplimientoColor(tiquete()!.cumplimiento.cumplioslarespuesta)">
-                      {{ getCumplimientoTexto(tiquete()!.cumplimiento.cumplioslarespuesta) }}
+                    <span [class]="'cumplimiento-text ' + getCumplimientoColor(tiquete()!.cumplimiento?.cumplioslarespuesta)">
+                      {{ getCumplimientoTexto(tiquete()!.cumplimiento?.cumplioslarespuesta) }}
                     </span>
                   </div>
 
-                  @if (tiquete()!.cumplimiento.horasRespuesta) {
+                  @if (tiquete()!.cumplimiento?.horasRespuesta) {
                     <p class="tiempo-real">
                       Tiempo real: <strong>{{ tiquete()!.cumplimiento.horasRespuesta }}h</strong>
                     </p>
@@ -201,30 +202,30 @@
                 <div class="metric-content">
                   <div class="metric-values">
                     <div class="metric-value-primary">
-                      {{ tiquete()!.sla.tiempoResolucionHoras }}h
+                      {{ tiquete()!.sla?.tiempoResolucionHoras || 0 }}h
                     </div>
                     <div class="metric-value-secondary">
-                      Tiempo máximo: {{ tiquete()!.sla.maxminutosresolucion }} min
+                      Tiempo máximo: {{ tiquete()!.sla?.maxminutosresolucion || 0 }} min
                     </div>
                   </div>
                   
                   <!-- Cumplimiento de Resolución -->
                   <div class="cumplimiento-badge">
-                    <mat-icon [class]="'cumplimiento-icon ' + getCumplimientoColor(tiquete()!.cumplimiento.cumplioslaresolucion)">
-                      {{ getCumplimientoIcon(tiquete()!.cumplimiento.cumplioslaresolucion) }}
+                    <mat-icon [class]="'cumplimiento-icon ' + getCumplimientoColor(tiquete()!.cumplimiento?.cumplioslaresolucion)">
+                      {{ getCumplimientoIcon(tiquete()!.cumplimiento?.cumplioslaresolucion) }}
                     </mat-icon>
-                    <span [class]="'cumplimiento-text ' + getCumplimientoColor(tiquete()!.cumplimiento.cumplioslaresolucion)">
-                      {{ getCumplimientoTexto(tiquete()!.cumplimiento.cumplioslaresolucion) }}
+                    <span [class]="'cumplimiento-text ' + getCumplimientoColor(tiquete()!.cumplimiento?.cumplioslaresolucion)">
+                      {{ getCumplimientoTexto(tiquete()!.cumplimiento?.cumplioslaresolucion) }}
                     </span>
                   </div>
 
-                  @if (tiquete()!.cumplimiento.diasResolucion) {
+                  @if (tiquete()!.cumplimiento?.diasResolucion) {
                     <p class="tiempo-real">
                       Días de resolución: <strong>{{ tiquete()!.cumplimiento.diasResolucion }} días</strong>
                     </p>
                   }
 
-                  @if (tiquete()!.cumplimiento.horasResolucion) {
+                  @if (tiquete()!.cumplimiento?.horasResolucion) {
                     <p class="tiempo-real">
                       Horas totales: <strong>{{ tiquete()!.cumplimiento.horasResolucion }}h</strong>
                     </p>
@@ -247,13 +248,13 @@
             <mat-icon class="avatar-icon">history</mat-icon>
           </div>
           <mat-card-title>Historial de Estados</mat-card-title>
-          <mat-card-subtitle>{{ tiquete()!.historiales.length }} cambios registrados</mat-card-subtitle>
+          <mat-card-subtitle>{{ (tiquete()!.historiales || []).length }} cambios registrados</mat-card-subtitle>
         </mat-card-header>
 
         <mat-card-content>
-          @if (tiquete()!.historiales && tiquete()!.historiales.length > 0) {
+          @if ((tiquete()!.historiales || []).length > 0) {
             <mat-accordion class="history-accordion">
-              @for (historial of tiquete()!.historiales; track historial.id) {
+              @for (historial of tiquete()!.historiales || []; track historial.id) {
                 <mat-expansion-panel class="history-panel">
                   <mat-expansion-panel-header>
                     <mat-panel-title>
@@ -286,8 +287,8 @@
                         <mat-icon class="change-icon">person</mat-icon>
                         <div class="change-content">
                           <span class="change-label">Modificado por</span>
-                          <span class="change-value">{{ historial.cambiadopor.nombrecompleto }}</span>
-                          <span class="change-email">{{ historial.cambiadopor.correo }}</span>
+                          <span class="change-value">{{ historial.cambiadopor?.nombrecompleto }}</span>
+                          <span class="change-email">{{ historial.cambiadopor?.correo }}</span>
                         </div>
                       </div>
 
@@ -303,14 +304,14 @@
                     </div>
 
                     <!-- Evidencias (Imágenes) -->
-                    @if (historial.imagenes && historial.imagenes.length > 0) {
+                    @if ((historial.imagenes || []).length > 0) {
                       <div class="evidencias-section">
                         <h5 class="evidencias-title">
                           <mat-icon>image</mat-icon>
                           Evidencias ({{ historial.imagenes.length }})
                         </h5>
                         <div class="evidencias-grid">
-                          @for (imagen of historial.imagenes; track imagen.id) {
+                          @for (imagen of historial.imagenes || []; track imagen.id) {
                             <div class="evidencia-card">
                               <div class="evidencia-header">
                                 <mat-icon class="file-icon">insert_drive_file</mat-icon>
@@ -319,7 +320,7 @@
                               <div class="evidencia-meta">
                                 <span class="meta-item">
                                   <mat-icon class="meta-icon">person</mat-icon>
-                                  {{ imagen.subidopor.nombrecompleto }}
+                                  {{ imagen.subidopor?.nombrecompleto }}
                                 </span>
                                 <span class="meta-item">
                                   <mat-icon class="meta-icon">schedule</mat-icon>
@@ -407,8 +408,8 @@
           </div>
           <mat-card-title>Valoraciones del Servicio</mat-card-title>
           <mat-card-subtitle>
-            @if (tiquete()!.valoraciones && tiquete()!.valoraciones.length > 0) {
-              {{ tiquete()!.valoraciones }} valoración(es)
+            @if ((tiquete()!.valoraciones || []).length > 0) {
+              {{ (tiquete()!.valoraciones || []).length }} valoración(es)
             } @else {
               Sin valoraciones
             }
@@ -416,9 +417,9 @@
         </mat-card-header>
 
         <mat-card-content>
-          @if (tiquete()!.valoraciones && tiquete()!.valoraciones.length > 0) {
+          @if ((tiquete()!.valoraciones || []).length > 0) {
             <div class="ratings-list">
-              @for (valoracion of tiquete()!.valoraciones; track valoracion.id) {
+              @for (valoracion of tiquete()!.valoraciones || []; track valoracion.id) {
                 <div class="rating-card">
                   <!-- Calificación con estrellas -->
                   <div class="rating-header">
@@ -442,7 +443,7 @@
                   <div class="rating-footer">
                     <div class="rating-client">
                       <mat-icon class="client-icon">person</mat-icon>
-                      <span>{{ valoracion.cliente.nombrecompleto }}</span>
+                      <span>{{ valoracion.cliente?.nombrecompleto }}</span>
                     </div>
                     <div class="rating-date">
                       <mat-icon class="date-icon-small">schedule</mat-icon>

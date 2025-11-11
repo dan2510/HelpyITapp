@@ -56,7 +56,7 @@
             <mat-icon class="avatar-icon">person</mat-icon>
           </div>
           <mat-card-title>{{ tecnico()!.nombrecompleto }}</mat-card-title>
-          <mat-card-subtitle>{{ tecnico()!.rol.descripcion || 'Técnico de soporte' }}</mat-card-subtitle>
+          <mat-card-subtitle>{{ tecnico()!.rol?.descripcion || 'Técnico de soporte' }}</mat-card-subtitle>
         </mat-card-header>
 
         <mat-card-content>
@@ -174,9 +174,9 @@
         </mat-card-header>
 
         <mat-card-content>
-          @if (tecnico()!.especialidades && tecnico()!.especialidades.length > 0) {
+          @if ((tecnico()!.especialidades || []).length > 0) {
             <div class="specialties-grid">
-              @for (especialidad of tecnico()!.especialidades; track especialidad.id) {
+              @for (especialidad of tecnico()!.especialidades || []; track especialidad.id) {
                 <div class="specialty-card">
                   <div class="specialty-header">
                     <h4 class="specialty-name">{{ especialidad.nombre }}</h4>
@@ -213,9 +213,9 @@
         </mat-card-header>
 
         <mat-card-content>
-          @if (tecnico()!.ticketsActivos && tecnico()!.ticketsActivos.length > 0) {
+          @if ((tecnico()!.ticketsActivos || []).length > 0) {
             <div class="tickets-list">
-              @for (ticket of tecnico()!.ticketsActivos; track ticket.id) {
+              @for (ticket of tecnico()!.ticketsActivos || []; track ticket.id) {
                 <div class="ticket-item">
                   <div class="ticket-header">
                     <span class="ticket-id">#{{ ticket.id }}</span>
@@ -246,7 +246,7 @@
       </mat-card>
 
       <!-- Estadísticas del Técnico -->
-      @if (tecnico()!.estadisticas) {
+      @if (tecnico()!.estadisticas && tecnico()!.estadisticas.ticketsTotal !== undefined) {
         <mat-card class="info-card stats-info">
           <mat-card-header class="card-header">
             <div mat-card-avatar class="avatar-stats">
@@ -284,7 +284,7 @@
               <div class="stat-card">
                 <mat-icon class="stat-icon warning">percent</mat-icon>
                 <div class="stat-content">
-                  <span class="stat-number">{{ tecnico()!.estadisticas.porcentajeEfectividad }}%</span>
+                  <span class="stat-number">{{ tecnico()!.estadisticas.porcentajeEfectividad || 0 }}%</span>
                   <span class="stat-label">Efectividad</span>
                 </div>
               </div>
