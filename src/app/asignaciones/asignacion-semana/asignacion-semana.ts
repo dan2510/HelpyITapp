@@ -96,25 +96,39 @@ export class AsignacionSemana implements OnInit {
     this.router.navigate(['/tiquetes', idTicket]);
   }
 
-  getEstadoColor(estado: EstadoTiquete): string {
-    switch (estado) {
-      case EstadoTiquete.ABIERTO: return 'warn';
-      case EstadoTiquete.ASIGNADO: return 'accent';
-      case EstadoTiquete.EN_PROGRESO: return 'primary';
-      case EstadoTiquete.PENDIENTE: return 'warn';
-      case EstadoTiquete.RESUELTO: return 'success';
-      case EstadoTiquete.CERRADO: return 'basic';
-      default: return 'basic';
+  getEstadoColor(estado: EstadoTiquete | string): string {
+    const estadoStr = typeof estado === 'string' ? estado.toUpperCase() : estado;
+    switch (estadoStr) {
+      case EstadoTiquete.ABIERTO:
+      case 'ABIERTO': return 'abierto';
+      case EstadoTiquete.ASIGNADO:
+      case 'ASIGNADO': return 'asignado';
+      case EstadoTiquete.EN_PROGRESO:
+      case 'EN_PROGRESO': return 'en-progreso';
+      case EstadoTiquete.PENDIENTE:
+      case 'PENDIENTE': return 'pendiente';
+      case EstadoTiquete.RESUELTO:
+      case 'RESUELTO': return 'resuelto';
+      case EstadoTiquete.CERRADO:
+      case 'CERRADO': return 'cerrado';
+      case EstadoTiquete.CANCELADO:
+      case 'CANCELADO': return 'cancelado';
+      default: return 'abierto';
     }
   }
 
-  getPrioridadColor(prioridad: Prioridad): string {
-    switch (prioridad) {
-      case Prioridad.BAJA: return 'primary';
-      case Prioridad.MEDIA: return 'accent';
-      case Prioridad.ALTA: return 'warn';
-      case Prioridad.CRITICA: return 'error';
-      default: return 'basic';
+  getPrioridadColor(prioridad: Prioridad | string): string {
+    const prioridadStr = typeof prioridad === 'string' ? prioridad.toUpperCase() : prioridad;
+    switch (prioridadStr) {
+      case Prioridad.BAJA:
+      case 'BAJA': return 'baja';
+      case Prioridad.MEDIA:
+      case 'MEDIA': return 'media';
+      case Prioridad.ALTA:
+      case 'ALTA': return 'alta';
+      case Prioridad.CRITICA:
+      case 'CRITICA': return 'critica';
+      default: return 'media';
     }
   }
 
