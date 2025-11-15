@@ -139,6 +139,52 @@
         </mat-card-content>
       </mat-card>
 
+      <!-- SECCIÓN 1.5: Imágenes del Tiquete -->
+      @if (existeImagenRelacionada('')) {
+        <mat-card class="info-card images-info">
+          <mat-card-header class="card-header">
+            <div mat-card-avatar class="avatar-images">
+              <mat-icon class="avatar-icon">photo_library</mat-icon>
+            </div>
+            <mat-card-title>Imágenes del Tiquete</mat-card-title>
+            <mat-card-subtitle>Evidencias relacionadas</mat-card-subtitle>
+          </mat-card-header>
+
+          <mat-card-content>
+            <div class="tiquete-images-grid">
+              @for (nombreImagen of getImagenesRelacionadas(); track nombreImagen) {
+                @if (esImagen(nombreImagen)) {
+                  <div class="tiquete-image-card">
+                    <div class="tiquete-image-container">
+                      <img 
+                        [src]="getImageUrl(nombreImagen)" 
+                        [alt]="nombreImagen"
+                        class="tiquete-image"
+                        (error)="$event.target.style.display = 'none'"
+                        loading="lazy"
+                      />
+                      <div class="tiquete-image-overlay">
+                        <a 
+                          [href]="getImageUrl(nombreImagen)" 
+                          target="_blank"
+                          class="tiquete-image-link"
+                          mat-icon-button
+                          matTooltip="Ver imagen en tamaño completo">
+                          <mat-icon>open_in_new</mat-icon>
+                        </a>
+                      </div>
+                    </div>
+                    <div class="tiquete-image-name">
+                      {{ nombreImagen }}
+                    </div>
+                  </div>
+                }
+              }
+            </div>
+          </mat-card-content>
+        </mat-card>
+      }
+
       <!-- SECCIÓN 2: SLA y Cumplimiento -->
       <mat-card class="info-card sla-info">
         <mat-card-header class="card-header">
@@ -313,22 +359,57 @@
                         <div class="evidencias-grid">
                           @for (imagen of historial.imagenes || []; track imagen.id) {
                             <div class="evidencia-card">
-                              <div class="evidencia-header">
-                                <mat-icon class="file-icon">insert_drive_file</mat-icon>
-                                <span class="file-name">{{ imagen.rutaarchivo.split('/').pop() }}</span>
-                              </div>
-                              <div class="evidencia-meta">
-                                <span class="meta-item">
-                                  <mat-icon class="meta-icon">person</mat-icon>
-                                  {{ imagen.subidopor?.nombrecompleto }}
-                                </span>
-                                <span class="meta-item">
-                                  <mat-icon class="meta-icon">schedule</mat-icon>
-                                  {{ formatearFechaCorta(imagen.subidoen) }}
-                                </span>
-                              </div>
-                              <div class="evidencia-path">
-                                <code>{{ imagen.rutaarchivo }}</code>
+                              @if (esImagen(imagen.rutaarchivo)) {
+                                <!-- Vista previa de imagen -->
+                                <div class="evidencia-image-container">
+                                  <img 
+                                    [src]="getImageUrl(imagen.rutaarchivo)" 
+                                    [alt]="getNombreArchivo(imagen.rutaarchivo)"
+                                    class="evidencia-image"
+                                    (error)="$event.target.src = getImageUrl('image-not-found.jpg')"
+                                    loading="lazy"
+                                  />
+                                  <div class="image-overlay">
+                                    <a 
+                                      [href]="getImageUrl(imagen.rutaarchivo)" 
+                                      target="_blank"
+                                      class="image-link"
+                                      mat-icon-button
+                                      matTooltip="Ver imagen en tamaño completo">
+                                      <mat-icon>open_in_new</mat-icon>
+                                    </a>
+                                  </div>
+                                </div>
+                              } @else {
+                                <!-- Icono para archivos que no son imágenes -->
+                                <div class="evidencia-file-container">
+                                  <mat-icon class="file-icon-large">insert_drive_file</mat-icon>
+                                  <a 
+                                    [href]="getImageUrl(imagen.rutaarchivo)" 
+                                    target="_blank"
+                                    class="file-download-link"
+                                    matTooltip="Descargar archivo">
+                                    <mat-icon>download</mat-icon>
+                                  </a>
+                                </div>
+                              }
+                              <div class="evidencia-info">
+                                <div class="evidencia-header">
+                                  <mat-icon class="file-icon">insert_drive_file</mat-icon>
+                                  <span class="file-name" [matTooltip]="getNombreArchivo(imagen.rutaarchivo)">
+                                    {{ getNombreArchivo(imagen.rutaarchivo) }}
+                                  </span>
+                                </div>
+                                <div class="evidencia-meta">
+                                  <span class="meta-item">
+                                    <mat-icon class="meta-icon">person</mat-icon>
+                                    {{ imagen.subidopor?.nombrecompleto || imagen.usuario?.nombrecompleto }}
+                                  </span>
+                                  <span class="meta-item">
+                                    <mat-icon class="meta-icon">schedule</mat-icon>
+                                    {{ formatearFechaCorta(imagen.subidoen) }}
+                                  </span>
+                                </div>
                               </div>
                             </div>
                           }
