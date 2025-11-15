@@ -5,7 +5,7 @@ import { TiqueteService } from '../../share/services/api/tiquete.service';
 import { TiqueteModel } from '../../share/models/TiqueteModel';
 import { NotificationService } from '../../share/services/app/notification.service';
 import { Prioridad, EstadoTiquete } from '../../share/models/EnumsModel';
-import { environment } from '../../../../environments/environment.development';
+import { environment } from '../../../environments/environment.development';
 
 @Component({
   selector: 'app-tiquete-detail',

@@ -25,5 +25,4 @@ export interface UsuarioModel {
   rol?: RolModel;
   especialidades?: any[];
   ticketsActivos?: any[];
-  estadisticas?: any;
 }

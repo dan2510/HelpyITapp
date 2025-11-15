@@ -245,54 +245,6 @@
         </mat-card-content>
       </mat-card>
 
-      <!-- Estadísticas del Técnico -->
-      @if (tecnico()!.estadisticas && tecnico()!.estadisticas.ticketsTotal !== undefined) {
-        <mat-card class="info-card stats-info">
-          <mat-card-header class="card-header">
-            <div mat-card-avatar class="avatar-stats">
-              <mat-icon class="avatar-icon">analytics</mat-icon>
-            </div>
-            <mat-card-title>Estadísticas de Rendimiento</mat-card-title>
-          </mat-card-header>
-
-          <mat-card-content>
-            <div class="stats-grid">
-              <div class="stat-card">
-                <mat-icon class="stat-icon">confirmation_number</mat-icon>
-                <div class="stat-content">
-                  <span class="stat-number">{{ tecnico()!.estadisticas.ticketsTotal }}</span>
-                  <span class="stat-label">Total de Tickets</span>
-                </div>
-              </div>
-              
-              <div class="stat-card">
-                <mat-icon class="stat-icon success">check_circle</mat-icon>
-                <div class="stat-content">
-                  <span class="stat-number">{{ tecnico()!.estadisticas.ticketsResueltos }}</span>
-                  <span class="stat-label">Tickets Resueltos</span>
-                </div>
-              </div>
-              
-              <div class="stat-card">
-                <mat-icon class="stat-icon primary">hourglass_empty</mat-icon>
-                <div class="stat-content">
-                  <span class="stat-number">{{ tecnico()!.estadisticas.ticketsEnProgreso }}</span>
-                  <span class="stat-label">En Progreso</span>
-                </div>
-              </div>
-              
-              <div class="stat-card">
-                <mat-icon class="stat-icon warning">percent</mat-icon>
-                <div class="stat-content">
-                  <span class="stat-number">{{ tecnico()!.estadisticas.porcentajeEfectividad || 0 }}%</span>
-                  <span class="stat-label">Efectividad</span>
-                </div>
-              </div>
-            </div>
-          </mat-card-content>
-        </mat-card>
-      }
-
       <!-- Información de Fechas -->
       <mat-card class="info-card dates-info">
         <mat-card-header class="card-header">
