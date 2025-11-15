@@ -13,6 +13,4 @@ export interface CategoriaModel {
   sla?: any;
   etiquetas?: any[];
   especialidades?: any[];
-  estadisticas?: any;
-  tiquetes?: any[];
 }

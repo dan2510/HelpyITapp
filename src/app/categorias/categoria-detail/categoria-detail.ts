@@ -119,13 +119,21 @@ export class CategoriaDetail implements OnInit {
     return `${horas}h ${mins}m`;
   }
 
-  getEstadisticaColor(tipo: string): string {
-    switch (tipo) {
-      case 'total': return 'primary';
-      case 'abiertos': return 'warn';
-      case 'resueltos': return 'success';
-      case 'criticos': return 'error';
-      default: return 'neutral';
+  getEspecialidadColorClass(nombreEspecialidad: string): string {
+    const nombre = nombreEspecialidad.toLowerCase();
+    if (nombre.includes('redes') || nombre.includes('network')) {
+      return 'especialidad-redes';
+    } else if (nombre.includes('hardware')) {
+      return 'especialidad-hardware';
+    } else if (nombre.includes('software')) {
+      return 'especialidad-software';
+    } else if (nombre.includes('seguridad') || nombre.includes('security')) {
+      return 'especialidad-seguridad';
+    } else if (nombre.includes('db') || nombre.includes('base de datos') || nombre.includes('database')) {
+      return 'especialidad-database';
+    } else if (nombre.includes('servidor') || nombre.includes('server')) {
+      return 'especialidad-servidores';
     }
+    return 'especialidad-default';
   }
 }

@@ -177,7 +177,7 @@
           @if ((tecnico()!.especialidades || []).length > 0) {
             <div class="specialties-grid">
               @for (especialidad of tecnico()!.especialidades || []; track especialidad.id) {
-                <div class="specialty-card">
+                <div class="specialty-card" [ngClass]="getEspecialidadColorClass(especialidad.nombre)">
                   <div class="specialty-header">
                     <h4 class="specialty-name">{{ especialidad.nombre }}</h4>
                     <mat-chip 
@@ -221,13 +221,11 @@
                     <span class="ticket-id">#{{ ticket.id }}</span>
                     <div class="ticket-badges">
                       <mat-chip 
-                        [color]="getEstadoTicketColor(ticket.estado)"
-                        class="ticket-chip">
+                        [class]="'ticket-chip estado-' + getEstadoTicketColor(ticket.estado)">
                         {{ ticket.estado }}
                       </mat-chip>
                       <mat-chip 
-                        [color]="getPrioridadColor(ticket.prioridad)"
-                        class="priority-chip">
+                        [class]="'priority-chip ' + getPrioridadColor(ticket.prioridad)">
                         {{ ticket.prioridad }}
                       </mat-chip>
                     </div>

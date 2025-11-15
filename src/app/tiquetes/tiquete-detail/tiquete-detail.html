@@ -78,14 +78,12 @@
                 <span class="info-label">Estado y Prioridad</span>
                 <div class="badges-container">
                   <mat-chip 
-                    [color]="getEstadoColor(tiquete()!.estado)"
-                    class="status-chip-large">
-                    <mat-icon [color]="getEstadoColor(tiquete()!.estado)">label</mat-icon>
+                    [class]="'status-chip-large ' + getEstadoColor(tiquete()!.estado)">
+                    <mat-icon [class]="'status-icon ' + getEstadoColor(tiquete()!.estado)">label</mat-icon>
                     {{ tiquete()!.estado }}
                   </mat-chip>
                   <mat-chip 
-                    [color]="getPrioridadColor(tiquete()!.prioridad)"
-                    class="priority-chip-large">
+                    [class]="'priority-chip-large ' + getPrioridadColor(tiquete()!.prioridad)">
                     <mat-icon>{{ getPrioridadIcon(tiquete()!.prioridad) }}</mat-icon>
                     {{ tiquete()!.prioridad }}
                   </mat-chip>
@@ -138,52 +136,6 @@
           </div>
         </mat-card-content>
       </mat-card>
-
-      <!-- SECCIÓN 1.5: Imágenes del Tiquete -->
-      @if (existeImagenRelacionada('')) {
-        <mat-card class="info-card images-info">
-          <mat-card-header class="card-header">
-            <div mat-card-avatar class="avatar-images">
-              <mat-icon class="avatar-icon">photo_library</mat-icon>
-            </div>
-            <mat-card-title>Imágenes del Tiquete</mat-card-title>
-            <mat-card-subtitle>Evidencias relacionadas</mat-card-subtitle>
-          </mat-card-header>
-
-          <mat-card-content>
-            <div class="tiquete-images-grid">
-              @for (nombreImagen of getImagenesRelacionadas(); track nombreImagen) {
-                @if (esImagen(nombreImagen)) {
-                  <div class="tiquete-image-card">
-                    <div class="tiquete-image-container">
-                      <img 
-                        [src]="getImageUrl(nombreImagen)" 
-                        [alt]="nombreImagen"
-                        class="tiquete-image"
-                        (error)="$event.target.style.display = 'none'"
-                        loading="lazy"
-                      />
-                      <div class="tiquete-image-overlay">
-                        <a 
-                          [href]="getImageUrl(nombreImagen)" 
-                          target="_blank"
-                          class="tiquete-image-link"
-                          mat-icon-button
-                          matTooltip="Ver imagen en tamaño completo">
-                          <mat-icon>open_in_new</mat-icon>
-                        </a>
-                      </div>
-                    </div>
-                    <div class="tiquete-image-name">
-                      {{ nombreImagen }}
-                    </div>
-                  </div>
-                }
-              }
-            </div>
-          </mat-card-content>
-        </mat-card>
-      }
 
       <!-- SECCIÓN 2: SLA y Cumplimiento -->
       <mat-card class="info-card sla-info">
@@ -287,13 +239,13 @@
         </mat-card-content>
       </mat-card>
 
-      <!-- SECCIÓN 3: Historial de Estados -->
+      <!-- SECCIÓN 3: Historial de Ticket -->
       <mat-card class="info-card history-info">
         <mat-card-header class="card-header">
           <div mat-card-avatar class="avatar-history">
             <mat-icon class="avatar-icon">history</mat-icon>
           </div>
-          <mat-card-title>Historial de Estados</mat-card-title>
+          <mat-card-title>Historial de Ticket</mat-card-title>
           <mat-card-subtitle>{{ (tiquete()!.historiales || []).length }} cambios registrados</mat-card-subtitle>
         </mat-card-header>
 
@@ -306,14 +258,12 @@
                     <mat-panel-title>
                       <div class="history-title">
                         <mat-chip 
-                          [color]="getEstadoColor(historial.estadoanterior)"
-                          class="estado-chip-small">
+                          [class]="'estado-chip-small ' + getEstadoColor(historial.estadoanterior)">
                           {{ historial.estadoanterior }}
                         </mat-chip>
                         <mat-icon class="arrow-icon">arrow_forward</mat-icon>
                         <mat-chip 
-                          [color]="getEstadoColor(historial.estadonuevo)"
-                          class="estado-chip-small">
+                          [class]="'estado-chip-small ' + getEstadoColor(historial.estadonuevo)">
                           {{ historial.estadonuevo }}
                         </mat-chip>
                       </div>
@@ -366,7 +316,8 @@
                                     [src]="getImageUrl(imagen.rutaarchivo)" 
                                     [alt]="getNombreArchivo(imagen.rutaarchivo)"
                                     class="evidencia-image"
-                                    (error)="$event.target.src = getImageUrl('image-not-found.jpg')"
+                                    (error)="onImageError($event)"
+                                    (load)="onImageLoad($event)"
                                     loading="lazy"
                                   />
                                   <div class="image-overlay">
@@ -375,7 +326,8 @@
                                       target="_blank"
                                       class="image-link"
                                       mat-icon-button
-                                      matTooltip="Ver imagen en tamaño completo">
+                                      matTooltip="Ver imagen en tamaño completo"
+                                      (click)="$event.stopPropagation()">
                                       <mat-icon>open_in_new</mat-icon>
                                     </a>
                                   </div>

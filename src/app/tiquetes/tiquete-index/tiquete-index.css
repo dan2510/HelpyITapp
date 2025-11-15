@@ -202,6 +202,72 @@
   font-weight: 600 !important;
 }
 
+/* Colores de prioridad personalizados */
+.priority-icon.baja {
+  color: #36b37e !important;
+}
+
+.priority-icon.media {
+  color: #ffab00 !important;
+}
+
+.priority-icon.alta {
+  color: #ff5722 !important;
+}
+
+.priority-icon.critica {
+  color: #de350b !important;
+}
+
+/* Estilos para mat-chip con colores personalizados */
+::ng-deep .priority-chip.baja {
+  background-color: #36b37e !important;
+  color: white !important;
+}
+
+::ng-deep .priority-chip.baja .mdc-evolution-chip__cell--primary,
+::ng-deep .priority-chip.baja .mat-mdc-chip-action-label,
+::ng-deep .priority-chip.baja .mdc-evolution-chip__text-label,
+::ng-deep .priority-chip.baja span {
+  color: white !important;
+}
+
+::ng-deep .priority-chip.media {
+  background-color: #ffab00 !important;
+  color: white !important;
+}
+
+::ng-deep .priority-chip.media .mdc-evolution-chip__cell--primary,
+::ng-deep .priority-chip.media .mat-mdc-chip-action-label,
+::ng-deep .priority-chip.media .mdc-evolution-chip__text-label,
+::ng-deep .priority-chip.media span {
+  color: white !important;
+}
+
+::ng-deep .priority-chip.alta {
+  background-color: #ff5722 !important;
+  color: white !important;
+}
+
+::ng-deep .priority-chip.alta .mdc-evolution-chip__cell--primary,
+::ng-deep .priority-chip.alta .mat-mdc-chip-action-label,
+::ng-deep .priority-chip.alta .mdc-evolution-chip__text-label,
+::ng-deep .priority-chip.alta span {
+  color: white !important;
+}
+
+::ng-deep .priority-chip.critica {
+  background-color: #de350b !important;
+  color: white !important;
+}
+
+::ng-deep .priority-chip.critica .mdc-evolution-chip__cell--primary,
+::ng-deep .priority-chip.critica .mat-mdc-chip-action-label,
+::ng-deep .priority-chip.critica .mdc-evolution-chip__text-label,
+::ng-deep .priority-chip.critica span {
+  color: white !important;
+}
+
 /* Sección de estado */
 .status-section {
   align-items: center;
@@ -218,6 +284,120 @@
   height: 24px !important;
   border-radius: 12px !important;
   font-weight: 600 !important;
+}
+
+/* Colores de estado personalizados - Iconos */
+.status-icon.abierto {
+  color: #2196F3 !important;
+}
+
+.status-icon.asignado {
+  color: #1976D2 !important;
+}
+
+.status-icon.en-progreso {
+  color: #0D47A1 !important;
+}
+
+.status-icon.pendiente {
+  color: #FF9800 !important;
+}
+
+.status-icon.resuelto {
+  color: #4CAF50 !important;
+}
+
+.status-icon.cerrado {
+  color: #757575 !important;
+}
+
+.status-icon.cancelado {
+  color: #F44336 !important;
+}
+
+/* Estilos para mat-chip de estado con colores personalizados */
+::ng-deep .status-chip.abierto {
+  background-color: #2196F3 !important;
+  color: white !important;
+}
+
+::ng-deep .status-chip.abierto .mdc-evolution-chip__cell--primary,
+::ng-deep .status-chip.abierto .mat-mdc-chip-action-label,
+::ng-deep .status-chip.abierto .mdc-evolution-chip__text-label,
+::ng-deep .status-chip.abierto span {
+  color: white !important;
+}
+
+::ng-deep .status-chip.asignado {
+  background-color: #1976D2 !important;
+  color: white !important;
+}
+
+::ng-deep .status-chip.asignado .mdc-evolution-chip__cell--primary,
+::ng-deep .status-chip.asignado .mat-mdc-chip-action-label,
+::ng-deep .status-chip.asignado .mdc-evolution-chip__text-label,
+::ng-deep .status-chip.asignado span {
+  color: white !important;
+}
+
+::ng-deep .status-chip.en-progreso {
+  background-color: #0D47A1 !important;
+  color: white !important;
+}
+
+::ng-deep .status-chip.en-progreso .mdc-evolution-chip__cell--primary,
+::ng-deep .status-chip.en-progreso .mat-mdc-chip-action-label,
+::ng-deep .status-chip.en-progreso .mdc-evolution-chip__text-label,
+::ng-deep .status-chip.en-progreso span {
+  color: white !important;
+}
+
+::ng-deep .status-chip.pendiente {
+  background-color: #FF9800 !important;
+  color: white !important;
+}
+
+::ng-deep .status-chip.pendiente .mdc-evolution-chip__cell--primary,
+::ng-deep .status-chip.pendiente .mat-mdc-chip-action-label,
+::ng-deep .status-chip.pendiente .mdc-evolution-chip__text-label,
+::ng-deep .status-chip.pendiente span {
+  color: white !important;
+}
+
+::ng-deep .status-chip.resuelto {
+  background-color: #4CAF50 !important;
+  color: white !important;
+}
+
+::ng-deep .status-chip.resuelto .mdc-evolution-chip__cell--primary,
+::ng-deep .status-chip.resuelto .mat-mdc-chip-action-label,
+::ng-deep .status-chip.resuelto .mdc-evolution-chip__text-label,
+::ng-deep .status-chip.resuelto span {
+  color: white !important;
+}
+
+::ng-deep .status-chip.cerrado {
+  background-color: #757575 !important;
+  color: white !important;
+}
+
+::ng-deep .status-chip.cerrado .mdc-evolution-chip__cell--primary,
+::ng-deep .status-chip.cerrado .mat-mdc-chip-action-label,
+::ng-deep .status-chip.cerrado .mdc-evolution-chip__text-label,
+::ng-deep .status-chip.cerrado span {
+  color: white !important;
+}
+
+::ng-deep .status-chip.cancelado {
+  background-color: #F44336 !important;
+  color: white !important;
+}
+
+::ng-deep .status-chip.cancelado .mdc-evolution-chip__cell--primary,
+::ng-deep .status-chip.cancelado .mat-mdc-chip-action-label,
+::ng-deep .status-chip.cancelado .mdc-evolution-chip__text-label,
+::ng-deep .status-chip.cancelado span {
+  color: white !important;
 }
 
 /* Sección de fecha */

@@ -286,6 +286,257 @@
   height: 18px;
 }
 
+/* Colores de estado personalizados en detalle - Iconos */
+.status-icon.abierto {
+  color: #2196F3 !important;
+}
+
+.status-icon.asignado {
+  color: #1976D2 !important;
+}
+
+.status-icon.en-progreso {
+  color: #0D47A1 !important;
+}
+
+.status-icon.pendiente {
+  color: #FF9800 !important;
+}
+
+.status-icon.resuelto {
+  color: #4CAF50 !important;
+}
+
+.status-icon.cerrado {
+  color: #757575 !important;
+}
+
+.status-icon.cancelado {
+  color: #F44336 !important;
+}
+
+/* Colores de prioridad personalizados en detalle */
+::ng-deep .priority-chip-large.baja {
+  background-color: #36b37e !important;
+  color: white !important;
+}
+
+::ng-deep .priority-chip-large.baja .mdc-evolution-chip__cell--primary,
+::ng-deep .priority-chip-large.baja .mat-mdc-chip-action-label,
+::ng-deep .priority-chip-large.baja mat-icon {
+  color: white !important;
+}
+
+::ng-deep .priority-chip-large.media {
+  background-color: #ffab00 !important;
+  color: white !important;
+}
+
+::ng-deep .priority-chip-large.media .mdc-evolution-chip__cell--primary,
+::ng-deep .priority-chip-large.media .mat-mdc-chip-action-label,
+::ng-deep .priority-chip-large.media mat-icon {
+  color: white !important;
+}
+
+::ng-deep .priority-chip-large.alta {
+  background-color: #ff5722 !important;
+  color: white !important;
+}
+
+::ng-deep .priority-chip-large.alta .mdc-evolution-chip__cell--primary,
+::ng-deep .priority-chip-large.alta .mat-mdc-chip-action-label,
+::ng-deep .priority-chip-large.alta mat-icon {
+  color: white !important;
+}
+
+::ng-deep .priority-chip-large.critica {
+  background-color: #de350b !important;
+  color: white !important;
+}
+
+::ng-deep .priority-chip-large.critica .mdc-evolution-chip__cell--primary,
+::ng-deep .priority-chip-large.critica .mat-mdc-chip-action-label,
+::ng-deep .priority-chip-large.critica mat-icon {
+  color: white !important;
+}
+
+/* Colores de estado personalizados en detalle - Chips grandes */
+::ng-deep .status-chip-large.abierto {
+  background-color: #2196F3 !important;
+  color: white !important;
+}
+
+::ng-deep .status-chip-large.abierto .mdc-evolution-chip__cell--primary,
+::ng-deep .status-chip-large.abierto .mat-mdc-chip-action-label,
+::ng-deep .status-chip-large.abierto .mdc-evolution-chip__text-label,
+::ng-deep .status-chip-large.abierto mat-icon,
+::ng-deep .status-chip-large.abierto span {
+  color: white !important;
+}
+
+::ng-deep .status-chip-large.asignado {
+  background-color: #1976D2 !important;
+  color: white !important;
+}
+
+::ng-deep .status-chip-large.asignado .mdc-evolution-chip__cell--primary,
+::ng-deep .status-chip-large.asignado .mat-mdc-chip-action-label,
+::ng-deep .status-chip-large.asignado .mdc-evolution-chip__text-label,
+::ng-deep .status-chip-large.asignado mat-icon,
+::ng-deep .status-chip-large.asignado span {
+  color: white !important;
+}
+
+::ng-deep .status-chip-large.en-progreso {
+  background-color: #0D47A1 !important;
+  color: white !important;
+}
+
+::ng-deep .status-chip-large.en-progreso .mdc-evolution-chip__cell--primary,
+::ng-deep .status-chip-large.en-progreso .mat-mdc-chip-action-label,
+::ng-deep .status-chip-large.en-progreso .mdc-evolution-chip__text-label,
+::ng-deep .status-chip-large.en-progreso mat-icon,
+::ng-deep .status-chip-large.en-progreso span {
+  color: white !important;
+}
+
+::ng-deep .status-chip-large.pendiente {
+  background-color: #FF9800 !important;
+  color: white !important;
+}
+
+::ng-deep .status-chip-large.pendiente .mdc-evolution-chip__cell--primary,
+::ng-deep .status-chip-large.pendiente .mat-mdc-chip-action-label,
+::ng-deep .status-chip-large.pendiente .mdc-evolution-chip__text-label,
+::ng-deep .status-chip-large.pendiente mat-icon,
+::ng-deep .status-chip-large.pendiente span {
+  color: white !important;
+}
+
+::ng-deep .status-chip-large.resuelto {
+  background-color: #4CAF50 !important;
+  color: white !important;
+}
+
+::ng-deep .status-chip-large.resuelto .mdc-evolution-chip__cell--primary,
+::ng-deep .status-chip-large.resuelto .mat-mdc-chip-action-label,
+::ng-deep .status-chip-large.resuelto .mdc-evolution-chip__text-label,
+::ng-deep .status-chip-large.resuelto mat-icon,
+::ng-deep .status-chip-large.resuelto span {
+  color: white !important;
+}
+
+::ng-deep .status-chip-large.cerrado {
+  background-color: #757575 !important;
+  color: white !important;
+}
+
+::ng-deep .status-chip-large.cerrado .mdc-evolution-chip__cell--primary,
+::ng-deep .status-chip-large.cerrado .mat-mdc-chip-action-label,
+::ng-deep .status-chip-large.cerrado .mdc-evolution-chip__text-label,
+::ng-deep .status-chip-large.cerrado mat-icon,
+::ng-deep .status-chip-large.cerrado span {
+  color: white !important;
+}
+
+::ng-deep .status-chip-large.cancelado {
+  background-color: #F44336 !important;
+  color: white !important;
+}
+
+::ng-deep .status-chip-large.cancelado .mdc-evolution-chip__cell--primary,
+::ng-deep .status-chip-large.cancelado .mat-mdc-chip-action-label,
+::ng-deep .status-chip-large.cancelado .mdc-evolution-chip__text-label,
+::ng-deep .status-chip-large.cancelado mat-icon,
+::ng-deep .status-chip-large.cancelado span {
+  color: white !important;
+}
+
+/* Colores de estado personalizados en detalle - Chips pequeños del historial */
+::ng-deep .estado-chip-small.abierto {
+  background-color: #2196F3 !important;
+  color: white !important;
+}
+
+::ng-deep .estado-chip-small.abierto .mdc-evolution-chip__cell--primary,
+::ng-deep .estado-chip-small.abierto .mat-mdc-chip-action-label,
+::ng-deep .estado-chip-small.abierto .mdc-evolution-chip__text-label,
+::ng-deep .estado-chip-small.abierto span {
+  color: white !important;
+}
+
+::ng-deep .estado-chip-small.asignado {
+  background-color: #1976D2 !important;
+  color: white !important;
+}
+
+::ng-deep .estado-chip-small.asignado .mdc-evolution-chip__cell--primary,
+::ng-deep .estado-chip-small.asignado .mat-mdc-chip-action-label,
+::ng-deep .estado-chip-small.asignado .mdc-evolution-chip__text-label,
+::ng-deep .estado-chip-small.asignado span {
+  color: white !important;
+}
+
+::ng-deep .estado-chip-small.en-progreso {
+  background-color: #0D47A1 !important;
+  color: white !important;
+}
+
+::ng-deep .estado-chip-small.en-progreso .mdc-evolution-chip__cell--primary,
+::ng-deep .estado-chip-small.en-progreso .mat-mdc-chip-action-label,
+::ng-deep .estado-chip-small.en-progreso .mdc-evolution-chip__text-label,
+::ng-deep .estado-chip-small.en-progreso span {
+  color: white !important;
+}
+
+::ng-deep .estado-chip-small.pendiente {
+  background-color: #FF9800 !important;
+  color: white !important;
+}
+
+::ng-deep .estado-chip-small.pendiente .mdc-evolution-chip__cell--primary,
+::ng-deep .estado-chip-small.pendiente .mat-mdc-chip-action-label,
+::ng-deep .estado-chip-small.pendiente .mdc-evolution-chip__text-label,
+::ng-deep .estado-chip-small.pendiente span {
+  color: white !important;
+}
+
+::ng-deep .estado-chip-small.resuelto {
+  background-color: #4CAF50 !important;
+  color: white !important;
+}
+
+::ng-deep .estado-chip-small.resuelto .mdc-evolution-chip__cell--primary,
+::ng-deep .estado-chip-small.resuelto .mat-mdc-chip-action-label,
+::ng-deep .estado-chip-small.resuelto .mdc-evolution-chip__text-label,
+::ng-deep .estado-chip-small.resuelto span {
+  color: white !important;
+}
+
+::ng-deep .estado-chip-small.cerrado {
+  background-color: #757575 !important;
+  color: white !important;
+}
+
+::ng-deep .estado-chip-small.cerrado .mdc-evolution-chip__cell--primary,
+::ng-deep .estado-chip-small.cerrado .mat-mdc-chip-action-label,
+::ng-deep .estado-chip-small.cerrado .mdc-evolution-chip__text-label,
+::ng-deep .estado-chip-small.cerrado span {
+  color: white !important;
+}
+
+::ng-deep .estado-chip-small.cancelado {
+  background-color: #F44336 !important;
+  color: white !important;
+}
+
+::ng-deep .estado-chip-small.cancelado .mdc-evolution-chip__cell--primary,
+::ng-deep .estado-chip-small.cancelado .mat-mdc-chip-action-label,
+::ng-deep .estado-chip-small.cancelado .mdc-evolution-chip__text-label,
+::ng-deep .estado-chip-small.cancelado span {
+  color: white !important;
+}
+
 /* Sección SLA */
 .sla-section {
   padding: 20px;
@@ -629,6 +880,30 @@
   height: 100%;
   object-fit: cover;
   transition: transform 0.3s ease;
+}
+
+/* Placeholder para imágenes con error */
+.image-error-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: var(--jira-text-secondary, #5e6c84);
+  padding: 20px;
+  text-align: center;
+  width: 100%;
+  height: 100%;
+}
+
+.image-error-placeholder .error-icon {
+  font-size: 48px;
+  opacity: 0.5;
+}
+
+.image-error-placeholder span:not(.error-icon) {
+  font-size: 0.875rem;
+  color: var(--jira-text-secondary, #5e6c84);
 }
 
 .evidencia-card:hover .evidencia-image {

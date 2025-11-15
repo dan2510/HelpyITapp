@@ -75,23 +75,23 @@ export class TiqueteDetail implements OnInit {
   // Métodos auxiliares
   getPrioridadColor(prioridad: Prioridad): string {
     switch (prioridad) {
-      case Prioridad.BAJA: return 'primary';
-      case Prioridad.MEDIA: return 'accent';
-      case Prioridad.ALTA: return 'warn';
-      case Prioridad.CRITICA: return 'error';
+      case Prioridad.BAJA: return 'baja';
+      case Prioridad.MEDIA: return 'media';
+      case Prioridad.ALTA: return 'alta';
+      case Prioridad.CRITICA: return 'critica';
       default: return 'basic';
     }
   }
 
   getEstadoColor(estado: EstadoTiquete): string {
     switch (estado) {
-      case EstadoTiquete.ABIERTO: return 'warn';
-      case EstadoTiquete.ASIGNADO: return 'accent';
-      case EstadoTiquete.EN_PROGRESO: return 'primary';
-      case EstadoTiquete.PENDIENTE: return 'warn';
-      case EstadoTiquete.RESUELTO: return 'success';
-      case EstadoTiquete.CERRADO: return 'basic';
-      case EstadoTiquete.CANCELADO: return 'error';
+      case EstadoTiquete.ABIERTO: return 'abierto';
+      case EstadoTiquete.ASIGNADO: return 'asignado';
+      case EstadoTiquete.EN_PROGRESO: return 'en-progreso';
+      case EstadoTiquete.PENDIENTE: return 'pendiente';
+      case EstadoTiquete.RESUELTO: return 'resuelto';
+      case EstadoTiquete.CERRADO: return 'cerrado';
+      case EstadoTiquete.CANCELADO: return 'cancelado';
       default: return 'basic';
     }
   }
@@ -165,10 +165,21 @@ export class TiqueteDetail implements OnInit {
   getImageUrl(rutaArchivo: string): string {
     if (!rutaArchivo) return '';
     
-    // Extraer solo el nombre del archivo si viene con ruta
-    const nombreArchivo = rutaArchivo.split('/').pop() || rutaArchivo;
+    // Limpiar la ruta: remover "evidencias/" si está presente y extraer solo el nombre del archivo
+    let nombreArchivo = rutaArchivo;
+    
+    // Si contiene "evidencias/", extraer solo el nombre del archivo
+    if (nombreArchivo.includes('evidencias/')) {
+      nombreArchivo = nombreArchivo.split('evidencias/').pop() || nombreArchivo;
+    }
+    
+    // Si contiene "/", extraer solo el nombre del archivo
+    if (nombreArchivo.includes('/')) {
+      nombreArchivo = nombreArchivo.split('/').pop() || nombreArchivo;
+    }
     
     // Construir la URL usando el endpoint de imágenes del servidor
+    // El servidor sirve las imágenes desde /images que apunta a assets/uploads
     return `${environment.apiURL}/images/${nombreArchivo}`;
   }
 
@@ -244,5 +255,38 @@ export class TiqueteDetail implements OnInit {
     ];
 
     return primeros5Tiquetes.includes(tiquete.titulo);
+  }
+
+  /**
+   * Maneja errores al cargar imágenes
+   * @param event Evento de error de la imagen
+   */
+  onImageError(event: any): void {
+    console.warn('Error al cargar imagen:', event.target.src);
+    // Ocultar la imagen si falla al cargar
+    event.target.style.display = 'none';
+    // Mostrar un placeholder
+    const container = event.target.parentElement;
+    if (container && !container.querySelector('.image-error-placeholder')) {
+      const placeholder = document.createElement('div');
+      placeholder.className = 'image-error-placeholder';
+      placeholder.innerHTML = '<span class="error-icon">⚠️</span><span>Imagen no disponible</span>';
+      container.appendChild(placeholder);
+    }
+  }
+
+  /**
+   * Maneja la carga exitosa de imágenes
+   * @param event Evento de carga de la imagen
+   */
+  onImageLoad(event: any): void {
+    // Asegurar que la imagen sea visible cuando se carga correctamente
+    event.target.style.display = 'block';
+    // Remover cualquier placeholder de error
+    const container = event.target.parentElement;
+    const placeholder = container?.querySelector('.image-error-placeholder');
+    if (placeholder) {
+      placeholder.remove();
+    }
   }
 }

@@ -83,8 +83,7 @@
   gap: 24px;
   grid-template-areas: 
     "basic sla"
-    "tags specialties"
-    "stats stats";
+    "tags specialties";
 }
 
 /* Tarjetas de información */
@@ -114,10 +113,6 @@
 
 .specialties-info {
   grid-area: specialties;
-}
-
-.stats-info {
-  grid-area: stats;
 }
 
 /* Headers de las tarjetas */
@@ -160,10 +155,6 @@
 
 .avatar-specialties {
   background: linear-gradient(135deg, var(--jira-success, #36b37e), #4caf50);
-}
-
-.avatar-stats {
-  background: linear-gradient(135deg, #ff5722, #e91e63);
 }
 
 .avatar-icon {
@@ -456,100 +447,75 @@
   font-style: italic;
 }
 
-/* Estadísticas */
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 16px;
-  padding: 20px;
-  margin-bottom: 16px;
+/* Códigos de colores para especialidades */
+::ng-deep .specialty-card.especialidad-redes {
+  border-left: 4px solid #0052cc !important;
+  background: linear-gradient(to right, rgba(0, 82, 204, 0.05), #ffffff) !important;
 }
 
-.stat-card {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  padding: 16px;
-  border: 1px solid var(--jira-border-light, #ebecf0);
-  border-radius: 8px;
-  background: var(--jira-bg-secondary, #ffffff);
-  transition: all 0.2s ease;
+::ng-deep .specialty-card.especialidad-redes:hover {
+  border-color: #0052cc !important;
+  box-shadow: 0 2px 8px rgba(0, 82, 204, 0.2) !important;
 }
 
-.stat-card:hover {
-  border-color: var(--jira-primary, #0052cc);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+::ng-deep .specialty-card.especialidad-hardware {
+  border-left: 4px solid #ff9800 !important;
+  background: linear-gradient(to right, rgba(255, 152, 0, 0.05), #ffffff) !important;
 }
 
-.stat-icon {
-  font-size: 28px;
-  width: 28px;
-  height: 28px;
+::ng-deep .specialty-card.especialidad-hardware:hover {
+  border-color: #ff9800 !important;
+  box-shadow: 0 2px 8px rgba(255, 152, 0, 0.2) !important;
 }
 
-.stat-icon.primary {
-  color: var(--jira-primary, #0052cc);
+::ng-deep .specialty-card.especialidad-software {
+  border-left: 4px solid #36b37e !important;
+  background: linear-gradient(to right, rgba(54, 179, 126, 0.05), #ffffff) !important;
 }
 
-.stat-icon.success {
-  color: var(--jira-success, #36b37e);
+::ng-deep .specialty-card.especialidad-software:hover {
+  border-color: #36b37e !important;
+  box-shadow: 0 2px 8px rgba(54, 179, 126, 0.2) !important;
 }
 
-.stat-icon.warning {
-  color: var(--jira-warning, #ffab00);
+::ng-deep .specialty-card.especialidad-seguridad {
+  border-left: 4px solid #de350b !important;
+  background: linear-gradient(to right, rgba(222, 53, 11, 0.05), #ffffff) !important;
 }
 
-.stat-icon.error {
-  color: var(--jira-error, #de350b);
+::ng-deep .specialty-card.especialidad-seguridad:hover {
+  border-color: #de350b !important;
+  box-shadow: 0 2px 8px rgba(222, 53, 11, 0.2) !important;
 }
 
-.stat-content {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
+::ng-deep .specialty-card.especialidad-database {
+  border-left: 4px solid #6554c0 !important;
+  background: linear-gradient(to right, rgba(101, 84, 192, 0.05), #ffffff) !important;
 }
 
-.stat-number {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: var(--jira-text-primary, #172b4d);
-  line-height: 1;
+::ng-deep .specialty-card.especialidad-database:hover {
+  border-color: #6554c0 !important;
+  box-shadow: 0 2px 8px rgba(101, 84, 192, 0.2) !important;
 }
 
-.stat-card .stat-label {
-  font-size: 0.875rem;
-  color: var(--jira-text-secondary, #5e6c84);
-  font-weight: 500;
-  margin: 0;
+::ng-deep .specialty-card.especialidad-servidores {
+  border-left: 4px solid #5e6c84 !important;
+  background: linear-gradient(to right, rgba(94, 108, 132, 0.05), #ffffff) !important;
 }
 
-/* Métrica de resolución */
-.resolution-metric {
-  padding: 0 20px 20px;
+::ng-deep .specialty-card.especialidad-servidores:hover {
+  border-color: #5e6c84 !important;
+  box-shadow: 0 2px 8px rgba(94, 108, 132, 0.2) !important;
 }
 
-.resolution-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 12px;
+::ng-deep .specialty-card.especialidad-default {
+  border-left: 4px solid #8993a4 !important;
+  background: linear-gradient(to right, rgba(137, 147, 164, 0.05), #ffffff) !important;
 }
 
-.resolution-label {
-  font-size: 1rem;
-  font-weight: 600;
-  color: var(--jira-text-primary, #172b4d);
-}
-
-.resolution-value {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: var(--jira-primary, #0052cc);
-}
-
-.resolution-bar {
-  height: 12px !important;
-  border-radius: 6px !important;
+::ng-deep .specialty-card.especialidad-default:hover {
+  border-color: #8993a4 !important;
+  box-shadow: 0 2px 8px rgba(137, 147, 164, 0.2) !important;
 }
 
 /* Responsivo */
@@ -560,16 +526,11 @@
       "basic"
       "sla"
       "tags"
-      "specialties"
-      "stats";
+      "specialties";
   }
   
   .sla-metrics {
     grid-template-columns: 1fr;
-  }
-
-  .stats-grid {
-    grid-template-columns: repeat(2, 1fr);
   }
 }
 
@@ -596,21 +557,11 @@
   .sla-validity {
     grid-template-columns: 1fr;
   }
-
-  .stats-grid {
-    grid-template-columns: 1fr;
-  }
 }
 
 @media (max-width: 480px) {
   .metric-values {
     text-align: center;
-  }
-  
-  .stat-card {
-    flex-direction: column;
-    text-align: center;
-    gap: 12px;
   }
 }
 

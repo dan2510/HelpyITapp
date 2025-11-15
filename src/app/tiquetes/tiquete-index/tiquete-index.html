@@ -65,13 +65,11 @@
                 <!-- Campo 1: Prioridad -->
                 <div class="info-row priority-section">
                   <mat-icon 
-                    [color]="getPrioridadColor(tiquete.prioridad)"
-                    class="priority-icon">
+                    [class]="'priority-icon ' + getPrioridadColor(tiquete.prioridad)">
                     {{ getPrioridadIcon(tiquete.prioridad) }}
                   </mat-icon>
                   <mat-chip 
-                    [color]="getPrioridadColor(tiquete.prioridad)"
-                    class="priority-chip">
+                    [class]="'priority-chip ' + getPrioridadColor(tiquete.prioridad)">
                     {{ tiquete.prioridad }}
                   </mat-chip>
                 </div>
@@ -79,13 +77,11 @@
                 <!-- Campo 2: Estado -->
                 <div class="info-row status-section">
                   <mat-icon 
-                    [color]="getEstadoColor(tiquete.estado)"
-                    class="status-icon">
+                    [class]="'status-icon ' + getEstadoColor(tiquete.estado)">
                     {{ getEstadoIcon(tiquete.estado) }}
                   </mat-icon>
                   <mat-chip 
-                    [color]="getEstadoColor(tiquete.estado)"
-                    class="status-chip">
+                    [class]="'status-chip ' + getEstadoColor(tiquete.estado)">
                     {{ tiquete.estado }}
                   </mat-chip>
                 </div>

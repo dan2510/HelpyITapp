@@ -58,7 +58,7 @@
                   @for (ticket of dia.tickets; track ticket.id) {
                     <mat-card 
                       class="ticket-card"
-                      [class]="'priority-' + ticket.prioridad.toLowerCase()"
+                      [ngClass]="'priority-' + getPrioridadColor(ticket.prioridad)"
                       (click)="verDetalle(ticket.id)"
                       matRipple>
                       
@@ -84,8 +84,7 @@
                       <!-- Estado -->
                       <div class="ticket-info-row">
                         <mat-chip 
-                          [color]="getEstadoColor(ticket.estado)"
-                          class="estado-chip">
+                          [ngClass]="'estado-chip ' + getEstadoColor(ticket.estado)">
                           {{ ticket.estado }}
                         </mat-chip>
                       </div>

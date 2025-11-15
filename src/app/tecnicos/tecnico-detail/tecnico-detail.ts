@@ -102,22 +102,23 @@ export class TecnicoDetail implements OnInit {
 
   getEstadoTicketColor(estado: string): string {
     switch (estado.toUpperCase()) {
-      case 'ABIERTO': return 'warn';
-      case 'EN_PROGRESO': return 'primary';
-      case 'ASIGNADO': return 'accent';
-      case 'PENDIENTE': return 'warn';
-      case 'RESUELTO': return 'success';
-      case 'CERRADO': return 'basic';
+      case 'ABIERTO': return 'abierto';
+      case 'EN_PROGRESO': return 'en-progreso';
+      case 'ASIGNADO': return 'asignado';
+      case 'PENDIENTE': return 'pendiente';
+      case 'RESUELTO': return 'resuelto';
+      case 'CERRADO': return 'cerrado';
+      case 'CANCELADO': return 'cancelado';
       default: return 'basic';
     }
   }
 
   getPrioridadColor(prioridad: string): string {
     switch (prioridad.toUpperCase()) {
-      case 'BAJA': return 'basic';
-      case 'MEDIA': return 'primary';
-      case 'ALTA': return 'accent';
-      case 'CRITICA': return 'warn';
+      case 'BAJA': return 'baja';
+      case 'MEDIA': return 'media';
+      case 'ALTA': return 'alta';
+      case 'CRITICA': return 'critica';
       default: return 'basic';
     }
   }
@@ -143,5 +144,23 @@ export class TecnicoDetail implements OnInit {
     if (porcentaje <= 50) return 'primary';
     if (porcentaje <= 80) return 'accent';
     return 'warn';
+  }
+
+  getEspecialidadColorClass(nombreEspecialidad: string): string {
+    const nombre = nombreEspecialidad.toLowerCase();
+    if (nombre.includes('redes') || nombre.includes('network')) {
+      return 'especialidad-redes';
+    } else if (nombre.includes('hardware')) {
+      return 'especialidad-hardware';
+    } else if (nombre.includes('software')) {
+      return 'especialidad-software';
+    } else if (nombre.includes('seguridad') || nombre.includes('security')) {
+      return 'especialidad-seguridad';
+    } else if (nombre.includes('db') || nombre.includes('base de datos') || nombre.includes('database')) {
+      return 'especialidad-database';
+    } else if (nombre.includes('servidor') || nombre.includes('server')) {
+      return 'especialidad-servidores';
+    }
+    return 'especialidad-default';
   }
 }

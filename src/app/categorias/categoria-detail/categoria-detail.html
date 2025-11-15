@@ -211,7 +211,7 @@
           @if ((categoria()!.especialidades || []).length > 0) {
             <div class="specialties-grid">
               @for (especialidad of categoria()!.especialidades || []; track especialidad.id) {
-                <div class="specialty-card">
+                <div class="specialty-card" [ngClass]="getEspecialidadColorClass(especialidad.nombre)">
                   <div class="specialty-header">
                     <mat-icon class="specialty-icon">psychology</mat-icon>
                     <h4 class="specialty-name">{{ especialidad.nombre }}</h4>
@@ -233,72 +233,6 @@
           }
         </mat-card-content>
       </mat-card>
-
-      <!-- Estadísticas de Tickets -->
-      @if (categoria()!.estadisticas) {
-        <mat-card class="info-card stats-info">
-          <mat-card-header class="card-header">
-            <div mat-card-avatar class="avatar-stats">
-              <mat-icon class="avatar-icon">analytics</mat-icon>
-            </div>
-            <mat-card-title>Estadísticas de Tickets</mat-card-title>
-          </mat-card-header>
-
-          <mat-card-content>
-            <div class="stats-grid">
-              <!-- Total de Tickets -->
-              <div class="stat-card">
-                <mat-icon class="stat-icon primary">confirmation_number</mat-icon>
-                <div class="stat-content">
-                  <span class="stat-number">{{ categoria()!.estadisticas.ticketsTotal }}</span>
-                  <span class="stat-label">Total de Tickets</span>
-                </div>
-              </div>
-              
-              <!-- Tickets Abiertos -->
-              <div class="stat-card">
-                <mat-icon class="stat-icon warning">inbox</mat-icon>
-                <div class="stat-content">
-                  <span class="stat-number">{{ categoria()!.estadisticas.ticketsAbiertos }}</span>
-                  <span class="stat-label">Tickets Abiertos</span>
-                </div>
-              </div>
-              
-              <!-- Tickets Resueltos -->
-              <div class="stat-card">
-                <mat-icon class="stat-icon success">check_circle</mat-icon>
-                <div class="stat-content">
-                  <span class="stat-number">{{ categoria()!.estadisticas.ticketsResueltos }}</span>
-                  <span class="stat-label">Tickets Resueltos</span>
-                </div>
-              </div>
-              
-              <!-- Tickets Críticos -->
-              <div class="stat-card">
-                <mat-icon class="stat-icon error">priority_high</mat-icon>
-                <div class="stat-content">
-                  <span class="stat-number">{{ categoria()!.estadisticas.ticketsCriticos }}</span>
-                  <span class="stat-label">Tickets Críticos</span>
-                </div>
-              </div>
-            </div>
-
-            <!-- Porcentaje de Resolución -->
-            <div class="resolution-metric">
-              <div class="resolution-header">
-                <span class="resolution-label">Porcentaje de Resolución</span>
-                <span class="resolution-value">{{ categoria()!.estadisticas.porcentajeResolucion }}%</span>
-              </div>
-              <mat-progress-bar 
-                mode="determinate"
-                [value]="categoria()!.estadisticas.porcentajeResolucion"
-                [color]="categoria()!.estadisticas.porcentajeResolucion >= 70 ? 'primary' : 'warn'"
-                class="resolution-bar">
-              </mat-progress-bar>
-            </div>
-          </mat-card-content>
-        </mat-card>
-      }
     </div>
   }
 </div>

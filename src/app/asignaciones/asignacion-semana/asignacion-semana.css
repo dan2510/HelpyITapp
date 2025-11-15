@@ -150,21 +150,25 @@
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15) !important;
 }
 
-/* Colores de prioridad en borde izquierdo */
+/* Colores de prioridad en borde izquierdo - consistentes con otras vistas */
 .ticket-card.priority-baja {
-  border-left-color: var(--jira-primary, #0052cc) !important;
+  border-left: 4px solid #36b37e !important;
+  background: linear-gradient(to right, rgba(54, 179, 126, 0.05), #ffffff) !important;
 }
 
 .ticket-card.priority-media {
-  border-left-color: var(--jira-warning, #ffab00) !important;
+  border-left: 4px solid #ffab00 !important;
+  background: linear-gradient(to right, rgba(255, 171, 0, 0.05), #ffffff) !important;
 }
 
 .ticket-card.priority-alta {
-  border-left-color: #ff5722 !important;
+  border-left: 4px solid #ff5722 !important;
+  background: linear-gradient(to right, rgba(255, 87, 34, 0.05), #ffffff) !important;
 }
 
 .ticket-card.priority-critica {
-  border-left-color: var(--jira-error, #de350b) !important;
+  border-left: 4px solid #de350b !important;
+  background: linear-gradient(to right, rgba(222, 53, 11, 0.05), #ffffff) !important;
 }
 
 /* Header de la tarjeta */
@@ -233,6 +237,91 @@
   font-size: 0.7rem !important;
   height: 22px !important;
   border-radius: 11px !important;
+}
+
+/* Colores de estado personalizados - consistentes con otras vistas */
+::ng-deep .estado-chip.abierto {
+  background-color: #2196F3 !important;
+  color: white !important;
+}
+
+::ng-deep .estado-chip.abierto .mdc-evolution-chip__cell--primary,
+::ng-deep .estado-chip.abierto .mat-mdc-chip-action-label,
+::ng-deep .estado-chip.abierto .mdc-evolution-chip__text-label,
+::ng-deep .estado-chip.abierto span {
+  color: white !important;
+}
+
+::ng-deep .estado-chip.asignado {
+  background-color: #1976D2 !important;
+  color: white !important;
+}
+
+::ng-deep .estado-chip.asignado .mdc-evolution-chip__cell--primary,
+::ng-deep .estado-chip.asignado .mat-mdc-chip-action-label,
+::ng-deep .estado-chip.asignado .mdc-evolution-chip__text-label,
+::ng-deep .estado-chip.asignado span {
+  color: white !important;
+}
+
+::ng-deep .estado-chip.en-progreso {
+  background-color: #0D47A1 !important;
+  color: white !important;
+}
+
+::ng-deep .estado-chip.en-progreso .mdc-evolution-chip__cell--primary,
+::ng-deep .estado-chip.en-progreso .mat-mdc-chip-action-label,
+::ng-deep .estado-chip.en-progreso .mdc-evolution-chip__text-label,
+::ng-deep .estado-chip.en-progreso span {
+  color: white !important;
+}
+
+::ng-deep .estado-chip.pendiente {
+  background-color: #FF9800 !important;
+  color: white !important;
+}
+
+::ng-deep .estado-chip.pendiente .mdc-evolution-chip__cell--primary,
+::ng-deep .estado-chip.pendiente .mat-mdc-chip-action-label,
+::ng-deep .estado-chip.pendiente .mdc-evolution-chip__text-label,
+::ng-deep .estado-chip.pendiente span {
+  color: white !important;
+}
+
+::ng-deep .estado-chip.resuelto {
+  background-color: #36b37e !important;
+  color: white !important;
+}
+
+::ng-deep .estado-chip.resuelto .mdc-evolution-chip__cell--primary,
+::ng-deep .estado-chip.resuelto .mat-mdc-chip-action-label,
+::ng-deep .estado-chip.resuelto .mdc-evolution-chip__text-label,
+::ng-deep .estado-chip.resuelto span {
+  color: white !important;
+}
+
+::ng-deep .estado-chip.cerrado {
+  background-color: #5e6c84 !important;
+  color: white !important;
+}
+
+::ng-deep .estado-chip.cerrado .mdc-evolution-chip__cell--primary,
+::ng-deep .estado-chip.cerrado .mat-mdc-chip-action-label,
+::ng-deep .estado-chip.cerrado .mdc-evolution-chip__text-label,
+::ng-deep .estado-chip.cerrado span {
+  color: white !important;
+}
+
+::ng-deep .estado-chip.cancelado {
+  background-color: #8993a4 !important;
+  color: white !important;
+}
+
+::ng-deep .estado-chip.cancelado .mdc-evolution-chip__cell--primary,
+::ng-deep .estado-chip.cancelado .mat-mdc-chip-action-label,
+::ng-deep .estado-chip.cancelado .mdc-evolution-chip__text-label,
+::ng-deep .estado-chip.cancelado span {
+  color: white !important;
 }
 
 /* Sección SLA */

@@ -392,6 +392,77 @@
   font-style: italic;
 }
 
+/* Códigos de colores para especialidades */
+::ng-deep .specialty-card.especialidad-redes {
+  border-left: 4px solid #0052cc !important;
+  background: linear-gradient(to right, rgba(0, 82, 204, 0.05), #ffffff) !important;
+}
+
+::ng-deep .specialty-card.especialidad-redes:hover {
+  border-color: #0052cc !important;
+  box-shadow: 0 2px 8px rgba(0, 82, 204, 0.2) !important;
+}
+
+::ng-deep .specialty-card.especialidad-hardware {
+  border-left: 4px solid #ff9800 !important;
+  background: linear-gradient(to right, rgba(255, 152, 0, 0.05), #ffffff) !important;
+}
+
+::ng-deep .specialty-card.especialidad-hardware:hover {
+  border-color: #ff9800 !important;
+  box-shadow: 0 2px 8px rgba(255, 152, 0, 0.2) !important;
+}
+
+::ng-deep .specialty-card.especialidad-software {
+  border-left: 4px solid #36b37e !important;
+  background: linear-gradient(to right, rgba(54, 179, 126, 0.05), #ffffff) !important;
+}
+
+::ng-deep .specialty-card.especialidad-software:hover {
+  border-color: #36b37e !important;
+  box-shadow: 0 2px 8px rgba(54, 179, 126, 0.2) !important;
+}
+
+::ng-deep .specialty-card.especialidad-seguridad {
+  border-left: 4px solid #de350b !important;
+  background: linear-gradient(to right, rgba(222, 53, 11, 0.05), #ffffff) !important;
+}
+
+::ng-deep .specialty-card.especialidad-seguridad:hover {
+  border-color: #de350b !important;
+  box-shadow: 0 2px 8px rgba(222, 53, 11, 0.2) !important;
+}
+
+::ng-deep .specialty-card.especialidad-database {
+  border-left: 4px solid #6554c0 !important;
+  background: linear-gradient(to right, rgba(101, 84, 192, 0.05), #ffffff) !important;
+}
+
+::ng-deep .specialty-card.especialidad-database:hover {
+  border-color: #6554c0 !important;
+  box-shadow: 0 2px 8px rgba(101, 84, 192, 0.2) !important;
+}
+
+::ng-deep .specialty-card.especialidad-servidores {
+  border-left: 4px solid #5e6c84 !important;
+  background: linear-gradient(to right, rgba(94, 108, 132, 0.05), #ffffff) !important;
+}
+
+::ng-deep .specialty-card.especialidad-servidores:hover {
+  border-color: #5e6c84 !important;
+  box-shadow: 0 2px 8px rgba(94, 108, 132, 0.2) !important;
+}
+
+::ng-deep .specialty-card.especialidad-default {
+  border-left: 4px solid #8993a4 !important;
+  background: linear-gradient(to right, rgba(137, 147, 164, 0.05), #ffffff) !important;
+}
+
+::ng-deep .specialty-card.especialidad-default:hover {
+  border-color: #8993a4 !important;
+  box-shadow: 0 2px 8px rgba(137, 147, 164, 0.2) !important;
+}
+
 /* Tickets activos */
 .tickets-list {
   padding: 20px;
@@ -435,6 +506,140 @@
   font-size: 0.7rem !important;
   height: 20px !important;
   border-radius: 10px !important;
+}
+
+/* Colores de estado personalizados en detalle de técnico */
+::ng-deep .ticket-chip.estado-abierto {
+  background-color: #2196F3 !important;
+  color: white !important;
+}
+
+::ng-deep .ticket-chip.estado-abierto .mdc-evolution-chip__cell--primary,
+::ng-deep .ticket-chip.estado-abierto .mat-mdc-chip-action-label,
+::ng-deep .ticket-chip.estado-abierto .mdc-evolution-chip__text-label,
+::ng-deep .ticket-chip.estado-abierto span {
+  color: white !important;
+}
+
+::ng-deep .ticket-chip.estado-asignado {
+  background-color: #1976D2 !important;
+  color: white !important;
+}
+
+::ng-deep .ticket-chip.estado-asignado .mdc-evolution-chip__cell--primary,
+::ng-deep .ticket-chip.estado-asignado .mat-mdc-chip-action-label,
+::ng-deep .ticket-chip.estado-asignado .mdc-evolution-chip__text-label,
+::ng-deep .ticket-chip.estado-asignado span {
+  color: white !important;
+}
+
+::ng-deep .ticket-chip.estado-en-progreso {
+  background-color: #0D47A1 !important;
+  color: white !important;
+}
+
+::ng-deep .ticket-chip.estado-en-progreso .mdc-evolution-chip__cell--primary,
+::ng-deep .ticket-chip.estado-en-progreso .mat-mdc-chip-action-label,
+::ng-deep .ticket-chip.estado-en-progreso .mdc-evolution-chip__text-label,
+::ng-deep .ticket-chip.estado-en-progreso span {
+  color: white !important;
+}
+
+::ng-deep .ticket-chip.estado-pendiente {
+  background-color: #FF9800 !important;
+  color: white !important;
+}
+
+::ng-deep .ticket-chip.estado-pendiente .mdc-evolution-chip__cell--primary,
+::ng-deep .ticket-chip.estado-pendiente .mat-mdc-chip-action-label,
+::ng-deep .ticket-chip.estado-pendiente .mdc-evolution-chip__text-label,
+::ng-deep .ticket-chip.estado-pendiente span {
+  color: white !important;
+}
+
+::ng-deep .ticket-chip.estado-resuelto {
+  background-color: #4CAF50 !important;
+  color: white !important;
+}
+
+::ng-deep .ticket-chip.estado-resuelto .mdc-evolution-chip__cell--primary,
+::ng-deep .ticket-chip.estado-resuelto .mat-mdc-chip-action-label,
+::ng-deep .ticket-chip.estado-resuelto .mdc-evolution-chip__text-label,
+::ng-deep .ticket-chip.estado-resuelto span {
+  color: white !important;
+}
+
+::ng-deep .ticket-chip.estado-cerrado {
+  background-color: #757575 !important;
+  color: white !important;
+}
+
+::ng-deep .ticket-chip.estado-cerrado .mdc-evolution-chip__cell--primary,
+::ng-deep .ticket-chip.estado-cerrado .mat-mdc-chip-action-label,
+::ng-deep .ticket-chip.estado-cerrado .mdc-evolution-chip__text-label,
+::ng-deep .ticket-chip.estado-cerrado span {
+  color: white !important;
+}
+
+::ng-deep .ticket-chip.estado-cancelado {
+  background-color: #F44336 !important;
+  color: white !important;
+}
+
+::ng-deep .ticket-chip.estado-cancelado .mdc-evolution-chip__cell--primary,
+::ng-deep .ticket-chip.estado-cancelado .mat-mdc-chip-action-label,
+::ng-deep .ticket-chip.estado-cancelado .mdc-evolution-chip__text-label,
+::ng-deep .ticket-chip.estado-cancelado span {
+  color: white !important;
+}
+
+/* Colores de prioridad personalizados en detalle de técnico */
+::ng-deep .priority-chip.baja {
+  background-color: #36b37e !important;
+  color: white !important;
+}
+
+::ng-deep .priority-chip.baja .mdc-evolution-chip__cell--primary,
+::ng-deep .priority-chip.baja .mat-mdc-chip-action-label,
+::ng-deep .priority-chip.baja .mdc-evolution-chip__text-label,
+::ng-deep .priority-chip.baja span {
+  color: white !important;
+}
+
+::ng-deep .priority-chip.media {
+  background-color: #ffab00 !important;
+  color: white !important;
+}
+
+::ng-deep .priority-chip.media .mdc-evolution-chip__cell--primary,
+::ng-deep .priority-chip.media .mat-mdc-chip-action-label,
+::ng-deep .priority-chip.media .mdc-evolution-chip__text-label,
+::ng-deep .priority-chip.media span {
+  color: white !important;
+}
+
+::ng-deep .priority-chip.alta {
+  background-color: #ff5722 !important;
+  color: white !important;
+}
+
+::ng-deep .priority-chip.alta .mdc-evolution-chip__cell--primary,
+::ng-deep .priority-chip.alta .mat-mdc-chip-action-label,
+::ng-deep .priority-chip.alta .mdc-evolution-chip__text-label,
+::ng-deep .priority-chip.alta span {
+  color: white !important;
+}
+
+::ng-deep .priority-chip.critica {
+  background-color: #de350b !important;
+  color: white !important;
+}
+
+::ng-deep .priority-chip.critica .mdc-evolution-chip__cell--primary,
+::ng-deep .priority-chip.critica .mat-mdc-chip-action-label,
+::ng-deep .priority-chip.critica .mdc-evolution-chip__text-label,
+::ng-deep .priority-chip.critica span {
+  color: white !important;
 }
 
 .ticket-title {

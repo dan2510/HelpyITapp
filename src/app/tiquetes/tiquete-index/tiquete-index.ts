@@ -62,10 +62,10 @@ export class TiqueteIndex implements OnInit {
   // Métodos auxiliares
   getPrioridadColor(prioridad: Prioridad): string {
     switch (prioridad) {
-      case Prioridad.BAJA: return 'primary';
-      case Prioridad.MEDIA: return 'accent';
-      case Prioridad.ALTA: return 'warn';
-      case Prioridad.CRITICA: return 'error';
+      case Prioridad.BAJA: return 'baja';
+      case Prioridad.MEDIA: return 'media';
+      case Prioridad.ALTA: return 'alta';
+      case Prioridad.CRITICA: return 'critica';
       default: return 'basic';
     }
   }
@@ -82,13 +82,13 @@ export class TiqueteIndex implements OnInit {
 
   getEstadoColor(estado: EstadoTiquete): string {
     switch (estado) {
-      case EstadoTiquete.ABIERTO: return 'warn';
-      case EstadoTiquete.ASIGNADO: return 'accent';
-      case EstadoTiquete.EN_PROGRESO: return 'primary';
-      case EstadoTiquete.PENDIENTE: return 'warn';
-      case EstadoTiquete.RESUELTO: return 'success';
-      case EstadoTiquete.CERRADO: return 'basic';
-      case EstadoTiquete.CANCELADO: return 'error';
+      case EstadoTiquete.ABIERTO: return 'abierto';
+      case EstadoTiquete.ASIGNADO: return 'asignado';
+      case EstadoTiquete.EN_PROGRESO: return 'en-progreso';
+      case EstadoTiquete.PENDIENTE: return 'pendiente';
+      case EstadoTiquete.RESUELTO: return 'resuelto';
+      case EstadoTiquete.CERRADO: return 'cerrado';
+      case EstadoTiquete.CANCELADO: return 'cancelado';
       default: return 'basic';
     }
   }
