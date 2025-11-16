@@ -12,9 +12,11 @@
     </div>
 
     <!-- Loading -->
-    <div *ngIf="isLoading" class="loading-overlay">
-      <mat-spinner diameter="50"></mat-spinner>
-    </div>
+    @if (isLoading) {
+      <div class="loading-overlay">
+        <mat-spinner diameter="50"></mat-spinner>
+      </div>
+    }
 
     <!-- Formulario -->
     <form [formGroup]="tecnicoForm" (ngSubmit)="onSubmit()" class="tecnico-form">
@@ -32,9 +34,9 @@
             <mat-label>Nombre Completo</mat-label>
             <input matInput formControlName="nombrecompleto" placeholder="Ej: Juan Pérez García">
             <mat-icon matPrefix>person</mat-icon>
-            <mat-error *ngIf="isFieldInvalid('nombrecompleto')">
-              {{ getFieldError('nombrecompleto') }}
-            </mat-error>
+            @if (isFieldInvalid('nombrecompleto')) {
+              <mat-error>{{ getFieldError('nombrecompleto') }}</mat-error>
+            }
           </mat-form-field>
 
           <!-- Email -->
@@ -42,21 +44,25 @@
             <mat-label>Correo Electrónico</mat-label>
             <input matInput formControlName="correo" type="email" placeholder="correo@ejemplo.com">
             <mat-icon matPrefix>email</mat-icon>
-            <mat-hint *ngIf="isEditMode">El correo no se puede modificar</mat-hint>
-            <mat-error *ngIf="isFieldInvalid('correo')">
-              {{ getFieldError('correo') }}
-            </mat-error>
+            @if (isEditMode) {
+              <mat-hint>El correo no se puede modificar</mat-hint>
+            }
+            @if (isFieldInvalid('correo')) {
+              <mat-error>{{ getFieldError('correo') }}</mat-error>
+            }
           </mat-form-field>
 
           <!-- Contraseña -->
-          <mat-form-field appearance="outline" class="full-width" *ngIf="!isEditMode">
-            <mat-label>Contraseña</mat-label>
-            <input matInput formControlName="password" type="password" placeholder="Mínimo 6 caracteres">
-            <mat-icon matPrefix>lock</mat-icon>
-            <mat-error *ngIf="isFieldInvalid('password')">
-              {{ getFieldError('password') }}
-            </mat-error>
-          </mat-form-field>
+          @if (!isEditMode) {
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Contraseña</mat-label>
+              <input matInput formControlName="password" type="password" placeholder="Mínimo 6 caracteres">
+              <mat-icon matPrefix>lock</mat-icon>
+              @if (isFieldInvalid('password')) {
+                <mat-error>{{ getFieldError('password') }}</mat-error>
+              }
+            </mat-form-field>
+          }
 
           <!-- Teléfono -->
           <mat-form-field appearance="outline" class="full-width">
@@ -64,9 +70,9 @@
             <input matInput formControlName="telefono" placeholder="88889999">
             <mat-icon matPrefix>phone</mat-icon>
             <mat-hint>Opcional - Solo números (8-15 dígitos)</mat-hint>
-            <mat-error *ngIf="isFieldInvalid('telefono')">
-              {{ getFieldError('telefono') }}
-            </mat-error>
+            @if (isFieldInvalid('telefono')) {
+              <mat-error>{{ getFieldError('telefono') }}</mat-error>
+            }
           </mat-form-field>
         </div>
       </div>
@@ -83,16 +89,18 @@
           <mat-form-field appearance="outline">
             <mat-label>Disponibilidad</mat-label>
             <mat-select formControlName="disponibilidad">
-              <mat-option *ngFor="let disp of disponibilidadOptions" [value]="disp">
-                <div class="option-with-icon">
-                  <mat-icon [class]="'status-' + disp.toLowerCase()">
-                    {{ disp === 'DISPONIBLE' ? 'check_circle' : 
-                       disp === 'OCUPADO' ? 'schedule' : 
-                       disp === 'INACTIVO' ? 'block' : 'block' }}
-                  </mat-icon>
-                  <span>{{ disp }}</span>
-                </div>
-              </mat-option>
+              @for (disp of disponibilidadOptions; track disp) {
+                <mat-option [value]="disp">
+                  <div class="option-with-icon">
+                    <mat-icon [class]="'status-' + disp.toLowerCase()">
+                      {{ disp === 'DISPONIBLE' ? 'check_circle' : 
+                         disp === 'OCUPADO' ? 'schedule' : 
+                         disp === 'INACTIVO' ? 'block' : 'block' }}
+                    </mat-icon>
+                    <span>{{ disp }}</span>
+                  </div>
+                </mat-option>
+              }
             </mat-select>
             <mat-icon matPrefix>event_available</mat-icon>
           </mat-form-field>
@@ -103,9 +111,9 @@
             <input matInput type="number" formControlName="maxticketsimultaneos" min="1" max="20">
             <mat-icon matPrefix>confirmation_number</mat-icon>
             <mat-hint>Entre 1 y 20 tickets</mat-hint>
-            <mat-error *ngIf="isFieldInvalid('maxticketsimultaneos')">
-              {{ getFieldError('maxticketsimultaneos') }}
-            </mat-error>
+            @if (isFieldInvalid('maxticketsimultaneos')) {
+              <mat-error>{{ getFieldError('maxticketsimultaneos') }}</mat-error>
+            }
           </mat-form-field>
 
           <!-- Carga Actual (solo lectura) -->
@@ -117,12 +125,14 @@
           </mat-form-field>
 
           <!-- Estado Activo (solo en edición) -->
-          <mat-slide-toggle formControlName="activo" *ngIf="isEditMode" class="active-toggle">
-            <span class="toggle-label">
-              <mat-icon>{{ tecnicoForm.get('activo')?.value ? 'toggle_on' : 'toggle_off' }}</mat-icon>
-              Estado: {{ tecnicoForm.get('activo')?.value ? 'Activo' : 'Inactivo' }}
-            </span>
-          </mat-slide-toggle>
+          @if (isEditMode) {
+            <mat-slide-toggle formControlName="activo" class="active-toggle">
+              <span class="toggle-label">
+                <mat-icon>{{ tecnicoForm.get('activo')?.value ? 'toggle_on' : 'toggle_off' }}</mat-icon>
+                Estado: {{ tecnicoForm.get('activo')?.value ? 'Activo' : 'Inactivo' }}
+              </span>
+            </mat-slide-toggle>
+          }
         </div>
       </div>
 
@@ -153,37 +163,43 @@
               multiple 
               [compareWith]="compareEspecialidades"
               (selectionChange)="onEspecialidadChange($event.value)">
-              <mat-option *ngFor="let esp of especialidades" [value]="esp.id">
-                <div class="especialidad-option">
-                  <strong>{{ esp.nombre }}</strong>
-                  <small>{{ esp.descripcion }}</small>
-                </div>
-              </mat-option>
+              @for (esp of especialidades; track esp.id) {
+                <mat-option [value]="esp.id">
+                  <div class="especialidad-option">
+                    <strong>{{ esp.nombre }}</strong>
+                    <small>{{ esp.descripcion }}</small>
+                  </div>
+                </mat-option>
+              }
             </mat-select>
             <mat-icon matPrefix>school</mat-icon>
             <mat-hint>Selecciona al menos una especialidad</mat-hint>
-            <mat-error *ngIf="isFieldInvalid('especialidades')">
-              {{ getFieldError('especialidades') }}
-            </mat-error>
+            @if (isFieldInvalid('especialidades')) {
+              <mat-error>{{ getFieldError('especialidades') }}</mat-error>
+            }
           </mat-form-field>
 
           <!-- Niveles de Experiencia por Especialidad -->
-          <div class="niveles-container" *ngIf="getEspecialidadesIds().length > 0">
-            <h3>Nivel de Experiencia por Especialidad:</h3>
-            <div class="nivel-item" *ngFor="let espId of getEspecialidadesIds()">
-              <span class="especialidad-nombre">
-                {{ getEspecialidadNombre(espId) }}
-              </span>
-              <mat-button-toggle-group 
-                [value]="getNivelExperiencia(espId)"
-                (change)="updateNivelExperiencia(espId, $event.value)">
-                <mat-button-toggle [value]="nivelExperienciaOptions[0]">Junior</mat-button-toggle>
-                <mat-button-toggle [value]="nivelExperienciaOptions[1]">Intermedio</mat-button-toggle>
-                <mat-button-toggle [value]="nivelExperienciaOptions[2]">Senior</mat-button-toggle>
-                <mat-button-toggle [value]="nivelExperienciaOptions[3]">Experto</mat-button-toggle>
-              </mat-button-toggle-group>
+          @if (getEspecialidadesIds().length > 0) {
+            <div class="niveles-container">
+              <h3>Nivel de Experiencia por Especialidad:</h3>
+              @for (espId of getEspecialidadesIds(); track espId) {
+                <div class="nivel-item">
+                  <span class="especialidad-nombre">
+                    {{ getEspecialidadNombre(espId) }}
+                  </span>
+                  <mat-button-toggle-group 
+                    [value]="getNivelExperiencia(espId)"
+                    (change)="updateNivelExperiencia(espId, $event.value)">
+                    <mat-button-toggle [value]="nivelExperienciaOptions[0]">Junior</mat-button-toggle>
+                    <mat-button-toggle [value]="nivelExperienciaOptions[1]">Intermedio</mat-button-toggle>
+                    <mat-button-toggle [value]="nivelExperienciaOptions[2]">Senior</mat-button-toggle>
+                    <mat-button-toggle [value]="nivelExperienciaOptions[3]">Experto</mat-button-toggle>
+                  </mat-button-toggle-group>
+                </div>
+              }
             </div>
-          </div>
+          }
         </div>
       </div>
 
