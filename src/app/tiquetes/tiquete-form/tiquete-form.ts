@@ -1,40 +1,14 @@
 // src/app/tiquetes/tiquete-form/tiquete-form.ts
 import { Component, OnInit, signal } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { TiqueteService } from '../../share/services/api/tiquete.service';
 import { NotificationService } from '../../share/services/app/notification.service';
-import { Prioridad } from '../../share/models/EnumsModel';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment.development';
-
-interface PrioridadOption {
-  id: string;
-  nombre: string;
-}
-
-interface EtiquetaOption {
-  id: number;
-  nombre: string;
-  descripcion: string;
-  categoria: {
-    id: number;
-    nombre: string;
-    descripcion: string;
-  } | null;
-}
-
-interface UsuarioInfo {
-  id: number;
-  nombrecompleto: string;
-  correo: string;
-}
-
-interface ClienteOption {
-  id: number;
-  nombrecompleto: string;
-  correo: string;
-}
+import { EtiquetaModel } from '../../share/models/EtiquetaModel';
+import { UsuarioModel } from '../../share/models/UsuarioModel';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-tiquete-form',
@@ -43,20 +17,23 @@ interface ClienteOption {
   styleUrl: './tiquete-form.css',
 })
 export class TiqueteForm implements OnInit {
+  
   // ID de usuario fijo (simula autenticación)
-  // CAMBIAR ESTE VALOR: 1=Admin, 5=Cliente, 3=Técnico
-  private readonly ID_USUARIO_FIJO = 5; // Cliente por defecto para crear tickets
+  private readonly ID_USUARIO_FIJO = 5; // Juan Pérez
 
   tiqueteForm!: FormGroup;
   
-  protected readonly prioridades = signal<PrioridadOption[]>([]);
-  protected readonly etiquetas = signal<EtiquetaOption[]>([]);
-  protected readonly etiquetasFiltradas = signal<EtiquetaOption[]>([]);
-  protected readonly clientes = signal<ClienteOption[]>([]);
+  protected readonly prioridades = signal<{ id: string; nombre: string }[]>([]);
+  protected readonly etiquetas = signal<EtiquetaModel[]>([]);
+  protected readonly etiquetasFiltradas = signal<EtiquetaModel[]>([]);
+  protected readonly usuarioSolicitante = signal<UsuarioModel | null>(null);
   protected readonly categoriaSeleccionada = signal<string>('');
   protected readonly loading = signal<boolean>(false);
   protected readonly loadingData = signal<boolean>(false);
   protected readonly error = signal<string>('');
+  protected readonly archivosSeleccionados = signal<File[]>([]);
+  protected readonly archivosSubidos = signal<string[]>([]);
+  protected readonly uploading = signal<boolean>(false);
 
   constructor(
     private fb: FormBuilder,
@@ -78,18 +55,15 @@ export class TiqueteForm implements OnInit {
       descripcion: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(2000)]],
       prioridad: ['', Validators.required],
       idetiqueta: ['', Validators.required],
-      // Campos editables para seleccionar cliente
-      idcliente: ['', Validators.required],
+      
+      // Campos de solo lectura para mostrar info del usuario
+      nombreSolicitante: [{ value: '', disabled: true }],
       correoSolicitante: [{ value: '', disabled: true }],
+      
       // Campos no editables (solo informativos)
       categoria: [{ value: '', disabled: true }],
       fechaCreacion: [{ value: new Date().toLocaleString('es-ES'), disabled: true }],
       estado: [{ value: 'PENDIENTE', disabled: true }]
-    });
-
-    // Escuchar cambios en la selección de cliente para cargar el correo
-    this.tiqueteForm.get('idcliente')?.valueChanges.subscribe(clienteId => {
-      this.onClienteChange(clienteId);
     });
   }
 
@@ -97,84 +71,81 @@ export class TiqueteForm implements OnInit {
     this.loadingData.set(true);
     this.error.set('');
 
-    // Cargar prioridades
-    this.http.get<any>(`${environment.apiURL}/api/${environment.endPointTiquete}/prioridades`).subscribe({
+    let completedRequests = 0;
+    const totalRequests = 3;
+
+    const checkAllLoaded = () => {
+      completedRequests++;
+      if (completedRequests === totalRequests) {
+        this.loadingData.set(false);
+      }
+    };
+
+    // ✅ 1. CARGAR USUARIO SOLICITANTE - SIN /api
+    const urlUsuario = `${environment.apiURL}/${environment.endPointTiquete}/usuario/${this.ID_USUARIO_FIJO}/info`;
+    
+    this.http.get<any>(urlUsuario).subscribe({
       next: (response) => {
-        if (response.success && response.data.prioridades) {
-          this.prioridades.set(response.data.prioridades);
-          console.log('Prioridades cargadas:', response.data.prioridades);
+        if (response.success && response.data.usuario) {
+          this.usuarioSolicitante.set(response.data.usuario);
+          this.tiqueteForm.patchValue({
+            nombreSolicitante: response.data.usuario.nombrecompleto,
+            correoSolicitante: response.data.usuario.correo
+          });
         } else {
-          console.warn('Respuesta de prioridades sin datos:', response);
+          console.warn('⚠️ Respuesta usuario sin datos válidos');
         }
+        checkAllLoaded();
       },
       error: (error) => {
-        console.error('Error al cargar prioridades:', error);
-        this.notification.error('Error', 'No se pudieron cargar las prioridades');
-        this.error.set('Error al cargar las prioridades');
+        this.notification.error('Error', 'No se pudo cargar la información del usuario');
+        checkAllLoaded();
       }
     });
 
-    // Cargar etiquetas
-    this.http.get<any>(`${environment.apiURL}/api/${environment.endPointTiquete}/etiquetas`).subscribe({
+    // ✅ 2. CARGAR PRIORIDADES - SIN /api
+    const urlPrioridades = `${environment.apiURL}/${environment.endPointTiquete}/prioridades`;
+    
+    this.http.get<any>(urlPrioridades).subscribe({
+      next: (response) => {
+        if (response.success && response.data.prioridades) {
+          this.prioridades.set(response.data.prioridades);
+        } else {
+          console.warn('⚠️ Respuesta de prioridades sin datos:', response);
+        }
+        checkAllLoaded();
+      },
+      error: (error) => {
+        this.notification.error('Error', 'No se pudieron cargar las prioridades');
+        checkAllLoaded();
+      }
+    });
+
+    // ✅ 3. CARGAR ETIQUETAS - SIN /api
+    const urlEtiquetas = `${environment.apiURL}/${environment.endPointTiquete}/etiquetas`;
+    
+    this.http.get<any>(urlEtiquetas).subscribe({
       next: (response) => {
         if (response.success && response.data.etiquetas) {
           this.etiquetas.set(response.data.etiquetas);
           this.etiquetasFiltradas.set(response.data.etiquetas);
-          console.log('Etiquetas cargadas:', response.data.etiquetas);
         } else {
-          console.warn('Respuesta de etiquetas sin datos:', response);
+          console.warn('⚠️ Respuesta de etiquetas sin datos:', response);
         }
+        checkAllLoaded();
       },
       error: (error) => {
-        console.error('Error al cargar etiquetas:', error);
         this.notification.error('Error', 'No se pudieron cargar las etiquetas');
-        this.error.set('Error al cargar las etiquetas');
+        checkAllLoaded();
       }
     });
-
-    // Cargar lista de clientes
-    this.http.get<any>(`${environment.apiURL}/api/${environment.endPointTiquete}/clientes`).subscribe({
-      next: (response) => {
-        if (response.success && response.data.clientes) {
-          this.clientes.set(response.data.clientes);
-          console.log('Clientes cargados:', response.data.clientes);
-        } else {
-          console.warn('Respuesta de clientes sin datos:', response);
-        }
-        this.loadingData.set(false);
-      },
-      error: (error) => {
-        console.error('Error al cargar clientes:', error);
-        this.notification.error('Error', 'No se pudieron cargar los clientes');
-        this.error.set('Error al cargar los clientes');
-        this.loadingData.set(false);
-      }
-    });
-  }
-
-  onClienteChange(clienteId: string | number | null): void {
-    if (clienteId) {
-      const clienteSeleccionado = this.clientes().find(c => c.id === parseInt(clienteId.toString()));
-      if (clienteSeleccionado) {
-        this.tiqueteForm.patchValue({
-          correoSolicitante: clienteSeleccionado.correo
-        });
-        console.log('Cliente seleccionado:', clienteSeleccionado);
-      }
-    } else {
-      this.tiqueteForm.patchValue({
-        correoSolicitante: ''
-      });
-    }
   }
 
   onEtiquetaChange(): void {
     const idetiqueta = this.tiqueteForm.get('idetiqueta')?.value;
-    console.log('Etiqueta seleccionada ID:', idetiqueta);
     
     if (idetiqueta) {
       const etiquetaSeleccionada = this.etiquetas().find(e => e.id === parseInt(idetiqueta));
-      console.log('Etiqueta encontrada:', etiquetaSeleccionada);
       
       if (etiquetaSeleccionada) {
         if (etiquetaSeleccionada.categoria) {
@@ -184,6 +155,7 @@ export class TiqueteForm implements OnInit {
           });
           this.notification.success('Categoría asignada', `Categoría: ${etiquetaSeleccionada.categoria.nombre}`);
         } else {
+          console.warn('⚠️ Etiqueta sin categoría asociada');
           this.categoriaSeleccionada.set('');
           this.tiqueteForm.patchValue({
             categoria: 'No disponible - Esta etiqueta no tiene categoría asociada'
@@ -221,7 +193,7 @@ export class TiqueteForm implements OnInit {
     this.etiquetasFiltradas.set(filtradas);
   }
 
-  onSubmit(): void {
+  async onSubmit(): Promise<void> {
     if (this.tiqueteForm.invalid) {
       this.markFormGroupTouched(this.tiqueteForm);
       this.notification.warning('Validación', 'Por favor complete todos los campos requeridos');
@@ -231,35 +203,47 @@ export class TiqueteForm implements OnInit {
     this.loading.set(true);
     this.error.set('');
 
-    const formData = {
-      titulo: this.tiqueteForm.get('titulo')?.value.trim(),
-      descripcion: this.tiqueteForm.get('descripcion')?.value.trim(),
-      prioridad: this.tiqueteForm.get('prioridad')?.value,
-      idetiqueta: this.tiqueteForm.get('idetiqueta')?.value,
-      idcliente: this.tiqueteForm.get('idcliente')?.value
-    };
-
-    this.http.post<any>(`${environment.apiURL}/api/${environment.endPointTiquete}`, formData).subscribe({
-      next: (response: any) => {
-        if (response.success) {
-          this.notification.success('Éxito', 'Ticket creado exitosamente');
-          // Redirigir al detalle del ticket creado
-          setTimeout(() => {
-            this.router.navigate(['/tiquetes', response.data.tiquete.id]);
-          }, 1000);
-        } else {
-          this.error.set('Error al crear el ticket');
-          this.loading.set(false);
-        }
-      },
-      error: (error: any) => {
-        console.error('Error al crear ticket:', error);
-        const errorMessage = error.error?.message || 'Error al crear el ticket';
-        this.error.set(errorMessage);
-        this.loading.set(false);
-        this.notification.error('Error', errorMessage);
+    try {
+      // Primero subir los archivos si hay alguno
+      let nombresArchivos: string[] = [];
+      if (this.archivosSeleccionados().length > 0) {
+        nombresArchivos = await this.subirArchivos();
       }
-    });
+
+      const formData = {
+        titulo: this.tiqueteForm.get('titulo')?.value.trim(),
+        descripcion: this.tiqueteForm.get('descripcion')?.value.trim(),
+        prioridad: this.tiqueteForm.get('prioridad')?.value,
+        idetiqueta: this.tiqueteForm.get('idetiqueta')?.value,
+        idcliente: this.ID_USUARIO_FIJO,
+        imagenes: nombresArchivos // Enviar los nombres de archivos subidos
+      };
+      
+      const url = `${environment.apiURL}/${environment.endPointTiquete}`;
+
+      this.http.post<any>(url, formData).subscribe({
+        next: (response: any) => {
+          if (response.success) {
+            this.notification.success('Éxito', 'Ticket creado exitosamente');
+            setTimeout(() => {
+              this.router.navigate(['/tiquetes', response.data.tiquete.id]);
+            }, 1000);
+          } else {
+            this.error.set('Error al crear el ticket');
+            this.loading.set(false);
+          }
+        },
+        error: (error: any) => {
+          const errorMessage = error.error?.message || 'Error al crear el ticket';
+          this.error.set(errorMessage);
+          this.loading.set(false);
+          this.notification.error('Error', errorMessage);
+        }
+      });
+    } catch (error: any) {
+      this.loading.set(false);
+      this.notification.error('Error', 'Error al subir los archivos');
+    }
   }
 
   onCancel(): void {
@@ -307,5 +291,88 @@ export class TiqueteForm implements OnInit {
       default: return 'help';
     }
   }
-}
 
+  // Métodos para manejo de archivos
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      const nuevosArchivos = Array.from(input.files);
+      
+      // Validar tamaño máximo (2MB)
+      const archivosValidos = nuevosArchivos.filter(archivo => {
+        if (archivo.size > 2 * 1024 * 1024) {
+          this.notification.warning('Archivo muy grande', `${archivo.name} excede el tamaño máximo de 2MB`);
+          return false;
+        }
+        return true;
+      });
+
+      this.archivosSeleccionados.set([...this.archivosSeleccionados(), ...archivosValidos]);
+    }
+    // Limpiar el input para permitir seleccionar el mismo archivo nuevamente
+    input.value = '';
+  }
+
+  removerArchivo(archivo: File): void {
+    const archivos = this.archivosSeleccionados().filter(f => f !== archivo);
+    this.archivosSeleccionados.set(archivos);
+  }
+
+  esImagen(nombreArchivo: string): boolean {
+    const extension = nombreArchivo.toLowerCase().split('.').pop();
+    return ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp'].includes(extension || '');
+  }
+
+  getFilePreview(archivo: File): string {
+    if (this.esImagen(archivo.name)) {
+      return URL.createObjectURL(archivo);
+    }
+    return '';
+  }
+
+  onPreviewError(event: Event): void {
+    const img = event.target as HTMLImageElement;
+    img.style.display = 'none';
+  }
+
+  formatFileSize(bytes: number): string {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
+  }
+
+  private async subirArchivos(): Promise<string[]> {
+    if (this.archivosSeleccionados().length === 0) {
+      return [];
+    }
+
+    this.uploading.set(true);
+    const nombresArchivos: string[] = [];
+
+    try {
+      // Subir cada archivo individualmente
+      for (const archivo of this.archivosSeleccionados()) {
+        const formData = new FormData();
+        formData.append('file', archivo);
+
+        const response = await firstValueFrom(
+          this.http.post<any>(`${environment.apiURL}/file/upload`, formData)
+        );
+
+        if (response && response.fileName) {
+          nombresArchivos.push(response.fileName);
+        }
+      }
+
+      this.archivosSubidos.set(nombresArchivos);
+      return nombresArchivos;
+    } catch (error: any) {
+      this.notification.error('Error', 'No se pudieron subir algunos archivos');
+      throw error;
+    } finally {
+      this.uploading.set(false);
+    }
+  }
+}

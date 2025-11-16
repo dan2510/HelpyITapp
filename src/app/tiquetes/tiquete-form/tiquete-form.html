@@ -26,46 +26,46 @@
       <mat-card-content>
         <form [formGroup]="tiqueteForm" (ngSubmit)="onSubmit()" class="tiquete-form">
           
-          <!-- Sección: Información del Solicitante -->
+          <!-- ✅ SECCIÓN MODIFICADA: Información del Solicitante -->
           <mat-card class="info-card section-card">
             <mat-card-header class="card-header">
               <div mat-card-avatar class="avatar-section">
                 <mat-icon class="avatar-icon">person</mat-icon>
               </div>
               <mat-card-title>Información del Solicitante</mat-card-title>
+              <mat-card-subtitle>Usuario actual del sistema</mat-card-subtitle>
             </mat-card-header>
             <mat-card-content>
               <div class="form-grid">
+                <!-- ✅ CAMPO 1: Nombre del Solicitante (SOLO LECTURA) -->
                 <mat-form-field appearance="outline" class="full-width">
-                  <mat-label>Cliente Solicitante *</mat-label>
-                  <mat-select formControlName="idcliente">
-                    <mat-option value="">Seleccione un cliente</mat-option>
-                    @if (clientes().length === 0) {
-                      <mat-option disabled>Cargando clientes...</mat-option>
-                    } @else {
-                      @for (cliente of clientes(); track cliente.id) {
-                        <mat-option [value]="cliente.id">
-                          <div class="cliente-option">
-                            <span class="cliente-nombre">{{ cliente.nombrecompleto }}</span>
-                            <span class="cliente-correo">{{ cliente.correo }}</span>
-                          </div>
-                        </mat-option>
-                      }
-                    }
-                  </mat-select>
+                  <mat-label>Nombre del Solicitante</mat-label>
+                  <input 
+                    matInput 
+                    formControlName="nombreSolicitante" 
+                    readonly>
                   <mat-icon matPrefix>person</mat-icon>
-                  <mat-hint>Seleccione el cliente que solicita el ticket</mat-hint>
-                  @if (isFieldInvalid('idcliente')) {
-                    <mat-error>{{ getErrorMessage('idcliente') }}</mat-error>
-                  }
+                  <mat-hint>Usuario autenticado en el sistema</mat-hint>
                 </mat-form-field>
 
+                <!-- ✅ CAMPO 2: Correo Electrónico (SOLO LECTURA) -->
                 <mat-form-field appearance="outline" class="full-width">
                   <mat-label>Correo Electrónico</mat-label>
-                  <input matInput formControlName="correoSolicitante" readonly>
+                  <input 
+                    matInput 
+                    formControlName="correoSolicitante" 
+                    readonly>
                   <mat-icon matPrefix>email</mat-icon>
-                  <mat-hint>Se carga automáticamente al seleccionar el cliente</mat-hint>
+                  <mat-hint>Correo del usuario autenticado</mat-hint>
                 </mat-form-field>
+              </div>
+
+              <!-- ✅ NOTA INFORMATIVA -->
+              <div class="info-message" style="display: flex; align-items: center; gap: 8px; padding: 12px; background-color: #e3f2fd; border-left: 4px solid #2196F3; border-radius: 4px; margin-top: 12px;">
+                <mat-icon style="color: #2196F3;">info</mat-icon>
+                <span style="color: #1565C0; font-size: 0.9rem;">
+                  El ticket se asociará automáticamente a tu usuario actual
+                </span>
               </div>
             </mat-card-content>
           </mat-card>
@@ -136,7 +136,7 @@
                   }
                 </mat-form-field>
 
-                <!-- Etiqueta (con búsqueda/filtro) -->
+                <!-- Búsqueda de Etiquetas -->
                 <mat-form-field appearance="outline" class="full-width">
                   <mat-label>Buscar Etiqueta</mat-label>
                   <input 
@@ -148,6 +148,7 @@
                   <mat-hint>Filtre las etiquetas escribiendo su nombre o descripción</mat-hint>
                 </mat-form-field>
 
+                <!-- Selector de Etiquetas -->
                 <mat-form-field appearance="outline" class="full-width">
                   <mat-label>Seleccione una etiqueta *</mat-label>
                   <mat-select formControlName="idetiqueta" (selectionChange)="onEtiquetaChange()">
@@ -185,19 +186,104 @@
                   }
                 </mat-form-field>
 
-                <!-- Categoría (automática, no editable) -->
+                <!-- Categoría Automática (no editable) -->
                 <mat-form-field appearance="outline" class="full-width">
                   <mat-label>Categoría Asignada</mat-label>
                   <input matInput formControlName="categoria" readonly>
                   <mat-icon matPrefix>category</mat-icon>
                   <mat-hint>
                     @if (categoriaSeleccionada()) {
-                      ✓ Categoría asignada automáticamente
+                      ✓ Categoría asignada automáticamente según la etiqueta
                     } @else {
                       Seleccione una etiqueta para asignar la categoría
                     }
                   </mat-hint>
                 </mat-form-field>
+              </div>
+            </mat-card-content>
+          </mat-card>
+
+          <!-- Sección: Evidencias (Imágenes) -->
+          <mat-card class="info-card section-card">
+            <mat-card-header class="card-header">
+              <div mat-card-avatar class="avatar-section">
+                <mat-icon class="avatar-icon">image</mat-icon>
+              </div>
+              <mat-card-title>Evidencias</mat-card-title>
+              <mat-card-subtitle>Agregue imágenes o archivos como evidencia del problema</mat-card-subtitle>
+            </mat-card-header>
+            <mat-card-content>
+              <div class="evidencias-upload-section">
+                <!-- Input de carga de archivos -->
+                <div class="file-upload-container">
+                  <input 
+                    type="file" 
+                    #fileInput 
+                    multiple 
+                    accept="image/*,.pdf,.doc,.docx"
+                    (change)="onFileSelected($event)"
+                    style="display: none"
+                    id="file-upload-input">
+                  <label for="file-upload-input">
+                    <button 
+                      mat-raised-button 
+                      color="primary" 
+                      type="button"
+                      (click)="fileInput.click()"
+                      class="upload-button">
+                      <mat-icon>cloud_upload</mat-icon>
+                      Seleccionar Archivos
+                    </button>
+                  </label>
+                  <span class="upload-hint">Formatos permitidos: Imágenes (JPG, PNG, GIF), PDF, DOC, DOCX. Máximo 2MB por archivo.</span>
+                </div>
+
+                <!-- Lista de archivos seleccionados -->
+                @if (archivosSeleccionados().length > 0) {
+                  <div class="archivos-list">
+                    <h5 class="archivos-title">Archivos seleccionados ({{ archivosSeleccionados().length }})</h5>
+                    <div class="archivos-grid">
+                      @for (archivo of archivosSeleccionados(); track archivo.name) {
+                        <div class="archivo-item">
+                          <div class="archivo-preview">
+                            @if (esImagen(archivo.name)) {
+                              <img 
+                                [src]="getFilePreview(archivo)" 
+                                [alt]="archivo.name"
+                                class="preview-image"
+                                (error)="onPreviewError($event)">
+                            } @else {
+                              <mat-icon class="file-icon">insert_drive_file</mat-icon>
+                            }
+                          </div>
+                          <div class="archivo-info">
+                            <span class="archivo-nombre" [matTooltip]="archivo.name">
+                              {{ archivo.name }}
+                            </span>
+                            <span class="archivo-tamano">{{ formatFileSize(archivo.size) }}</span>
+                          </div>
+                          <button 
+                            mat-icon-button 
+                            color="warn" 
+                            type="button"
+                            (click)="removerArchivo(archivo)"
+                            class="remove-button"
+                            matTooltip="Eliminar archivo">
+                            <mat-icon>delete</mat-icon>
+                          </button>
+                        </div>
+                      }
+                    </div>
+                  </div>
+                }
+
+                <!-- Estado de carga -->
+                @if (uploading()) {
+                  <div class="upload-progress">
+                    <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+                    <p>Subiendo archivos...</p>
+                  </div>
+                }
               </div>
             </mat-card-content>
           </mat-card>
@@ -212,6 +298,7 @@
             </mat-card-header>
             <mat-card-content>
               <div class="form-grid">
+                <!-- Fecha de Creación -->
                 <mat-form-field appearance="outline" class="full-width">
                   <mat-label>Fecha de Creación</mat-label>
                   <input matInput formControlName="fechaCreacion" readonly>
@@ -219,11 +306,12 @@
                   <mat-hint>Fecha actual del sistema</mat-hint>
                 </mat-form-field>
 
+                <!-- Estado Inicial -->
                 <mat-form-field appearance="outline" class="full-width">
                   <mat-label>Estado Inicial</mat-label>
                   <input matInput formControlName="estado" readonly>
                   <mat-icon matPrefix>schedule</mat-icon>
-                  <mat-hint>Estado inicial del ticket</mat-hint>
+                  <mat-hint>Estado inicial del ticket: PENDIENTE</mat-hint>
                 </mat-form-field>
               </div>
             </mat-card-content>
@@ -264,4 +352,3 @@
     </mat-card>
   }
 </div>
-
