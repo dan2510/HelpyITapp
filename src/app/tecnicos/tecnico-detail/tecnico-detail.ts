@@ -44,9 +44,13 @@ export class TecnicoDetail implements OnInit {
 
     this.tecnicoService.getById(id).subscribe({
       next: (response: any) => {
-        if (response.success) {
+        // El backend devuelve { success: true, data: { tecnico: {...} } }
+        if (response.success && response.data && response.data.tecnico) {
           this.tecnico.set(response.data.tecnico);
           console.log('Detalle del técnico cargado:', response.data.tecnico);
+        } else if (response.id) {
+          // Si el backend devuelve directamente el objeto técnico
+          this.tecnico.set(response);
         } else {
           this.error.set('Error en la respuesta del servidor');
         }

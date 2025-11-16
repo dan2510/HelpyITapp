@@ -102,17 +102,21 @@ export class TecnicoForm implements OnInit {
     if (this.tecnicoId) {
       this.isLoading = true;
       this.tecnicoService.getById(this.tecnicoId).subscribe({
-        next: (response) => {
-          if (response.success) {
-            const tecnico = response.data.tecnico;
+        next: (response: any) => {
+          // El backend devuelve { success: true, data: { tecnico: {...} } }
+          const tecnico = (response.success && response.data && response.data.tecnico) 
+            ? response.data.tecnico 
+            : (response.id ? response : null);
+          
+          if (tecnico) {
             
             // Mapear las especialidades del técnico - solo IDs para el mat-select
             const especialidades = tecnico.especialidades ?? [];
-            const especialidadesIds = especialidades.map(esp => esp.id);
+            const especialidadesIds = especialidades.map((esp: any) => esp.id);
             
             // Cargar niveles de experiencia en el mapa
             this.nivelesExperienciaMap.clear();
-            especialidades.forEach(esp => {
+            especialidades.forEach((esp: any) => {
               this.nivelesExperienciaMap.set(esp.id, esp.nivelexperiencia || NivelExperiencia.JUNIOR);
             });
             
@@ -168,15 +172,26 @@ export class TecnicoForm implements OnInit {
     }));
     
     // Preparar el objeto a enviar
-    const tecnicoData = {
+    // Transformar password a contraseña si existe
+    const tecnicoData: any = {
       ...formValue,
       especialidades: especialidadesFormateadas,
       // cargaactual NO se envía - se gestiona automáticamente en el backend
     };
+    
+    // Transformar password a contraseña para el backend
+    if (tecnicoData.password) {
+      tecnicoData.contraseña = tecnicoData.password;
+      delete tecnicoData.password;
+    }
 
     if (this.isEditMode && this.tecnicoId) {
-      // Actualizar técnico
-      this.tecnicoService.update(this.tecnicoId, tecnicoData).subscribe({
+      // Actualizar técnico - BaseAPI.update espera que el objeto tenga el id
+      const tecnicoDataWithId = {
+        ...tecnicoData,
+        id: this.tecnicoId
+      };
+      this.tecnicoService.update(tecnicoDataWithId).subscribe({
         next: (response) => {
           this.isLoading = false;
           Swal.fire({

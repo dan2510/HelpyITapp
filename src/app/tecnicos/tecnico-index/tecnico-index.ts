@@ -31,11 +31,15 @@ export class TecnicoIndex implements OnInit {
     this.loading.set(true);
     this.error.set('');
 
-    this.tecnicoService.getAll().subscribe({
+    this.tecnicoService.get().subscribe({
       next: (response: any) => {
-        if (response.success) {
+        // El backend devuelve { success: true, data: { tecnicos: [...] } }
+        if (response.success && response.data && response.data.tecnicos) {
           this.tecnicos.set(response.data.tecnicos);
           console.log('Técnicos cargados:', response.data.tecnicos);
+        } else if (Array.isArray(response)) {
+          // Si el backend devuelve directamente un array
+          this.tecnicos.set(response);
         } else {
           this.error.set('Error en la respuesta del servidor');
         }
