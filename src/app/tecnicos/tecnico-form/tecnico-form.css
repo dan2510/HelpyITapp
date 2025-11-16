@@ -1,0 +1,306 @@
+.form-container {
+  padding: 24px;
+  min-height: calc(100vh - 100px);
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.form-card {
+  width: 100%;
+  max-width: 900px;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+  position: relative;
+}
+
+/* Header */
+.form-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.header-icon {
+  font-size: 32px;
+  width: 32px;
+  height: 32px;
+}
+
+.form-header h1 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 500;
+}
+
+.close-button {
+  color: white;
+}
+
+/* Loading */
+.loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.95);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+}
+
+/* Formulario */
+.tecnico-form {
+  padding: 24px;
+}
+
+.form-section {
+  margin-bottom: 32px;
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+  color: #333;
+  font-size: 18px;
+  font-weight: 500;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+.section-title mat-icon {
+  color: #667eea;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+.full-width {
+  width: 100%;
+}
+
+/* Info Card */
+.info-card {
+  margin-bottom: 20px;
+  background: #f8f9ff;
+  border: 1px solid #e0e5ff;
+}
+
+.info-content {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.info-content mat-icon {
+  margin-top: 2px;
+}
+
+.info-content p {
+  margin: 0;
+  color: #666;
+  line-height: 1.5;
+}
+
+/* Especialidades */
+.especialidades-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.especialidad-option {
+  display: flex;
+  flex-direction: column;
+  padding: 4px 0;
+}
+
+.especialidad-option strong {
+  color: #333;
+  font-weight: 500;
+}
+
+.especialidad-option small {
+  color: #666;
+  font-size: 12px;
+  margin-top: 2px;
+}
+
+.niveles-container {
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 16px;
+}
+
+.niveles-container h3 {
+  margin: 0 0 16px 0;
+  color: #333;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.nivel-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px;
+  background: white;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  border: 1px solid #e0e0e0;
+}
+
+.nivel-item:last-child {
+  margin-bottom: 0;
+}
+
+.especialidad-nombre {
+  font-weight: 500;
+  color: #333;
+  min-width: 150px;
+}
+
+/* Toggle de Estado */
+.active-toggle {
+  grid-column: span 2;
+  padding: 12px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+}
+
+.toggle-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 500;
+}
+
+/* Opciones con iconos */
+.option-with-icon {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.status-disponible {
+  color: #4caf50;
+}
+
+.status-ocupado {
+  color: #ff9800;
+}
+
+.status-no_disponible {
+  color: #f44336;
+}
+
+/* Botones de Acción */
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 16px;
+  padding: 24px;
+  background: #f8f9fa;
+  border-top: 1px solid #e0e0e0;
+  margin: 0 -24px -24px -24px;
+}
+
+.form-actions button {
+  min-width: 150px;
+}
+
+/* Material Form Field Customization */
+::ng-deep .mat-mdc-form-field {
+  font-size: 14px;
+}
+
+::ng-deep .mat-mdc-form-field-hint {
+  font-size: 12px;
+}
+
+::ng-deep .mat-mdc-form-field-error {
+  font-size: 12px;
+}
+
+/* Button Toggle Group */
+::ng-deep .mat-button-toggle-group {
+  box-shadow: none;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+}
+
+::ng-deep .mat-button-toggle-checked {
+  background-color: #667eea;
+  color: white;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .form-container {
+    padding: 0;
+    background: white;
+  }
+
+  .form-card {
+    border-radius: 0;
+    box-shadow: none;
+    max-width: 100%;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .nivel-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .especialidad-nombre {
+    min-width: auto;
+  }
+
+  .form-actions {
+    flex-direction: column;
+  }
+
+  .form-actions button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .form-header h1 {
+    font-size: 20px;
+  }
+
+  .section-title {
+    font-size: 16px;
+  }
+
+  .tecnico-form {
+    padding: 16px;
+  }
+}

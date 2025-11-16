@@ -31,7 +31,7 @@ export class TecnicoIndex implements OnInit {
     this.loading.set(true);
     this.error.set('');
 
-    this.tecnicoService.get().subscribe({
+    this.tecnicoService.getAll().subscribe({
       next: (response: any) => {
         if (response.success) {
           this.tecnicos.set(response.data.tecnicos);
@@ -41,7 +41,7 @@ export class TecnicoIndex implements OnInit {
         }
         this.loading.set(false);
       },
-      error: (error) => {
+      error: (error: any) => {
         console.error('Error al cargar técnicos:', error);
         this.error.set('Error al conectar con el servidor');
         this.loading.set(false);
