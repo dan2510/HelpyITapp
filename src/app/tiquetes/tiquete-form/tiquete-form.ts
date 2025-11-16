@@ -9,6 +9,7 @@ import { environment } from '../../../environments/environment.development';
 import { EtiquetaModel } from '../../share/models/EtiquetaModel';
 import { UsuarioModel } from '../../share/models/UsuarioModel';
 import { firstValueFrom } from 'rxjs';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-tiquete-form',
@@ -224,10 +225,16 @@ export class TiqueteForm implements OnInit {
       this.http.post<any>(url, formData).subscribe({
         next: (response: any) => {
           if (response.success) {
-            this.notification.success('Éxito', 'Ticket creado exitosamente');
-            setTimeout(() => {
+            this.loading.set(false);
+            Swal.fire({
+              icon: 'success',
+              title: '¡Éxito!',
+              text: 'Ticket creado exitosamente',
+              showConfirmButton: false,
+              timer: 1500
+            }).then(() => {
               this.router.navigate(['/tiquetes', response.data.tiquete.id]);
-            }, 1000);
+            });
           } else {
             this.error.set('Error al crear el ticket');
             this.loading.set(false);
@@ -237,12 +244,12 @@ export class TiqueteForm implements OnInit {
           const errorMessage = error.error?.message || 'Error al crear el ticket';
           this.error.set(errorMessage);
           this.loading.set(false);
-          this.notification.error('Error', errorMessage);
+          Swal.fire('Error', errorMessage, 'error');
         }
       });
     } catch (error: any) {
       this.loading.set(false);
-      this.notification.error('Error', 'Error al subir los archivos');
+      Swal.fire('Error', 'Error al subir los archivos', 'error');
     }
   }
 
