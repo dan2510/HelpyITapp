@@ -50,6 +50,30 @@
   margin-top: 4px;
 }
 
+.header-actions {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+}
+
+.create-button {
+  background-color: white !important;
+  color: var(--jira-primary, #0052cc) !important;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.create-button:hover {
+  background-color: rgba(255, 255, 255, 0.9) !important;
+}
+
+.header-section {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
 /* Grid de categorías */
 .categorias-grid {
   display: grid;

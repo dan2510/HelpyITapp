@@ -1,0 +1,267 @@
+<!-- Formulario de Creación de Ticket -->
+<div class="tiquete-form-container">
+  <div class="header-navigation">
+    <button mat-button color="primary" (click)="onCancel()" class="back-button">
+      <mat-icon>arrow_back</mat-icon> Volver al listado
+    </button>
+  </div>
+
+  @if (loadingData()) {
+    <div class="loading-container">
+      <mat-spinner diameter="60"></mat-spinner>
+      <p>Cargando datos del formulario...</p>
+    </div>
+  }
+
+  @if (!loadingData()) {
+    <mat-card class="main-card">
+      <mat-card-header class="header-section">
+        <div mat-card-avatar class="header-icon">
+          <mat-icon>add_task</mat-icon>
+        </div>
+        <mat-card-title>Nuevo Ticket</mat-card-title>
+        <mat-card-subtitle>Registre una nueva incidencia en el sistema</mat-card-subtitle>
+      </mat-card-header>
+
+      <mat-card-content>
+        <form [formGroup]="tiqueteForm" (ngSubmit)="onSubmit()" class="tiquete-form">
+          
+          <!-- Sección: Información del Solicitante -->
+          <mat-card class="info-card section-card">
+            <mat-card-header class="card-header">
+              <div mat-card-avatar class="avatar-section">
+                <mat-icon class="avatar-icon">person</mat-icon>
+              </div>
+              <mat-card-title>Información del Solicitante</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+              <div class="form-grid">
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>Cliente Solicitante *</mat-label>
+                  <mat-select formControlName="idcliente">
+                    <mat-option value="">Seleccione un cliente</mat-option>
+                    @if (clientes().length === 0) {
+                      <mat-option disabled>Cargando clientes...</mat-option>
+                    } @else {
+                      @for (cliente of clientes(); track cliente.id) {
+                        <mat-option [value]="cliente.id">
+                          <div class="cliente-option">
+                            <span class="cliente-nombre">{{ cliente.nombrecompleto }}</span>
+                            <span class="cliente-correo">{{ cliente.correo }}</span>
+                          </div>
+                        </mat-option>
+                      }
+                    }
+                  </mat-select>
+                  <mat-icon matPrefix>person</mat-icon>
+                  <mat-hint>Seleccione el cliente que solicita el ticket</mat-hint>
+                  @if (isFieldInvalid('idcliente')) {
+                    <mat-error>{{ getErrorMessage('idcliente') }}</mat-error>
+                  }
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>Correo Electrónico</mat-label>
+                  <input matInput formControlName="correoSolicitante" readonly>
+                  <mat-icon matPrefix>email</mat-icon>
+                  <mat-hint>Se carga automáticamente al seleccionar el cliente</mat-hint>
+                </mat-form-field>
+              </div>
+            </mat-card-content>
+          </mat-card>
+
+          <!-- Sección: Información del Ticket -->
+          <mat-card class="info-card section-card">
+            <mat-card-header class="card-header">
+              <div mat-card-avatar class="avatar-section">
+                <mat-icon class="avatar-icon">confirmation_number</mat-icon>
+              </div>
+              <mat-card-title>Información del Ticket</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+              <div class="form-grid">
+                <!-- Título -->
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>Título *</mat-label>
+                  <input 
+                    matInput 
+                    formControlName="titulo" 
+                    placeholder="Ej: Error al iniciar sesión"
+                    maxlength="200">
+                  <mat-icon matPrefix>title</mat-icon>
+                  <mat-hint>{{ tiqueteForm.get('titulo')?.value?.length || 0 }}/200 caracteres</mat-hint>
+                  @if (isFieldInvalid('titulo')) {
+                    <mat-error>{{ getErrorMessage('titulo') }}</mat-error>
+                  }
+                </mat-form-field>
+
+                <!-- Descripción -->
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>Descripción *</mat-label>
+                  <textarea 
+                    matInput 
+                    formControlName="descripcion" 
+                    rows="5"
+                    placeholder="Describa detalladamente el problema o incidencia..."
+                    maxlength="2000"></textarea>
+                  <mat-icon matPrefix>description</mat-icon>
+                  <mat-hint>{{ tiqueteForm.get('descripcion')?.value?.length || 0 }}/2000 caracteres</mat-hint>
+                  @if (isFieldInvalid('descripcion')) {
+                    <mat-error>{{ getErrorMessage('descripcion') }}</mat-error>
+                  }
+                </mat-form-field>
+
+                <!-- Prioridad -->
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>Prioridad *</mat-label>
+                  <mat-select formControlName="prioridad">
+                    <mat-option value="">Seleccione una prioridad</mat-option>
+                    @if (prioridades().length === 0) {
+                      <mat-option disabled>Cargando prioridades...</mat-option>
+                    } @else {
+                      @for (prioridad of prioridades(); track prioridad.id) {
+                        <mat-option [value]="prioridad.id">
+                          <div class="prioridad-option">
+                            <mat-icon class="prioridad-icon">{{ getPrioridadIcon(prioridad.id) }}</mat-icon>
+                            <span>{{ prioridad.nombre }}</span>
+                          </div>
+                        </mat-option>
+                      }
+                    }
+                  </mat-select>
+                  <mat-icon matPrefix>priority_high</mat-icon>
+                  <mat-hint>Seleccione el nivel de prioridad del ticket</mat-hint>
+                  @if (isFieldInvalid('prioridad')) {
+                    <mat-error>{{ getErrorMessage('prioridad') }}</mat-error>
+                  }
+                </mat-form-field>
+
+                <!-- Etiqueta (con búsqueda/filtro) -->
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>Buscar Etiqueta</mat-label>
+                  <input 
+                    matInput 
+                    (input)="filtrarEtiquetas($event)"
+                    placeholder="Escriba para filtrar etiquetas..."
+                    class="search-input">
+                  <mat-icon matPrefix>search</mat-icon>
+                  <mat-hint>Filtre las etiquetas escribiendo su nombre o descripción</mat-hint>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>Seleccione una etiqueta *</mat-label>
+                  <mat-select formControlName="idetiqueta" (selectionChange)="onEtiquetaChange()">
+                    <mat-option value="">Seleccione una etiqueta</mat-option>
+                    @if (etiquetas().length === 0) {
+                      <mat-option disabled>Cargando etiquetas...</mat-option>
+                    } @else if (etiquetasFiltradas().length === 0) {
+                      <mat-option disabled>No se encontraron etiquetas con ese filtro</mat-option>
+                    } @else {
+                      @for (etiqueta of etiquetasFiltradas(); track etiqueta.id) {
+                        <mat-option [value]="etiqueta.id">
+                          <div class="etiqueta-option">
+                            <div class="etiqueta-header">
+                              <mat-icon class="etiqueta-icon">label</mat-icon>
+                              <span class="etiqueta-nombre">{{ etiqueta.nombre }}</span>
+                            </div>
+                            @if (etiqueta.descripcion) {
+                              <span class="etiqueta-descripcion">{{ etiqueta.descripcion }}</span>
+                            }
+                          </div>
+                        </mat-option>
+                      }
+                    }
+                  </mat-select>
+                  <mat-icon matPrefix>bookmark</mat-icon>
+                  <mat-hint>
+                    @if (etiquetasFiltradas().length > 0) {
+                      {{ etiquetasFiltradas().length }} etiqueta(s) disponible(s)
+                    } @else {
+                      Escriba en el campo de búsqueda para filtrar
+                    }
+                  </mat-hint>
+                  @if (isFieldInvalid('idetiqueta')) {
+                    <mat-error>{{ getErrorMessage('idetiqueta') }}</mat-error>
+                  }
+                </mat-form-field>
+
+                <!-- Categoría (automática, no editable) -->
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>Categoría Asignada</mat-label>
+                  <input matInput formControlName="categoria" readonly>
+                  <mat-icon matPrefix>category</mat-icon>
+                  <mat-hint>
+                    @if (categoriaSeleccionada()) {
+                      ✓ Categoría asignada automáticamente
+                    } @else {
+                      Seleccione una etiqueta para asignar la categoría
+                    }
+                  </mat-hint>
+                </mat-form-field>
+              </div>
+            </mat-card-content>
+          </mat-card>
+
+          <!-- Sección: Información del Sistema (No editable) -->
+          <mat-card class="info-card section-card">
+            <mat-card-header class="card-header">
+              <div mat-card-avatar class="avatar-section">
+                <mat-icon class="avatar-icon">info</mat-icon>
+              </div>
+              <mat-card-title>Información del Sistema</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+              <div class="form-grid">
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>Fecha de Creación</mat-label>
+                  <input matInput formControlName="fechaCreacion" readonly>
+                  <mat-icon matPrefix>event</mat-icon>
+                  <mat-hint>Fecha actual del sistema</mat-hint>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>Estado Inicial</mat-label>
+                  <input matInput formControlName="estado" readonly>
+                  <mat-icon matPrefix>schedule</mat-icon>
+                  <mat-hint>Estado inicial del ticket</mat-hint>
+                </mat-form-field>
+              </div>
+            </mat-card-content>
+          </mat-card>
+
+          <!-- Mensaje de error -->
+          @if (error()) {
+            <div class="error-message">
+              <mat-icon color="warn">error_outline</mat-icon>
+              <span>{{ error() }}</span>
+            </div>
+          }
+
+          <!-- Botones de acción -->
+          <div class="form-actions">
+            <button 
+              mat-stroked-button 
+              type="button" 
+              (click)="onCancel()" 
+              [disabled]="loading()">
+              <mat-icon>close</mat-icon> Cancelar
+            </button>
+            <button 
+              mat-raised-button 
+              color="primary" 
+              type="submit" 
+              [disabled]="loading() || tiqueteForm.invalid">
+              @if (loading()) {
+                <mat-spinner diameter="20" class="button-spinner"></mat-spinner>
+              } @else {
+                <mat-icon>save</mat-icon>
+              }
+              Crear Ticket
+            </button>
+          </div>
+        </form>
+      </mat-card-content>
+    </mat-card>
+  }
+</div>
+

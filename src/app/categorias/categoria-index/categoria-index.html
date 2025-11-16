@@ -9,6 +9,16 @@
       <mat-card-subtitle>
         Categorías de tickets y sus políticas SLA
       </mat-card-subtitle>
+      <div class="header-actions">
+        <button 
+          mat-raised-button 
+          color="primary" 
+          (click)="crearNuevaCategoria()"
+          class="create-button">
+          <mat-icon>add</mat-icon>
+          Nueva Categoría
+        </button>
+      </div>
     </mat-card-header>
 
     <mat-card-content>

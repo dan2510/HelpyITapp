@@ -64,6 +64,12 @@ export class CategoriaDetail implements OnInit {
     this.router.navigate(['/categorias']);
   }
 
+  editarCategoria(): void {
+    if (this.categoriaId() > 0) {
+      this.router.navigate(['/categorias/editar', this.categoriaId()]);
+    }
+  }
+
   retry(): void {
     if (this.categoriaId() > 0) {
       this.loadCategoriaDetail(this.categoriaId());

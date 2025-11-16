@@ -7,6 +7,16 @@
       </div>
       <mat-card-title>{{ getTituloSegunRol() }}</mat-card-title>
       <mat-card-subtitle>{{ getSubtituloSegunRol() }}</mat-card-subtitle>
+      <div class="header-actions">
+        <button 
+          mat-raised-button 
+          color="primary" 
+          (click)="crearNuevoTicket()"
+          class="create-button">
+          <mat-icon>add</mat-icon>
+          Nuevo Ticket
+        </button>
+      </div>
     </mat-card-header>
 
     <mat-card-content>

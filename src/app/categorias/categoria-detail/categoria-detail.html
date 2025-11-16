@@ -10,6 +10,16 @@
       <mat-icon>arrow_back</mat-icon>
       Volver al listado
     </button>
+    @if (categoria()) {
+      <button 
+        mat-raised-button 
+        color="primary" 
+        (click)="editarCategoria()"
+        class="edit-button">
+        <mat-icon>edit</mat-icon>
+        Editar Categoría
+      </button>
+    }
   </div>
 
   <!-- Loading -->

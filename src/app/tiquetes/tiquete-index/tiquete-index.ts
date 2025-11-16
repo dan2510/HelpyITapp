@@ -59,6 +59,10 @@ export class TiqueteIndex implements OnInit {
     this.router.navigate(['/tiquetes', id]);
   }
 
+  crearNuevoTicket(): void {
+    this.router.navigate(['/tiquetes/nuevo']);
+  }
+
   // Métodos auxiliares
   getPrioridadColor(prioridad: Prioridad): string {
     switch (prioridad) {

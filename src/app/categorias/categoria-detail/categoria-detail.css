@@ -9,7 +9,15 @@
 
 /* Header de navegación */
 .header-navigation {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
   margin-bottom: 24px;
+}
+
+.edit-button {
+  margin-left: auto;
 }
 
 .back-button {

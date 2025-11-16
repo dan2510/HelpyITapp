@@ -53,6 +53,10 @@ export class CategoriaIndex implements OnInit {
     this.router.navigate(['/categorias', id]);
   }
 
+  crearNuevaCategoria(): void {
+    this.router.navigate(['/categorias/nuevo']);
+  }
+
   getEstadoColor(activo: boolean): string {
     return activo ? 'primary' : 'warn';
   }
