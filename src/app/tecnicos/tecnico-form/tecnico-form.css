@@ -211,6 +211,14 @@
   color: #ff9800;
 }
 
+.status-ausente {
+  color: #f44336;
+}
+
+.status-inactivo {
+  color: #f44336;
+}
+
 .status-no_disponible {
   color: #f44336;
 }

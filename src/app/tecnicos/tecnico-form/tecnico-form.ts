@@ -51,6 +51,16 @@ export class TecnicoForm implements OnInit {
       activo: [true],
       cargaactual: [{ value: 0, disabled: true }] // Campo de solo lectura
     });
+
+    // Escuchar cambios en el campo 'activo' para actualizar disponibilidad automáticamente
+    this.tecnicoForm.get('activo')?.valueChanges.subscribe(activo => {
+      if (!activo) {
+        // Si se marca como inactivo, cambiar disponibilidad a INACTIVO automáticamente
+        this.tecnicoForm.patchValue({
+          disponibilidad: Disponibilidad.INACTIVO
+        }, { emitEvent: false }); // emitEvent: false para evitar bucles infinitos
+      }
+    });
   }
 
   private loadEspecialidades(): void {

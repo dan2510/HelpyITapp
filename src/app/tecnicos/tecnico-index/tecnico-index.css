@@ -173,6 +173,10 @@
   color: var(--jira-error, #de350b);
 }
 
+.status-inactivo {
+  color: var(--jira-error, #de350b);
+}
+
 /* Sección de carga de trabajo */
 .workload-section .workload-icon {
   font-size: 20px;

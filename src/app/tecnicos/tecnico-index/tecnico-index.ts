@@ -63,6 +63,7 @@ export class TecnicoIndex implements OnInit {
       case Disponibilidad.DISPONIBLE: return 'primary';
       case Disponibilidad.OCUPADO: return 'warn';
       case Disponibilidad.AUSENTE: return 'accent';
+      case Disponibilidad.INACTIVO: return 'accent';
       default: return 'basic';
     }
   }
@@ -72,6 +73,7 @@ export class TecnicoIndex implements OnInit {
       case Disponibilidad.DISPONIBLE: return 'check_circle';
       case Disponibilidad.OCUPADO: return 'schedule';
       case Disponibilidad.AUSENTE: return 'cancel';
+      case Disponibilidad.INACTIVO: return 'block';
       default: return 'help';
     }
   }
@@ -81,6 +83,7 @@ export class TecnicoIndex implements OnInit {
       case Disponibilidad.DISPONIBLE: return 'Disponible';
       case Disponibilidad.OCUPADO: return 'Ocupado';
       case Disponibilidad.AUSENTE: return 'Ausente';
+      case Disponibilidad.INACTIVO: return 'Inactivo';
       default: return 'Desconocido';
     }
   }

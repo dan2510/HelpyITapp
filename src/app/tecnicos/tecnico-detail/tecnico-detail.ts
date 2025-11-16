@@ -83,6 +83,7 @@ export class TecnicoDetail implements OnInit {
       case Disponibilidad.DISPONIBLE: return 'success-color';
       case Disponibilidad.OCUPADO: return 'warning-color';
       case Disponibilidad.AUSENTE: return 'error-color';
+      case Disponibilidad.INACTIVO: return 'error-color';
       default: return 'neutral-color';
     }
   }
@@ -92,6 +93,7 @@ export class TecnicoDetail implements OnInit {
       case Disponibilidad.DISPONIBLE: return 'check_circle';
       case Disponibilidad.OCUPADO: return 'schedule';
       case Disponibilidad.AUSENTE: return 'cancel';
+      case Disponibilidad.INACTIVO: return 'block';
       default: return 'help';
     }
   }

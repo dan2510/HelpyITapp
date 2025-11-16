@@ -7,7 +7,8 @@ export enum RoleNombre {
 export enum Disponibilidad {
   DISPONIBLE = 'DISPONIBLE',
   OCUPADO = 'OCUPADO',
-  AUSENTE = 'AUSENTE'
+  AUSENTE = 'AUSENTE',
+  INACTIVO = 'INACTIVO'
 }
 
 export enum NivelExperiencia {

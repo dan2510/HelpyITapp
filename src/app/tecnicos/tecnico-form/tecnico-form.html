@@ -87,7 +87,8 @@
                 <div class="option-with-icon">
                   <mat-icon [class]="'status-' + disp.toLowerCase()">
                     {{ disp === 'DISPONIBLE' ? 'check_circle' : 
-                       disp === 'OCUPADO' ? 'schedule' : 'block' }}
+                       disp === 'OCUPADO' ? 'schedule' : 
+                       disp === 'INACTIVO' ? 'block' : 'block' }}
                   </mat-icon>
                   <span>{{ disp }}</span>
                 </div>
