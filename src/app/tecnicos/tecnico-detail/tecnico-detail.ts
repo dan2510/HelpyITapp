@@ -65,6 +65,12 @@ export class TecnicoDetail implements OnInit {
     this.router.navigate(['/tecnicos']);
   }
 
+  editarTecnico(): void {
+    if (this.tecnicoId() > 0) {
+      this.router.navigate(['/tecnicos/editar', this.tecnicoId()]);
+    }
+  }
+
   retry(): void {
     if (this.tecnicoId() > 0) {
       this.loadTecnicoDetail(this.tecnicoId());

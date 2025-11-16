@@ -54,6 +54,10 @@ export class TecnicoIndex implements OnInit {
     this.router.navigate(['/tecnicos', id]);
   }
 
+  crearTecnico(): void {
+    this.router.navigate(['/tecnicos/nuevo']);
+  }
+
   getDisponibilidadColor(disponibilidad: Disponibilidad): string {
     switch (disponibilidad) {
       case Disponibilidad.DISPONIBLE: return 'primary';

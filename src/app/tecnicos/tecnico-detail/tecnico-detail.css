@@ -10,6 +10,10 @@
 /* Header de navegación */
 .header-navigation {
   margin-bottom: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
 }
 
 .back-button {
@@ -22,6 +26,18 @@
 
 .back-button:hover {
   background-color: rgba(0, 82, 204, 0.1) !important;
+}
+
+.edit-button {
+  border-radius: 6px !important;
+  font-weight: 500 !important;
+  text-transform: none !important;
+  gap: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2) !important;
+}
+
+.edit-button mat-icon {
+  margin-right: 8px;
 }
 
 /* Estados de carga y error */

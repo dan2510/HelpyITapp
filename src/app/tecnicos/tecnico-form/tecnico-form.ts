@@ -48,7 +48,8 @@ export class TecnicoForm implements OnInit {
       disponibilidad: [Disponibilidad.DISPONIBLE, Validators.required],
       maxticketsimultaneos: [5, [Validators.required, Validators.min(1), Validators.max(20)]],
       especialidades: [[], [Validators.required]],
-      activo: [true]
+      activo: [true],
+      cargaactual: [{ value: 0, disabled: true }] // Campo de solo lectura
     });
   }
 
@@ -112,8 +113,12 @@ export class TecnicoForm implements OnInit {
               disponibilidad: tecnico.disponibilidad,
               maxticketsimultaneos: tecnico.maxticketsimultaneos,
               especialidades: especialidadesIds,
-              activo: tecnico.activo
+              activo: tecnico.activo,
+              cargaactual: tecnico.cargaactual || 0
             });
+            
+            // Asegurar que cargaactual esté deshabilitado
+            this.tecnicoForm.get('cargaactual')?.disable();
             
             // Deshabilitar el campo de correo en modo edición
             this.tecnicoForm.get('correo')?.disable();

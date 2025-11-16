@@ -107,6 +107,14 @@
             </mat-error>
           </mat-form-field>
 
+          <!-- Carga Actual (solo lectura) -->
+          <mat-form-field appearance="outline">
+            <mat-label>Carga Actual</mat-label>
+            <input matInput formControlName="cargaactual" readonly>
+            <mat-icon matPrefix>assignment</mat-icon>
+            <mat-hint>No editable - Se calcula automáticamente</mat-hint>
+          </mat-form-field>
+
           <!-- Estado Activo (solo en edición) -->
           <mat-slide-toggle formControlName="activo" *ngIf="isEditMode" class="active-toggle">
             <span class="toggle-label">
