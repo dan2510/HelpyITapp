@@ -2,7 +2,7 @@
   <!-- Logo y título -->
   <div class="logo-section">
     <button mat-icon-button class="logo-button" matTooltip="HelpyIT - Inicio" [routerLink]="['/inicio']">
-      <div class="logo-image"></div>
+      <img [src]="logoUrl" alt="HelpyIT Logo" class="logo-image" (error)="onLogoError($event)" />
     </button>
     <span class="app-title">HelpyIT</span>
   </div>

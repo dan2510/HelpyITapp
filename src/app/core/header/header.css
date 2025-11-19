@@ -33,14 +33,13 @@
 }
 
 .logo-image {
-  /* background-image: url("/images/gamepad.png"); */
-  background-size: cover;
-  background-position: center;
   height: 40px;
   width: 40px;
   border-radius: 8px;
   border: 2px solid rgba(255, 255, 255, 0.2);
   transition: all 0.3s ease;
+  object-fit: cover;
+  display: block;
 }
 
 .logo-button:hover .logo-image {
