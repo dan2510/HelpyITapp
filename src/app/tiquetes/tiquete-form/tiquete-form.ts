@@ -151,7 +151,7 @@ export class TiqueteForm implements OnInit {
           ...etiq,
           categoria: etiq.categorias && etiq.categorias.length > 0 
             ? etiq.categorias[0].categoria 
-            : (etiq.categoria || null)
+            : (etiq.categoria || undefined)
         }));
         
         this.etiquetas.set(etiquetasFormateadas);
