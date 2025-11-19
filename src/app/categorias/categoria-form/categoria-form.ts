@@ -159,7 +159,7 @@ export class CategoriaForm implements OnInit {
     this.error.set('');
 
     // Cargar etiquetas
-    this.http.get<any>(`${environment.apiURL}/api/${environment.endPointCategoria}/etiquetas`).subscribe({
+    this.http.get<any>(`${environment.apiURL}/${environment.endPointCategoria}/etiquetas`).subscribe({
       next: (response) => {
         if (response.success && response.data.etiquetas) {
           this.etiquetas.set(response.data.etiquetas);
@@ -172,7 +172,7 @@ export class CategoriaForm implements OnInit {
     });
 
     // Cargar especialidades
-    this.http.get<any>(`${environment.apiURL}/api/${environment.endPointCategoria}/especialidades`).subscribe({
+    this.http.get<any>(`${environment.apiURL}/${environment.endPointCategoria}/especialidades`).subscribe({
       next: (response) => {
         if (response.success && response.data.especialidades) {
           this.especialidades.set(response.data.especialidades);
@@ -185,7 +185,7 @@ export class CategoriaForm implements OnInit {
     });
 
     // Cargar SLAs
-    this.http.get<any>(`${environment.apiURL}/api/${environment.endPointCategoria}/slas`).subscribe({
+    this.http.get<any>(`${environment.apiURL}/${environment.endPointCategoria}/slas`).subscribe({
       next: (response) => {
         if (response.success && response.data.slas) {
           this.slas.set(response.data.slas);
@@ -332,8 +332,8 @@ export class CategoriaForm implements OnInit {
     }
 
     const request = this.isEditMode && this.categoriaId
-      ? this.http.put<any>(`${environment.apiURL}/api/${environment.endPointCategoria}/${this.categoriaId}`, formData)
-      : this.http.post<any>(`${environment.apiURL}/api/${environment.endPointCategoria}`, formData);
+      ? this.http.put<any>(`${environment.apiURL}/${environment.endPointCategoria}/${this.categoriaId}`, formData)
+      : this.http.post<any>(`${environment.apiURL}/${environment.endPointCategoria}`, formData);
 
     request.subscribe({
       next: (response: any) => {
