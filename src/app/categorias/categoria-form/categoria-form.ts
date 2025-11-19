@@ -11,6 +11,7 @@ import { EspecialidadModel } from '../../share/models/EspecialidadModel';
 import { PoliticaSlaModel } from '../../share/models/PoliticaSlaModel';
 import { EspecialidadService } from '../../share/services/especialidad/especialidad.service';
 import { EtiquetaService } from '../../share/services/api/etiqueta.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-categoria-form',
@@ -353,10 +354,16 @@ export class CategoriaForm implements OnInit {
     request.subscribe({
       next: (response: any) => {
         if (response.success) {
-          this.notification.success('Éxito', this.isEditMode ? 'Categoría actualizada exitosamente' : 'Categoría creada exitosamente');
-          setTimeout(() => {
+          this.loading.set(false);
+          Swal.fire({
+            icon: 'success',
+            title: '¡Éxito!',
+            text: this.isEditMode ? 'Categoría actualizada correctamente' : 'Categoría creada correctamente',
+            showConfirmButton: false,
+            timer: 1500
+          }).then(() => {
             this.router.navigate(['/categorias']);
-          }, 1000);
+          });
         } else {
           this.error.set('Error al guardar la categoría');
           this.loading.set(false);
@@ -367,7 +374,7 @@ export class CategoriaForm implements OnInit {
         const errorMessage = error.error?.message || 'Error al guardar la categoría';
         this.error.set(errorMessage);
         this.loading.set(false);
-        this.notification.error('Error', errorMessage);
+        Swal.fire('Error', errorMessage, 'error');
       }
     });
   }

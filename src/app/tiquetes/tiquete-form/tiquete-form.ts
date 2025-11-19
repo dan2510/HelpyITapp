@@ -86,7 +86,7 @@ export class TiqueteForm implements OnInit {
       }
     };
 
-    // ✅ 1. CARGAR USUARIO SOLICITANTE usando UsuarioService
+    //  1. CARGAR USUARIO SOLICITANTE usando UsuarioService
     this.usuarioService.getById(this.ID_USUARIO_FIJO).subscribe({
       next: (response: any) => {
         // El backend devuelve { success: true, data: { usuario: {...} } }
@@ -114,7 +114,7 @@ export class TiqueteForm implements OnInit {
       }
     });
 
-    // ✅ 2. CARGAR PRIORIDADES - SIN /api
+    //  2. CARGAR PRIORIDADES - SIN /api
     const urlPrioridades = `${environment.apiURL}/${environment.endPointTiquete}/prioridades`;
     
     this.http.get<any>(urlPrioridades).subscribe({
@@ -132,7 +132,7 @@ export class TiqueteForm implements OnInit {
       }
     });
 
-    // ✅ 3. CARGAR ETIQUETAS usando EtiquetaService
+    //  3. CARGAR ETIQUETAS usando EtiquetaService
     this.etiquetaService.get().subscribe({
       next: (response: any) => {
         // El backend devuelve { success: true, data: { etiquetas: [...] } }
@@ -199,7 +199,7 @@ export class TiqueteForm implements OnInit {
         });
         this.notification.success('Categoría asignada', `Categoría: ${categoria.nombre}`);
       } else {
-        console.warn('⚠️ Etiqueta sin categoría asociada');
+        console.warn('Etiqueta sin categoría asociada');
         this.categoriaSeleccionada.set('');
         this.tiqueteForm.patchValue({
           categoria: 'No disponible - Esta etiqueta no tiene categoría asociada'
