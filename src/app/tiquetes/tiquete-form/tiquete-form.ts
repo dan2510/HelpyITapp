@@ -3,6 +3,8 @@ import { Component, OnInit, signal } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { TiqueteService } from '../../share/services/api/tiquete.service';
+import { EtiquetaService } from '../../share/services/api/etiqueta.service';
+import { UsuarioService } from '../../share/services/api/usuario.service';
 import { NotificationService } from '../../share/services/app/notification.service';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment.development';
@@ -40,6 +42,8 @@ export class TiqueteForm implements OnInit {
     private fb: FormBuilder,
     private router: Router,
     private tiqueteService: TiqueteService,
+    private etiquetaService: EtiquetaService,
+    private usuarioService: UsuarioService,
     private notification: NotificationService,
     private http: HttpClient
   ) {
@@ -55,7 +59,7 @@ export class TiqueteForm implements OnInit {
       titulo: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(200)]],
       descripcion: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(2000)]],
       prioridad: ['', Validators.required],
-      idetiqueta: ['', Validators.required],
+      idetiqueta: [null, Validators.required],
       
       // Campos de solo lectura para mostrar info del usuario
       nombreSolicitante: [{ value: '', disabled: true }],
@@ -82,16 +86,22 @@ export class TiqueteForm implements OnInit {
       }
     };
 
-    // ✅ 1. CARGAR USUARIO SOLICITANTE - SIN /api
-    const urlUsuario = `${environment.apiURL}/${environment.endPointTiquete}/usuario/${this.ID_USUARIO_FIJO}/info`;
-    
-    this.http.get<any>(urlUsuario).subscribe({
-      next: (response) => {
-        if (response.success && response.data.usuario) {
+    // ✅ 1. CARGAR USUARIO SOLICITANTE usando UsuarioService
+    this.usuarioService.getById(this.ID_USUARIO_FIJO).subscribe({
+      next: (response: any) => {
+        // El backend devuelve { success: true, data: { usuario: {...} } }
+        if (response.success && response.data && response.data.usuario) {
           this.usuarioSolicitante.set(response.data.usuario);
           this.tiqueteForm.patchValue({
             nombreSolicitante: response.data.usuario.nombrecompleto,
             correoSolicitante: response.data.usuario.correo
+          });
+        } else if (response.id) {
+          // Si el backend devuelve directamente el objeto usuario
+          this.usuarioSolicitante.set(response);
+          this.tiqueteForm.patchValue({
+            nombreSolicitante: response.nombrecompleto,
+            correoSolicitante: response.correo
           });
         } else {
           console.warn('⚠️ Respuesta usuario sin datos válidos');
@@ -122,17 +132,30 @@ export class TiqueteForm implements OnInit {
       }
     });
 
-    // ✅ 3. CARGAR ETIQUETAS - SIN /api
-    const urlEtiquetas = `${environment.apiURL}/${environment.endPointTiquete}/etiquetas`;
-    
-    this.http.get<any>(urlEtiquetas).subscribe({
-      next: (response) => {
-        if (response.success && response.data.etiquetas) {
-          this.etiquetas.set(response.data.etiquetas);
-          this.etiquetasFiltradas.set(response.data.etiquetas);
-        } else {
-          console.warn('⚠️ Respuesta de etiquetas sin datos:', response);
+    // ✅ 3. CARGAR ETIQUETAS usando EtiquetaService
+    this.etiquetaService.get().subscribe({
+      next: (response: any) => {
+        // El backend devuelve { success: true, data: { etiquetas: [...] } }
+        let etiquetasData: EtiquetaModel[] = [];
+        
+        if (Array.isArray(response)) {
+          etiquetasData = response;
+        } else if (response.success && response.data && response.data.etiquetas) {
+          etiquetasData = response.data.etiquetas;
+        } else if (response.data && response.data.etiquetas) {
+          etiquetasData = response.data.etiquetas;
         }
+        
+        // Formatear etiquetas para incluir categoría en el formato esperado
+        const etiquetasFormateadas = etiquetasData.map(etiq => ({
+          ...etiq,
+          categoria: etiq.categorias && etiq.categorias.length > 0 
+            ? etiq.categorias[0].categoria 
+            : (etiq.categoria || null)
+        }));
+        
+        this.etiquetas.set(etiquetasFormateadas);
+        this.etiquetasFiltradas.set(etiquetasFormateadas);
         checkAllLoaded();
       },
       error: (error) => {
@@ -142,32 +165,46 @@ export class TiqueteForm implements OnInit {
     });
   }
 
-  onEtiquetaChange(): void {
-    const idetiqueta = this.tiqueteForm.get('idetiqueta')?.value;
+  // Método para mostrar el nombre de la etiqueta en el input
+  displayEtiqueta(etiqueta: EtiquetaModel | null): string {
+    return etiqueta ? etiqueta.nombre : '';
+  }
+
+  // Método llamado cuando se selecciona una etiqueta del autocomplete
+  onEtiquetaSelected(event: any): void {
+    const etiquetaSeleccionada = event.option.value as EtiquetaModel;
     
-    if (idetiqueta) {
-      const etiquetaSeleccionada = this.etiquetas().find(e => e.id === parseInt(idetiqueta));
+    if (etiquetaSeleccionada) {
+      // Actualizar el form control con el objeto completo
+      this.tiqueteForm.patchValue({
+        idetiqueta: etiquetaSeleccionada
+      });
+
+      // Procesar la categoría asociada (puede venir en categoria o categorias)
+      let categoria: any = null;
       
-      if (etiquetaSeleccionada) {
-        if (etiquetaSeleccionada.categoria) {
-          this.categoriaSeleccionada.set(etiquetaSeleccionada.categoria.nombre);
-          this.tiqueteForm.patchValue({
-            categoria: `${etiquetaSeleccionada.categoria.nombre} - ${etiquetaSeleccionada.categoria.descripcion || 'Sin descripción'}`
-          });
-          this.notification.success('Categoría asignada', `Categoría: ${etiquetaSeleccionada.categoria.nombre}`);
-        } else {
-          console.warn('⚠️ Etiqueta sin categoría asociada');
-          this.categoriaSeleccionada.set('');
-          this.tiqueteForm.patchValue({
-            categoria: 'No disponible - Esta etiqueta no tiene categoría asociada'
-          });
-          this.notification.warning('Advertencia', 'La etiqueta seleccionada no tiene categoría asociada');
-        }
+      // Primero intentar con categoria (objeto directo)
+      if (etiquetaSeleccionada.categoria) {
+        categoria = etiquetaSeleccionada.categoria;
+      } 
+      // Si no, intentar con categorias (array de relaciones)
+      else if (etiquetaSeleccionada.categorias && etiquetaSeleccionada.categorias.length > 0) {
+        categoria = etiquetaSeleccionada.categorias[0]?.categoria;
+      }
+
+      if (categoria) {
+        this.categoriaSeleccionada.set(categoria.nombre);
+        this.tiqueteForm.patchValue({
+          categoria: `${categoria.nombre} - ${categoria.descripcion || 'Sin descripción'}`
+        });
+        this.notification.success('Categoría asignada', `Categoría: ${categoria.nombre}`);
       } else {
+        console.warn('⚠️ Etiqueta sin categoría asociada');
         this.categoriaSeleccionada.set('');
         this.tiqueteForm.patchValue({
-          categoria: 'Error al encontrar la etiqueta'
+          categoria: 'No disponible - Esta etiqueta no tiene categoría asociada'
         });
+        this.notification.warning('Advertencia', 'La etiqueta seleccionada no tiene categoría asociada');
       }
     } else {
       this.categoriaSeleccionada.set('');
@@ -181,11 +218,13 @@ export class TiqueteForm implements OnInit {
     const input = event.target as HTMLInputElement;
     const filtro = input.value.toLowerCase().trim();
     
+    // Si el input está vacío o solo tiene espacios, mostrar todas las etiquetas
     if (!filtro) {
       this.etiquetasFiltradas.set(this.etiquetas());
       return;
     }
 
+    // Filtrar etiquetas por nombre o descripción
     const filtradas = this.etiquetas().filter(etiqueta =>
       etiqueta.nombre.toLowerCase().includes(filtro) ||
       etiqueta.descripcion?.toLowerCase().includes(filtro)
@@ -211,11 +250,17 @@ export class TiqueteForm implements OnInit {
         nombresArchivos = await this.subirArchivos();
       }
 
+      // Obtener el ID de la etiqueta (puede ser un objeto EtiquetaModel o un ID)
+      const idetiquetaValue = this.tiqueteForm.get('idetiqueta')?.value;
+      const idetiqueta = typeof idetiquetaValue === 'object' && idetiquetaValue !== null 
+        ? idetiquetaValue.id 
+        : idetiquetaValue;
+
       const formData = {
         titulo: this.tiqueteForm.get('titulo')?.value.trim(),
         descripcion: this.tiqueteForm.get('descripcion')?.value.trim(),
         prioridad: this.tiqueteForm.get('prioridad')?.value,
-        idetiqueta: this.tiqueteForm.get('idetiqueta')?.value,
+        idetiqueta: idetiqueta,
         idcliente: this.ID_USUARIO_FIJO,
         imagenes: nombresArchivos // Enviar los nombres de archivos subidos
       };

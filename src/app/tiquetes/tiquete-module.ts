@@ -16,6 +16,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { ReactiveFormsModule } from '@angular/forms';
 import { TiqueteRoutingModule } from './tiquete-routing-module';
 import { TiqueteIndex } from './tiquete-index/tiquete-index';
@@ -47,7 +48,8 @@ import { TiqueteForm } from './tiquete-form/tiquete-form';
     MatTooltipModule,
     MatSelectModule,
     MatFormFieldModule,
-    MatInputModule
+    MatInputModule,
+    MatAutocompleteModule
   ]
 })
 export class TiqueteModule { }

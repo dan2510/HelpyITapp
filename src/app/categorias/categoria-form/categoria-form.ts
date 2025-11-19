@@ -10,7 +10,7 @@ import { EtiquetaModel } from '../../share/models/EtiquetaModel';
 import { EspecialidadModel } from '../../share/models/EspecialidadModel';
 import { PoliticaSlaModel } from '../../share/models/PoliticaSlaModel';
 import { EspecialidadService } from '../../share/services/especialidad/especialidad.service';
-import { TiqueteService as EtiquetaService } from '../../share/services/api/etiqueta.service';
+import { EtiquetaService } from '../../share/services/api/etiqueta.service';
 
 @Component({
   selector: 'app-categoria-form',

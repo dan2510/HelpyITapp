@@ -25,7 +25,7 @@
     <mat-icon>list</mat-icon>
     <span>Lista de Tickets</span>
   </button>
-  <button mat-menu-item>
+  <button mat-menu-item [routerLink]="['/tiquetes/nuevo']" [routerLinkActive]="'active-link'">
     <mat-icon>add_circle_outline</mat-icon>
     <span>Crear Ticket</span>
   </button>

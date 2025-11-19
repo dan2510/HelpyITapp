@@ -136,30 +136,27 @@
                   }
                 </mat-form-field>
 
-                <!-- Búsqueda de Etiquetas -->
-                <mat-form-field appearance="outline" class="full-width">
-                  <mat-label>Buscar Etiqueta</mat-label>
-                  <input 
-                    matInput 
-                    (input)="filtrarEtiquetas($event)"
-                    placeholder="Escriba para filtrar etiquetas..."
-                    class="search-input">
-                  <mat-icon matPrefix>search</mat-icon>
-                  <mat-hint>Filtre las etiquetas escribiendo su nombre o descripción</mat-hint>
-                </mat-form-field>
-
-                <!-- Selector de Etiquetas -->
+                <!-- Selector de Etiquetas con Autocompletado -->
                 <mat-form-field appearance="outline" class="full-width">
                   <mat-label>Seleccione una etiqueta *</mat-label>
-                  <mat-select formControlName="idetiqueta" (selectionChange)="onEtiquetaChange()">
-                    <mat-option value="">Seleccione una etiqueta</mat-option>
+                  <input 
+                    matInput 
+                    formControlName="idetiqueta"
+                    [matAutocomplete]="autoEtiqueta"
+                    placeholder="Escriba para buscar y seleccionar una etiqueta..."
+                    (input)="filtrarEtiquetas($event)">
+                  <mat-icon matPrefix>bookmark</mat-icon>
+                  <mat-autocomplete 
+                    #autoEtiqueta="matAutocomplete" 
+                    [displayWith]="displayEtiqueta"
+                    (optionSelected)="onEtiquetaSelected($event)">
                     @if (etiquetas().length === 0) {
                       <mat-option disabled>Cargando etiquetas...</mat-option>
                     } @else if (etiquetasFiltradas().length === 0) {
                       <mat-option disabled>No se encontraron etiquetas con ese filtro</mat-option>
                     } @else {
                       @for (etiqueta of etiquetasFiltradas(); track etiqueta.id) {
-                        <mat-option [value]="etiqueta.id">
+                        <mat-option [value]="etiqueta">
                           <div class="etiqueta-option">
                             <div class="etiqueta-header">
                               <mat-icon class="etiqueta-icon">label</mat-icon>
@@ -172,13 +169,12 @@
                         </mat-option>
                       }
                     }
-                  </mat-select>
-                  <mat-icon matPrefix>bookmark</mat-icon>
+                  </mat-autocomplete>
                   <mat-hint>
                     @if (etiquetasFiltradas().length > 0) {
-                      {{ etiquetasFiltradas().length }} etiqueta(s) disponible(s)
+                      {{ etiquetasFiltradas().length }} etiqueta(s) disponible(s) - Escriba para filtrar
                     } @else {
-                      Escriba en el campo de búsqueda para filtrar
+                      Escriba para buscar etiquetas por nombre o descripción
                     }
                   </mat-hint>
                   @if (isFieldInvalid('idetiqueta')) {
