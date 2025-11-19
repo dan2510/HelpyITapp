@@ -6,6 +6,7 @@ import { CategoriaService } from '../../share/services/api/categoria.service';
 import { NotificationService } from '../../share/services/app/notification.service';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment.development';
+import { CategoriaModel } from '../../share/models/CategoriaModel';
 import { EtiquetaModel } from '../../share/models/EtiquetaModel';
 import { EspecialidadModel } from '../../share/models/EspecialidadModel';
 import { PoliticaSlaModel } from '../../share/models/PoliticaSlaModel';
@@ -333,7 +334,7 @@ export class CategoriaForm implements OnInit {
     this.loading.set(true);
     this.error.set('');
 
-    const formData: any = {
+    const categoriaData: any = {
       nombre: this.categoriaForm.get('nombre')?.value.trim(),
       descripcion: this.categoriaForm.get('descripcion')?.value.trim() || '',
       etiquetas: this.categoriaForm.get('etiquetas')?.value,
@@ -341,42 +342,72 @@ export class CategoriaForm implements OnInit {
     };
 
     if (usarPersonalizado) {
-      formData.maxminutosrespuesta = parseInt(maxminutosrespuesta);
-      formData.maxminutosresolucion = parseInt(maxminutosresolucion);
+      categoriaData.maxminutosrespuesta = parseInt(maxminutosrespuesta);
+      categoriaData.maxminutosresolucion = parseInt(maxminutosresolucion);
     } else {
-      formData.idsla = parseInt(idsla);
+      categoriaData.idsla = parseInt(idsla);
     }
 
-    const request = this.isEditMode && this.categoriaId
-      ? this.http.put<any>(`${environment.apiURL}/${environment.endPointCategoria}/${this.categoriaId}`, formData)
-      : this.http.post<any>(`${environment.apiURL}/${environment.endPointCategoria}`, formData);
-
-    request.subscribe({
-      next: (response: any) => {
-        if (response.success) {
+    if (this.isEditMode && this.categoriaId) {
+      // Actualizar categoría existente
+      categoriaData.id = this.categoriaId;
+      this.categoriaService.update(categoriaData).subscribe({
+        next: (response: any) => {
+          // El backend puede devolver { success: true, data: { categoria: {...} } } o directamente el objeto
+          if (response && (response.success || response.id)) {
+            this.loading.set(false);
+            Swal.fire({
+              icon: 'success',
+              title: '¡Éxito!',
+              text: 'Categoría actualizada correctamente',
+              showConfirmButton: false,
+              timer: 1500
+            }).then(() => {
+              this.router.navigate(['/categorias']);
+            });
+          } else {
+            this.error.set('Error al guardar la categoría');
+            this.loading.set(false);
+          }
+        },
+        error: (error: any) => {
+          console.error('Error al guardar categoría:', error);
+          const errorMessage = error.error?.message || 'Error al guardar la categoría';
+          this.error.set(errorMessage);
           this.loading.set(false);
-          Swal.fire({
-            icon: 'success',
-            title: '¡Éxito!',
-            text: this.isEditMode ? 'Categoría actualizada correctamente' : 'Categoría creada correctamente',
-            showConfirmButton: false,
-            timer: 1500
-          }).then(() => {
-            this.router.navigate(['/categorias']);
-          });
-        } else {
-          this.error.set('Error al guardar la categoría');
-          this.loading.set(false);
+          Swal.fire('Error', errorMessage, 'error');
         }
-      },
-      error: (error: any) => {
-        console.error('Error al guardar categoría:', error);
-        const errorMessage = error.error?.message || 'Error al guardar la categoría';
-        this.error.set(errorMessage);
-        this.loading.set(false);
-        Swal.fire('Error', errorMessage, 'error');
-      }
-    });
+      });
+    } else {
+      // Crear nueva categoría
+      this.categoriaService.create(categoriaData).subscribe({
+        next: (response: any) => {
+          // El backend puede devolver { success: true, data: { categoria: {...} } } o directamente el objeto
+          if (response && (response.success || response.id)) {
+            this.loading.set(false);
+            Swal.fire({
+              icon: 'success',
+              title: '¡Éxito!',
+              text: 'Categoría creada correctamente',
+              showConfirmButton: false,
+              timer: 1500
+            }).then(() => {
+              this.router.navigate(['/categorias']);
+            });
+          } else {
+            this.error.set('Error al guardar la categoría');
+            this.loading.set(false);
+          }
+        },
+        error: (error: any) => {
+          console.error('Error al guardar categoría:', error);
+          const errorMessage = error.error?.message || 'Error al guardar la categoría';
+          this.error.set(errorMessage);
+          this.loading.set(false);
+          Swal.fire('Error', errorMessage, 'error');
+        }
+      });
+    }
   }
 
   onCancel(): void {
