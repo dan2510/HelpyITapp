@@ -1,31 +1,16 @@
 // src/app/categorias/categoria-form/categoria-form.ts
 import { Component, OnInit, signal } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { CategoriaService } from '../../share/services/api/categoria.service';
 import { NotificationService } from '../../share/services/app/notification.service';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment.development';
-
-interface EtiquetaOption {
-  id: number;
-  nombre: string;
-  descripcion: string;
-}
-
-interface EspecialidadOption {
-  id: number;
-  nombre: string;
-  descripcion: string;
-}
-
-interface SLAOption {
-  id: number;
-  nombre: string;
-  descripcion: string;
-  maxminutosrespuesta: number;
-  maxminutosresolucion: number;
-}
+import { EtiquetaModel } from '../../share/models/EtiquetaModel';
+import { EspecialidadModel } from '../../share/models/EspecialidadModel';
+import { PoliticaSlaModel } from '../../share/models/PoliticaSlaModel';
+import { EspecialidadService } from '../../share/services/especialidad/especialidad.service';
+import { TiqueteService as EtiquetaService } from '../../share/services/api/etiqueta.service';
 
 @Component({
   selector: 'app-categoria-form',
@@ -38,13 +23,13 @@ export class CategoriaForm implements OnInit {
   categoriaId: number | null = null;
   isEditMode = false;
   
-  protected readonly etiquetas = signal<EtiquetaOption[]>([]);
-  protected readonly especialidades = signal<EspecialidadOption[]>([]);
-  protected readonly slas = signal<SLAOption[]>([]);
+  protected readonly etiquetas = signal<EtiquetaModel[]>([]);
+  protected readonly especialidades = signal<EspecialidadModel[]>([]);
+  protected readonly slas = signal<PoliticaSlaModel[]>([]);
   protected readonly loading = signal<boolean>(false);
   protected readonly loadingData = signal<boolean>(false);
   protected readonly error = signal<string>('');
-  protected readonly slaSeleccionado = signal<SLAOption | null>(null);
+  protected readonly slaSeleccionado = signal<PoliticaSlaModel | null>(null);
   protected readonly usarSlaPersonalizado = signal<boolean>(false);
 
   constructor(
@@ -52,6 +37,8 @@ export class CategoriaForm implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private categoriaService: CategoriaService,
+    private especialidadService: EspecialidadService,
+    private etiquetaService: EtiquetaService,
     private notification: NotificationService,
     private http: HttpClient
   ) {
@@ -153,54 +140,82 @@ export class CategoriaForm implements OnInit {
 
     return null;
   }
-
+ 
   private loadInitialData(): void {
     this.loadingData.set(true);
     this.error.set('');
 
-    // Cargar etiquetas
-    this.http.get<any>(`${environment.apiURL}/${environment.endPointCategoria}/etiquetas`).subscribe({
-      next: (response) => {
-        if (response.success && response.data.etiquetas) {
-          this.etiquetas.set(response.data.etiquetas);
-        }
-      },
-      error: (error) => {
-        console.error('Error al cargar etiquetas:', error);
-        this.notification.error('Error', 'No se pudieron cargar las etiquetas');
-      }
-    });
+    let completedRequests = 0;
+    const totalRequests = 3;
 
-    // Cargar especialidades
-    this.http.get<any>(`${environment.apiURL}/${environment.endPointCategoria}/especialidades`).subscribe({
-      next: (response) => {
-        if (response.success && response.data.especialidades) {
-          this.especialidades.set(response.data.especialidades);
-        }
-      },
-      error: (error) => {
-        console.error('Error al cargar especialidades:', error);
-        this.notification.error('Error', 'No se pudieron cargar las especialidades');
-      }
-    });
-
-    // Cargar SLAs
-    this.http.get<any>(`${environment.apiURL}/${environment.endPointCategoria}/slas`).subscribe({
-      next: (response) => {
-        if (response.success && response.data.slas) {
-          this.slas.set(response.data.slas);
-        }
+    const checkAllLoaded = () => {
+      completedRequests++;
+      if (completedRequests === totalRequests) {
         this.loadingData.set(false);
-        
         // Si estamos en modo edición, cargar los datos de la categoría después de cargar los datos iniciales
         if (this.isEditMode && this.categoriaId) {
           this.loadCategoriaData();
         }
+      }
+    };
+
+    // Cargar etiquetas usando el servicio de etiquetas (BaseAPI.get())
+    this.etiquetaService.get().subscribe({
+      next: (response) => {
+        // El backend devuelve { success: true, data: { etiquetas: [...] } }
+        if (Array.isArray(response)) {
+          this.etiquetas.set(response);
+        } else if ((response as any).success && (response as any).data?.etiquetas) {
+          this.etiquetas.set((response as any).data.etiquetas);
+        } else if ((response as any).data?.etiquetas) {
+          this.etiquetas.set((response as any).data.etiquetas);
+        } else {
+          // Si viene como array directo desde BaseAPI
+          this.etiquetas.set(response as EtiquetaModel[]);
+        }
+        checkAllLoaded();
+      },
+      error: (error) => {
+        console.error('Error al cargar etiquetas:', error);
+        this.notification.error('Error', 'No se pudieron cargar las etiquetas');
+        checkAllLoaded();
+      }
+    });
+
+    // Cargar especialidades usando el servicio de especialidades
+    this.especialidadService.getAll().subscribe({
+      next: (response) => {
+        if (response.success && response.data.especialidades) {
+          this.especialidades.set(response.data.especialidades);
+        }
+        checkAllLoaded();
+      },
+      error: (error) => {
+        console.error('Error al cargar especialidades:', error);
+        this.notification.error('Error', 'No se pudieron cargar las especialidades');
+        checkAllLoaded();
+      }
+    });
+
+    // Cargar SLAs directamente desde el endpoint de política SLA
+    this.http.get<any>(`${environment.apiURL}/${environment.endPointPoliticaSla}`).subscribe({
+      next: (response) => {
+        // El backend devuelve { success: true, data: { slas: [...] } }
+        // Ya vienen filtrados por activo: true desde el backend
+        if ((response as any).success && (response as any).data?.slas) {
+          this.slas.set((response as any).data.slas);
+        } else if ((response as any).data?.slas) {
+          this.slas.set((response as any).data.slas);
+        } else if (Array.isArray(response)) {
+          // Si viene como array directo
+          this.slas.set(response.filter((sla: PoliticaSlaModel) => sla.activo));
+        }
+        checkAllLoaded();
       },
       error: (error) => {
         console.error('Error al cargar SLAs:', error);
         this.notification.error('Error', 'No se pudieron cargar los SLAs');
-        this.loadingData.set(false);
+        checkAllLoaded();
       }
     });
   }
