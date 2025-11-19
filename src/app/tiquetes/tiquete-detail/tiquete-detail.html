@@ -112,15 +112,69 @@
             </div>
 
             <!-- Técnico Asignado -->
-            <div class="info-item">
+            <div class="info-item tecnico-item">
               <mat-icon class="info-icon">engineering</mat-icon>
               <div class="info-content">
-                <span class="info-label">Técnico Asignado</span>
-                @if (tiquete()!.tecnicoActual) {
-                  <span class="info-value">{{ tiquete()!.tecnicoActual?.nombrecompleto }}</span>
-                  <span class="info-description">{{ tiquete()!.tecnicoActual?.correo }}</span>
+                <div class="tecnico-header">
+                  <span class="info-label">Técnico Asignado</span>
+                  @if (!editandoTecnico()) {
+                    <button 
+                      mat-icon-button 
+                      color="primary" 
+                      (click)="iniciarEdicionTecnico()"
+                      class="edit-tecnico-button"
+                      matTooltip="Cambiar técnico asignado">
+                      <mat-icon>edit</mat-icon>
+                    </button>
+                  }
+                </div>
+                
+                @if (editandoTecnico()) {
+                  <div class="tecnico-selector">
+                    <mat-form-field appearance="outline" class="tecnico-select-field">
+                      <mat-label>Seleccionar Técnico</mat-label>
+                      <mat-select [value]="tecnicoSeleccionado()" (selectionChange)="tecnicoSeleccionado.set($event.value)">
+                        <mat-option [value]="null">Sin asignar</mat-option>
+                        @if (loadingTecnicos()) {
+                          <mat-option disabled>Cargando técnicos...</mat-option>
+                        } @else {
+                          @for (tecnico of tecnicos(); track tecnico.id) {
+                            <mat-option [value]="tecnico.id">
+                              <div class="tecnico-option">
+                                <span class="tecnico-nombre">{{ tecnico.nombrecompleto }}</span>
+                                <span class="tecnico-correo">{{ tecnico.correo }}</span>
+                              </div>
+                            </mat-option>
+                          }
+                        }
+                      </mat-select>
+                      <mat-icon matPrefix>person</mat-icon>
+                    </mat-form-field>
+                    <div class="tecnico-actions">
+                      <button 
+                        mat-button 
+                        color="primary" 
+                        (click)="guardarTecnico()"
+                        [disabled]="loading()">
+                        <mat-icon>save</mat-icon>
+                        Guardar
+                      </button>
+                      <button 
+                        mat-button 
+                        (click)="cancelarEdicionTecnico()"
+                        [disabled]="loading()">
+                        <mat-icon>close</mat-icon>
+                        Cancelar
+                      </button>
+                    </div>
+                  </div>
                 } @else {
-                  <span class="info-value no-asignado">Sin asignar</span>
+                  @if (tiquete()!.tecnicoActual) {
+                    <span class="info-value">{{ tiquete()!.tecnicoActual?.nombrecompleto }}</span>
+                    <span class="info-description">{{ tiquete()!.tecnicoActual?.correo }}</span>
+                  } @else {
+                    <span class="info-value no-asignado">Sin asignar</span>
+                  }
                 }
               </div>
             </div>

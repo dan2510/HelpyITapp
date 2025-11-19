@@ -7,6 +7,63 @@
   min-height: calc(100vh - 140px);
 }
 
+/* Estilos para el selector de técnico */
+.tecnico-item {
+  position: relative;
+}
+
+.tecnico-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.edit-tecnico-button {
+  width: 32px;
+  height: 32px;
+  line-height: 32px;
+}
+
+.tecnico-selector {
+  margin-top: 8px;
+}
+
+.tecnico-select-field {
+  width: 100%;
+  margin-bottom: 12px;
+}
+
+.tecnico-option {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 4px 0;
+}
+
+.tecnico-nombre {
+  font-weight: 500;
+  color: var(--jira-text-primary, #172b4d);
+  font-size: 14px;
+}
+
+.tecnico-correo {
+  font-size: 12px;
+  color: var(--jira-text-secondary, #6b778c);
+}
+
+.tecnico-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.tecnico-actions button {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
 /* Header de navegación */
 .header-navigation {
   margin-bottom: 24px;

@@ -2,10 +2,14 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TiqueteService } from '../../share/services/api/tiquete.service';
+import { TecnicoService } from '../../share/services/api/tecnico.service';
 import { TiqueteModel } from '../../share/models/TiqueteModel';
+import { UsuarioModel } from '../../share/models/UsuarioModel';
 import { NotificationService } from '../../share/services/app/notification.service';
 import { Prioridad, EstadoTiquete } from '../../share/models/EnumsModel';
 import { environment } from '../../../environments/environment.development';
+import { HttpClient } from '@angular/common/http';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-tiquete-detail',
@@ -18,12 +22,18 @@ export class TiqueteDetail implements OnInit {
   protected readonly loading = signal<boolean>(false);
   protected readonly error = signal<string>('');
   protected readonly tiqueteId = signal<number>(0);
+  protected readonly tecnicos = signal<UsuarioModel[]>([]);
+  protected readonly loadingTecnicos = signal<boolean>(false);
+  protected readonly editandoTecnico = signal<boolean>(false);
+  protected readonly tecnicoSeleccionado = signal<number | null>(null);
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private tiqueteService: TiqueteService,
-    private notification: NotificationService
+    private tecnicoService: TecnicoService,
+    private notification: NotificationService,
+    private http: HttpClient
   ) {}
 
   ngOnInit(): void {
@@ -47,6 +57,8 @@ export class TiqueteDetail implements OnInit {
       next: (response: any) => {
         if (response.success) {
           this.tiquete.set(response.data.tiquete);
+          // Inicializar el técnico seleccionado con el técnico actual
+          this.tecnicoSeleccionado.set(response.data.tiquete.tecnicoActual?.id || null);
           console.log('Detalle del tiquete cargado:', response.data.tiquete);
         } else {
           this.error.set('Error en la respuesta del servidor');
@@ -58,6 +70,97 @@ export class TiqueteDetail implements OnInit {
         this.error.set('No se pudo cargar la información del tiquete');
         this.loading.set(false);
         this.notification.error('Error', 'No se pudo cargar la información del tiquete');
+      }
+    });
+  }
+
+  loadTecnicos(): void {
+    this.loadingTecnicos.set(true);
+    this.tecnicoService.get().subscribe({
+      next: (response: any) => {
+        // El backend devuelve { success: true, data: { tecnicos: [...] } }
+        if (response.success && response.data && response.data.tecnicos) {
+          this.tecnicos.set(response.data.tecnicos);
+        } else if (Array.isArray(response)) {
+          this.tecnicos.set(response);
+        }
+        this.loadingTecnicos.set(false);
+      },
+      error: (error) => {
+        console.error('Error al cargar técnicos:', error);
+        this.notification.error('Error', 'No se pudieron cargar los técnicos');
+        this.loadingTecnicos.set(false);
+      }
+    });
+  }
+
+  iniciarEdicionTecnico(): void {
+    this.editandoTecnico.set(true);
+    if (this.tecnicos().length === 0) {
+      this.loadTecnicos();
+    }
+  }
+
+  cancelarEdicionTecnico(): void {
+    this.editandoTecnico.set(false);
+    // Restaurar el técnico original
+    const tiquete = this.tiquete();
+    this.tecnicoSeleccionado.set(tiquete?.tecnicoActual?.id || null);
+  }
+
+  guardarTecnico(): void {
+    const idTecnico = this.tecnicoSeleccionado();
+    const tiquete = this.tiquete();
+    
+    if (!tiquete) return;
+
+    // Si no hay cambio, no hacer nada
+    const tecnicoActualId = tiquete.tecnicoActual?.id || null;
+    if (idTecnico === tecnicoActualId) {
+      this.editandoTecnico.set(false);
+      return;
+    }
+
+    this.loading.set(true);
+
+    // Actualizar el ticket usando HttpClient directamente para manejar la respuesta del backend
+    const updateData = {
+      idtecnicoactual: idTecnico
+    };
+
+    this.http.put<any>(`${environment.apiURL}/${environment.endPointTiquete}/${tiquete.id}`, updateData).subscribe({
+      next: (response: any) => {
+        if (response.success && response.data && response.data.tiquete) {
+          // Actualizar directamente con la respuesta del servidor
+          this.tiquete.set(response.data.tiquete);
+          this.tecnicoSeleccionado.set(response.data.tiquete.tecnicoActual?.id || null);
+          this.editandoTecnico.set(false);
+          this.loading.set(false);
+          Swal.fire({
+            icon: 'success',
+            title: '¡Éxito!',
+            text: 'Técnico asignado correctamente',
+            showConfirmButton: false,
+            timer: 1500
+          });
+        } else {
+          // Si la respuesta no tiene el formato esperado, recargar desde el servidor
+          this.loadTiqueteDetail(tiquete.id);
+          this.editandoTecnico.set(false);
+          Swal.fire({
+            icon: 'success',
+            title: '¡Éxito!',
+            text: 'Técnico asignado correctamente',
+            showConfirmButton: false,
+            timer: 1500
+          });
+        }
+      },
+      error: (error: any) => {
+        console.error('Error al actualizar técnico:', error);
+        this.loading.set(false);
+        const errorMessage = error.error?.message || 'Error al actualizar el técnico';
+        this.notification.error('Error', errorMessage);
       }
     });
   }
