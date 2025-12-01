@@ -13,6 +13,4 @@ export class TiqueteService extends BaseAPI<TiqueteModel> {
   constructor(httpClient: HttpClient) { 
     super(httpClient, environment.endPointTiquete);
   }
-
- 
 }

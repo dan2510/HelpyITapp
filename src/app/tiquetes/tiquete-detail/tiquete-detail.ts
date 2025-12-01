@@ -1,6 +1,7 @@
 // src/app/tiquetes/tiquete-detail/tiquete-detail.ts
 import { Component, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { TiqueteService } from '../../share/services/api/tiquete.service';
 import { TecnicoService } from '../../share/services/api/tecnico.service';
 import { TiqueteModel } from '../../share/models/TiqueteModel';
@@ -9,6 +10,7 @@ import { NotificationService } from '../../share/services/app/notification.servi
 import { Prioridad, EstadoTiquete } from '../../share/models/EnumsModel';
 import { environment } from '../../../environments/environment.development';
 import { HttpClient } from '@angular/common/http';
+import { firstValueFrom } from 'rxjs';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -27,14 +29,25 @@ export class TiqueteDetail implements OnInit {
   protected readonly editandoTecnico = signal<boolean>(false);
   protected readonly tecnicoSeleccionado = signal<number | null>(null);
 
+  // Formulario para actualizar estado
+  estadoForm!: FormGroup;
+  protected readonly mostrandoFormEstado = signal<boolean>(false);
+  protected readonly archivosSeleccionados = signal<File[]>([]);
+  protected readonly archivosSubidos = signal<string[]>([]);
+  protected readonly uploading = signal<boolean>(false);
+  protected readonly estadosDisponibles = signal<EstadoTiquete[]>([]);
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
+    private fb: FormBuilder,
     private tiqueteService: TiqueteService,
     private tecnicoService: TecnicoService,
     private notification: NotificationService,
     private http: HttpClient
-  ) {}
+  ) {
+    this.initEstadoForm();
+  }
 
   ngOnInit(): void {
     this.route.params.subscribe(params => {
@@ -390,6 +403,254 @@ export class TiqueteDetail implements OnInit {
     const placeholder = container?.querySelector('.image-error-placeholder');
     if (placeholder) {
       placeholder.remove();
+    }
+  }
+
+  // ========== MÉTODOS PARA ACTUALIZAR ESTADO ==========
+
+  initEstadoForm(): void {
+    this.estadoForm = this.fb.group({
+      nuevoEstado: ['', Validators.required],
+      observacion: ['', [Validators.required, Validators.minLength(10)]]
+    });
+  }
+
+  mostrarFormularioEstado(): void {
+    const tiquete = this.tiquete();
+    if (!tiquete) return;
+
+    // Calcular estados disponibles según el estado actual
+    const estadosDisponibles = this.getEstadosDisponibles(tiquete.estado);
+    this.estadosDisponibles.set(estadosDisponibles);
+
+    if (estadosDisponibles.length === 0) {
+      this.notification.info('Información', 'Este ticket no puede avanzar más en el flujo');
+      return;
+    }
+
+    // Si solo hay un estado disponible, seleccionarlo automáticamente
+    if (estadosDisponibles.length === 1) {
+      this.estadoForm.patchValue({ nuevoEstado: estadosDisponibles[0] });
+    }
+
+    this.mostrandoFormEstado.set(true);
+  }
+
+  cancelarActualizacionEstado(): void {
+    this.mostrandoFormEstado.set(false);
+    this.estadoForm.reset();
+    this.archivosSeleccionados.set([]);
+    this.archivosSubidos.set([]);
+  }
+
+  getEstadosDisponibles(estadoActual: EstadoTiquete): EstadoTiquete[] {
+    const flujo: { [key in EstadoTiquete]?: EstadoTiquete[] } = {
+      [EstadoTiquete.PENDIENTE]: [EstadoTiquete.ASIGNADO],
+      [EstadoTiquete.ASIGNADO]: [EstadoTiquete.EN_PROGRESO],
+      [EstadoTiquete.EN_PROGRESO]: [EstadoTiquete.RESUELTO],
+      [EstadoTiquete.RESUELTO]: [EstadoTiquete.CERRADO]
+    };
+
+    return flujo[estadoActual] || [];
+  }
+
+  puedeActualizarEstado(): boolean {
+    const tiquete = this.tiquete();
+    if (!tiquete) return false;
+
+    // Solo técnicos y admins pueden actualizar el estado
+    // Además, no se puede actualizar si ya está cerrado
+    return tiquete.estado !== EstadoTiquete.CERRADO && 
+           tiquete.estado !== EstadoTiquete.CANCELADO &&
+           this.getEstadosDisponibles(tiquete.estado).length > 0;
+  }
+
+  async actualizarEstado(): Promise<void> {
+    if (this.estadoForm.invalid) {
+      this.markFormGroupTouched(this.estadoForm);
+      this.notification.warning('Validación', 'Por favor complete todos los campos requeridos');
+      return;
+    }
+
+    const tiquete = this.tiquete();
+    if (!tiquete) return;
+
+    // Validar que hay al menos una imagen
+    if (this.archivosSeleccionados().length === 0) {
+      this.notification.warning('Validación', 'Se requiere al menos una imagen como evidencia');
+      return;
+    }
+
+    // Validar que hay técnico asignado (excepto desde Pendiente)
+    if (tiquete.estado !== EstadoTiquete.PENDIENTE && !tiquete.tecnicoActual) {
+      this.notification.warning('Validación', 'No se puede avanzar el estado sin un técnico asignado');
+      return;
+    }
+
+    this.loading.set(true);
+    this.uploading.set(true);
+
+    try {
+      // Subir archivos primero
+      const nombresArchivos = await this.subirArchivos();
+
+      // Actualizar estado
+      const nuevoEstado = this.estadoForm.get('nuevoEstado')?.value;
+      const observacion = this.estadoForm.get('observacion')?.value.trim();
+
+      // Llamar directamente al endpoint usando HttpClient
+      this.http.patch<any>(
+        `${environment.apiURL}/${environment.endPointTiquete}/${tiquete.id}/estado`,
+        {
+          nuevoEstado,
+          observacion,
+          imagenes: nombresArchivos
+        }
+      ).subscribe({
+        next: (response: any) => {
+          if (response.success) {
+            this.loading.set(false);
+            this.uploading.set(false);
+            Swal.fire({
+              icon: 'success',
+              title: '¡Éxito!',
+              text: 'Estado del ticket actualizado exitosamente',
+              showConfirmButton: false,
+              timer: 1500
+            }).then(() => {
+              // Recargar el detalle del ticket
+              this.loadTiqueteDetail(tiquete.id);
+              this.cancelarActualizacionEstado();
+            });
+          } else {
+            this.loading.set(false);
+            this.uploading.set(false);
+            this.notification.error('Error', response.message || 'Error al actualizar el estado');
+          }
+        },
+        error: (error: any) => {
+          this.loading.set(false);
+          this.uploading.set(false);
+          const errorMessage = error.error?.message || 'Error al actualizar el estado del ticket';
+          this.notification.error('Error', errorMessage);
+        }
+      });
+    } catch (error: any) {
+      this.loading.set(false);
+      this.uploading.set(false);
+      this.notification.error('Error', 'Error al subir los archivos');
+    }
+  }
+
+  // Métodos para manejo de archivos (similar a tiquete-form)
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      const nuevosArchivos = Array.from(input.files);
+      
+      // Validar tamaño máximo (2MB)
+      const archivosValidos = nuevosArchivos.filter(archivo => {
+        if (archivo.size > 2 * 1024 * 1024) {
+          this.notification.warning('Archivo muy grande', `${archivo.name} excede el tamaño máximo de 2MB`);
+          return false;
+        }
+        return true;
+      });
+
+      this.archivosSeleccionados.set([...this.archivosSeleccionados(), ...archivosValidos]);
+    }
+    input.value = '';
+  }
+
+  removerArchivo(archivo: File): void {
+    const archivos = this.archivosSeleccionados().filter(f => f !== archivo);
+    this.archivosSeleccionados.set(archivos);
+  }
+
+  esImagenArchivo(nombreArchivo: string): boolean {
+    const extension = nombreArchivo.toLowerCase().split('.').pop();
+    return ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp'].includes(extension || '');
+  }
+
+  getFilePreview(archivo: File): string {
+    if (this.esImagenArchivo(archivo.name)) {
+      return URL.createObjectURL(archivo);
+    }
+    return '';
+  }
+
+  formatFileSize(bytes: number): string {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
+  }
+
+  private async subirArchivos(): Promise<string[]> {
+    if (this.archivosSeleccionados().length === 0) {
+      return [];
+    }
+
+    const nombresArchivos: string[] = [];
+
+    try {
+      // Subir cada archivo individualmente
+      for (const archivo of this.archivosSeleccionados()) {
+        const formData = new FormData();
+        formData.append('file', archivo);
+
+        const response = await firstValueFrom(
+          this.http.post<any>(`${environment.apiURL}/file/upload`, formData)
+        );
+
+        if (response && response.fileName) {
+          nombresArchivos.push(response.fileName);
+        }
+      }
+
+      this.archivosSubidos.set(nombresArchivos);
+      return nombresArchivos;
+    } catch (error: any) {
+      this.notification.error('Error', 'No se pudieron subir algunos archivos');
+      throw error;
+    }
+  }
+
+  private markFormGroupTouched(formGroup: FormGroup): void {
+    Object.keys(formGroup.controls).forEach(key => {
+      const control = formGroup.get(key);
+      control?.markAsTouched();
+      
+      if (control instanceof FormGroup) {
+        this.markFormGroupTouched(control);
+      }
+    });
+  }
+
+  getEstadoNombre(estado: EstadoTiquete): string {
+    const nombres: { [key in EstadoTiquete]: string } = {
+      [EstadoTiquete.PENDIENTE]: 'Pendiente',
+      [EstadoTiquete.ASIGNADO]: 'Asignado',
+      [EstadoTiquete.EN_PROGRESO]: 'En Proceso',
+      [EstadoTiquete.RESUELTO]: 'Resuelto',
+      [EstadoTiquete.CERRADO]: 'Cerrado',
+      [EstadoTiquete.CANCELADO]: 'Cancelado',
+      [EstadoTiquete.ABIERTO]: 'Abierto'
+    };
+    return nombres[estado] || estado;
+  }
+
+  getEstadoIcon(estado: EstadoTiquete): string {
+    switch (estado) {
+      case EstadoTiquete.ABIERTO: return 'inbox';
+      case EstadoTiquete.ASIGNADO: return 'assignment_ind';
+      case EstadoTiquete.EN_PROGRESO: return 'hourglass_empty';
+      case EstadoTiquete.PENDIENTE: return 'schedule';
+      case EstadoTiquete.RESUELTO: return 'check_circle';
+      case EstadoTiquete.CERRADO: return 'done_all';
+      case EstadoTiquete.CANCELADO: return 'cancel';
+      default: return 'help';
     }
   }
 }

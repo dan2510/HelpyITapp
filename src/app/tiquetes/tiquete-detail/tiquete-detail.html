@@ -191,6 +191,182 @@
         </mat-card-content>
       </mat-card>
 
+      <!-- SECCIÓN 1.5: Actualizar Estado (Solo si se puede actualizar) -->
+      @if (puedeActualizarEstado() && !mostrandoFormEstado()) {
+        <mat-card class="info-card update-estado-card">
+          <mat-card-header class="card-header">
+            <div mat-card-avatar class="avatar-update">
+              <mat-icon class="avatar-icon">update</mat-icon>
+            </div>
+            <mat-card-title>Actualizar Estado del Ticket</mat-card-title>
+            <mat-card-subtitle>Avanzar en el flujo de trabajo</mat-card-subtitle>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="update-estado-info">
+              <p class="info-text">
+                <mat-icon>info</mat-icon>
+                Estado actual: <strong>{{ tiquete()!.estado }}</strong>
+              </p>
+              <p class="info-text">
+                <mat-icon>arrow_forward</mat-icon>
+                Próximo estado disponible: <strong>{{ getEstadoNombre(getEstadosDisponibles(tiquete()!.estado)[0]) }}</strong>
+              </p>
+              <button 
+                mat-raised-button 
+                color="primary" 
+                (click)="mostrarFormularioEstado()"
+                class="update-button">
+                <mat-icon>play_arrow</mat-icon>
+                Actualizar Estado
+              </button>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      }
+
+      <!-- Formulario de Actualización de Estado -->
+      @if (mostrandoFormEstado()) {
+        <mat-card class="info-card estado-form-card">
+          <mat-card-header class="card-header">
+            <div mat-card-avatar class="avatar-form">
+              <mat-icon class="avatar-icon">edit</mat-icon>
+            </div>
+            <mat-card-title>Actualizar Estado del Ticket</mat-card-title>
+            <mat-card-subtitle>Complete los campos requeridos</mat-card-subtitle>
+          </mat-card-header>
+          <mat-card-content>
+            <form [formGroup]="estadoForm" (ngSubmit)="actualizarEstado()">
+              <!-- Estado Actual (Solo lectura) -->
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Estado Actual</mat-label>
+                <input matInput [value]="tiquete()!.estado" readonly>
+                <mat-icon matPrefix>label</mat-icon>
+              </mat-form-field>
+
+              <!-- Nuevo Estado -->
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Nuevo Estado</mat-label>
+                <mat-select formControlName="nuevoEstado" required>
+                  @for (estado of estadosDisponibles(); track estado) {
+                    <mat-option [value]="estado">
+                      {{ getEstadoNombre(estado) }}
+                    </mat-option>
+                  }
+                </mat-select>
+                <mat-icon matPrefix>arrow_forward</mat-icon>
+                @if (estadoForm.get('nuevoEstado')?.hasError('required') && estadoForm.get('nuevoEstado')?.touched) {
+                  <mat-error>El nuevo estado es obligatorio</mat-error>
+                }
+              </mat-form-field>
+
+              <!-- Observación -->
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Observación (Obligatoria)</mat-label>
+                <textarea 
+                  matInput 
+                  formControlName="observacion" 
+                  rows="4"
+                  placeholder="Describa el motivo del cambio de estado..."
+                  required></textarea>
+                <mat-icon matPrefix>note</mat-icon>
+                <mat-hint>Mínimo 10 caracteres</mat-hint>
+                @if (estadoForm.get('observacion')?.hasError('required') && estadoForm.get('observacion')?.touched) {
+                  <mat-error>La observación es obligatoria</mat-error>
+                }
+                @if (estadoForm.get('observacion')?.hasError('minlength') && estadoForm.get('observacion')?.touched) {
+                  <mat-error>La observación debe tener al menos 10 caracteres</mat-error>
+                }
+              </mat-form-field>
+
+              <!-- Carga de Imágenes -->
+              <div class="file-upload-section">
+                <h4 class="section-title">
+                  <mat-icon>image</mat-icon>
+                  Evidencias (Al menos una imagen requerida)
+                </h4>
+                
+                <!-- Input de archivos -->
+                <div class="file-input-container">
+                  <input 
+                    type="file" 
+                    id="fileInput" 
+                    multiple 
+                    accept="image/*,.jpg,.jpeg,.png,.gif,.webp,.bmp"
+                    (change)="onFileSelected($event)"
+                    style="display: none;">
+                  <label for="fileInput">
+                    <button 
+                      mat-raised-button 
+                      color="accent" 
+                      type="button"
+                      class="upload-button">
+                      <mat-icon>cloud_upload</mat-icon>
+                      Seleccionar Imágenes
+                    </button>
+                  </label>
+                </div>
+
+                <!-- Lista de archivos seleccionados -->
+                @if (archivosSeleccionados().length > 0) {
+                  <div class="files-list">
+                    @for (archivo of archivosSeleccionados(); track archivo.name) {
+                      <div class="file-item">
+                        @if (esImagenArchivo(archivo.name)) {
+                          <img [src]="getFilePreview(archivo)" [alt]="archivo.name" class="file-preview">
+                        } @else {
+                          <mat-icon class="file-icon">insert_drive_file</mat-icon>
+                        }
+                        <div class="file-info">
+                          <span class="file-name">{{ archivo.name }}</span>
+                          <span class="file-size">{{ formatFileSize(archivo.size) }}</span>
+                        </div>
+                        <button 
+                          mat-icon-button 
+                          color="warn" 
+                          (click)="removerArchivo(archivo)"
+                          type="button"
+                          matTooltip="Remover archivo">
+                          <mat-icon>delete</mat-icon>
+                        </button>
+                      </div>
+                    }
+                  </div>
+                } @else {
+                  <p class="no-files-message">
+                    <mat-icon>info</mat-icon>
+                    No hay archivos seleccionados. Por favor, seleccione al menos una imagen.
+                  </p>
+                }
+              </div>
+
+              <!-- Botones de acción -->
+              <div class="form-actions">
+                <button 
+                  mat-raised-button 
+                  color="primary" 
+                  type="submit"
+                  [disabled]="estadoForm.invalid || archivosSeleccionados().length === 0 || loading() || uploading()">
+                  @if (loading() || uploading()) {
+                    <mat-spinner diameter="20" class="inline-spinner"></mat-spinner>
+                  } @else {
+                    <mat-icon>save</mat-icon>
+                  }
+                  Actualizar Estado
+                </button>
+                <button 
+                  mat-button 
+                  type="button"
+                  (click)="cancelarActualizacionEstado()"
+                  [disabled]="loading() || uploading()">
+                  <mat-icon>close</mat-icon>
+                  Cancelar
+                </button>
+              </div>
+            </form>
+          </mat-card-content>
+        </mat-card>
+      }
+
       <!-- SECCIÓN 2: SLA y Cumplimiento -->
       <mat-card class="info-card sla-info">
         <mat-card-header class="card-header">
@@ -305,127 +481,135 @@
 
         <mat-card-content>
           @if ((tiquete()!.historiales || []).length > 0) {
-            <mat-accordion class="history-accordion">
-              @for (historial of tiquete()!.historiales || []; track historial.id) {
-                <mat-expansion-panel class="history-panel">
-                  <mat-expansion-panel-header>
-                    <mat-panel-title>
-                      <div class="history-title">
-                        <mat-chip 
-                          [class]="'estado-chip-small ' + getEstadoColor(historial.estadoanterior)">
-                          {{ historial.estadoanterior }}
-                        </mat-chip>
-                        <mat-icon class="arrow-icon">arrow_forward</mat-icon>
-                        <mat-chip 
-                          [class]="'estado-chip-small ' + getEstadoColor(historial.estadonuevo)">
-                          {{ historial.estadonuevo }}
-                        </mat-chip>
-                      </div>
-                    </mat-panel-title>
-                    <mat-panel-description>
-                      <span class="history-date">
-                        <mat-icon class="date-icon-small">schedule</mat-icon>
-                        {{ formatearFecha(historial.cambiadoen) }}
-                      </span>
-                    </mat-panel-description>
-                  </mat-expansion-panel-header>
+            <div class="history-timeline">
+              @for (historial of tiquete()!.historiales || []; track historial.id; let i = $index; let last = $last) {
+                <div class="timeline-item">
+                  <!-- Línea vertical de conexión -->
+                  @if (!last) {
+                    <div class="timeline-line"></div>
+                  }
+                  
+                  <!-- Punto en la línea de tiempo -->
+                  <div class="timeline-dot" [class]="'dot-' + getEstadoColor(historial.estadonuevo)">
+                    <mat-icon>{{ getEstadoIcon(historial.estadonuevo) }}</mat-icon>
+                  </div>
 
-                  <div class="history-details">
-                    <!-- Información del cambio -->
-                    <div class="change-info">
-                      <div class="change-item">
-                        <mat-icon class="change-icon">person</mat-icon>
-                        <div class="change-content">
-                          <span class="change-label">Modificado por</span>
-                          <span class="change-value">{{ historial.cambiadopor?.nombrecompleto }}</span>
-                          <span class="change-email">{{ historial.cambiadopor?.correo }}</span>
+                  <!-- Contenido del evento -->
+                  <div class="timeline-content">
+                    <mat-card class="history-event-card">
+                      <!-- Header del evento -->
+                      <div class="event-header">
+                        <div class="event-state-change">
+                          <mat-chip 
+                            [class]="'estado-chip-timeline ' + getEstadoColor(historial.estadoanterior)">
+                            {{ historial.estadoanterior }}
+                          </mat-chip>
+                          <mat-icon class="arrow-icon-timeline">arrow_forward</mat-icon>
+                          <mat-chip 
+                            [class]="'estado-chip-timeline ' + getEstadoColor(historial.estadonuevo)">
+                            {{ historial.estadonuevo }}
+                          </mat-chip>
+                        </div>
+                        <div class="event-date">
+                          <mat-icon class="date-icon-timeline">schedule</mat-icon>
+                          <span>{{ formatearFecha(historial.cambiadoen) }}</span>
                         </div>
                       </div>
 
-                      @if (historial.observacion) {
-                        <div class="change-item">
-                          <mat-icon class="change-icon">note</mat-icon>
-                          <div class="change-content">
-                            <span class="change-label">Observación</span>
-                            <p class="observacion-text">{{ historial.observacion }}</p>
+                      <!-- Información del cambio -->
+                      <div class="event-details">
+                        <div class="change-item-timeline">
+                          <mat-icon class="change-icon-timeline">person</mat-icon>
+                          <div class="change-content-timeline">
+                            <span class="change-label-timeline">Modificado por</span>
+                            <span class="change-value-timeline">{{ historial.cambiadopor?.nombrecompleto }}</span>
+                            <span class="change-email-timeline">{{ historial.cambiadopor?.correo }}</span>
                           </div>
                         </div>
-                      }
-                    </div>
 
-                    <!-- Evidencias (Imágenes) -->
-                    @if ((historial.imagenes || []).length > 0) {
-                      <div class="evidencias-section">
-                        <h5 class="evidencias-title">
-                          <mat-icon>image</mat-icon>
-                          Evidencias ({{ historial.imagenes.length }})
-                        </h5>
-                        <div class="evidencias-grid">
-                          @for (imagen of historial.imagenes || []; track imagen.id) {
-                            <div class="evidencia-card">
-                              @if (esImagen(imagen.rutaarchivo)) {
-                                <!-- Vista previa de imagen -->
-                                <div class="evidencia-image-container">
-                                  <img 
-                                    [src]="getImageUrl(imagen.rutaarchivo)" 
-                                    [alt]="getNombreArchivo(imagen.rutaarchivo)"
-                                    class="evidencia-image"
-                                    (error)="onImageError($event)"
-                                    (load)="onImageLoad($event)"
-                                    loading="lazy"
-                                  />
-                                  <div class="image-overlay">
-                                    <a 
-                                      [href]="getImageUrl(imagen.rutaarchivo)" 
-                                      target="_blank"
-                                      class="image-link"
-                                      mat-icon-button
-                                      matTooltip="Ver imagen en tamaño completo"
-                                      (click)="$event.stopPropagation()">
-                                      <mat-icon>open_in_new</mat-icon>
-                                    </a>
+                        @if (historial.observacion) {
+                          <div class="change-item-timeline">
+                            <mat-icon class="change-icon-timeline">note</mat-icon>
+                            <div class="change-content-timeline">
+                              <span class="change-label-timeline">Observación</span>
+                              <p class="observacion-text-timeline">{{ historial.observacion }}</p>
+                            </div>
+                          </div>
+                        }
+
+                        <!-- Evidencias (Imágenes) -->
+                        @if ((historial.imagenes || []).length > 0) {
+                          <div class="evidencias-section-timeline">
+                            <h5 class="evidencias-title-timeline">
+                              <mat-icon>image</mat-icon>
+                              Evidencias ({{ historial.imagenes.length }})
+                            </h5>
+                            <div class="evidencias-grid-timeline">
+                              @for (imagen of historial.imagenes || []; track imagen.id) {
+                                <div class="evidencia-card-timeline">
+                                  @if (esImagen(imagen.rutaarchivo)) {
+                                    <div class="evidencia-image-container-timeline">
+                                      <img 
+                                        [src]="getImageUrl(imagen.rutaarchivo)" 
+                                        [alt]="getNombreArchivo(imagen.rutaarchivo)"
+                                        class="evidencia-image-timeline"
+                                        (error)="onImageError($event)"
+                                        (load)="onImageLoad($event)"
+                                        loading="lazy"
+                                      />
+                                      <div class="image-overlay-timeline">
+                                        <a 
+                                          [href]="getImageUrl(imagen.rutaarchivo)" 
+                                          target="_blank"
+                                          class="image-link-timeline"
+                                          mat-icon-button
+                                          matTooltip="Ver imagen en tamaño completo"
+                                          (click)="$event.stopPropagation()">
+                                          <mat-icon>open_in_new</mat-icon>
+                                        </a>
+                                      </div>
+                                    </div>
+                                  } @else {
+                                    <div class="evidencia-file-container-timeline">
+                                      <mat-icon class="file-icon-large-timeline">insert_drive_file</mat-icon>
+                                      <a 
+                                        [href]="getImageUrl(imagen.rutaarchivo)" 
+                                        target="_blank"
+                                        class="file-download-link-timeline"
+                                        matTooltip="Descargar archivo">
+                                        <mat-icon>download</mat-icon>
+                                      </a>
+                                    </div>
+                                  }
+                                  <div class="evidencia-info-timeline">
+                                    <div class="evidencia-header-timeline">
+                                      <mat-icon class="file-icon-timeline">insert_drive_file</mat-icon>
+                                      <span class="file-name-timeline" [matTooltip]="getNombreArchivo(imagen.rutaarchivo)">
+                                        {{ getNombreArchivo(imagen.rutaarchivo) }}
+                                      </span>
+                                    </div>
+                                    <div class="evidencia-meta-timeline">
+                                      <span class="meta-item-timeline">
+                                        <mat-icon class="meta-icon-timeline">person</mat-icon>
+                                        {{ imagen.subidopor?.nombrecompleto || imagen.usuario?.nombrecompleto }}
+                                      </span>
+                                      <span class="meta-item-timeline">
+                                        <mat-icon class="meta-icon-timeline">schedule</mat-icon>
+                                        {{ formatearFechaCorta(imagen.subidoen) }}
+                                      </span>
+                                    </div>
                                   </div>
                                 </div>
-                              } @else {
-                                <!-- Icono para archivos que no son imágenes -->
-                                <div class="evidencia-file-container">
-                                  <mat-icon class="file-icon-large">insert_drive_file</mat-icon>
-                                  <a 
-                                    [href]="getImageUrl(imagen.rutaarchivo)" 
-                                    target="_blank"
-                                    class="file-download-link"
-                                    matTooltip="Descargar archivo">
-                                    <mat-icon>download</mat-icon>
-                                  </a>
-                                </div>
                               }
-                              <div class="evidencia-info">
-                                <div class="evidencia-header">
-                                  <mat-icon class="file-icon">insert_drive_file</mat-icon>
-                                  <span class="file-name" [matTooltip]="getNombreArchivo(imagen.rutaarchivo)">
-                                    {{ getNombreArchivo(imagen.rutaarchivo) }}
-                                  </span>
-                                </div>
-                                <div class="evidencia-meta">
-                                  <span class="meta-item">
-                                    <mat-icon class="meta-icon">person</mat-icon>
-                                    {{ imagen.subidopor?.nombrecompleto || imagen.usuario?.nombrecompleto }}
-                                  </span>
-                                  <span class="meta-item">
-                                    <mat-icon class="meta-icon">schedule</mat-icon>
-                                    {{ formatearFechaCorta(imagen.subidoen) }}
-                                  </span>
-                                </div>
-                              </div>
                             </div>
-                          }
-                        </div>
+                          </div>
+                        }
                       </div>
-                    }
+                    </mat-card>
                   </div>
-                </mat-expansion-panel>
+                </div>
               }
-            </mat-accordion>
+            </div>
           } @else {
             <div class="no-items">
               <mat-icon>info</mat-icon>
