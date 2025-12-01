@@ -34,13 +34,6 @@ export class TiqueteDetail implements OnInit {
   protected readonly archivosSeleccionados = signal<File[]>([]);
   protected readonly archivosSubidos = signal<string[]>([]);
   protected readonly uploading = signal<boolean>(false);
-  protected readonly estadosDisponibles = signal<EstadoTiquete[]>([]);
-
-  // Comentarios
-  comentarioExternal: string = '';
-  comentarioInternal: string = '';
-  protected readonly guardandoComentario = signal<boolean>(false);
-
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -423,11 +416,6 @@ export class TiqueteDetail implements OnInit {
       tipoObservacion: ['INTERNAL', Validators.required] // Por defecto Internal
     });
 
-    // Calcular estados disponibles según el estado actual
-    if (tiquete) {
-      const estadosDisponibles = this.getEstadosDisponibles(tiquete.estado);
-      this.estadosDisponibles.set(estadosDisponibles);
-    }
   }
 
   cancelarActualizacionEstado(): void {
@@ -740,51 +728,4 @@ export class TiqueteDetail implements OnInit {
     );
   }
 
-  // Método para agregar comentario (external o internal)
-  agregarComentario(tipo: 'EXTERNAL' | 'INTERNAL'): void {
-    const contenido = tipo === 'EXTERNAL' ? this.comentarioExternal : this.comentarioInternal;
-    
-    if (!contenido || contenido.trim().length === 0) {
-      this.notification.warning('Advertencia', 'El comentario no puede estar vacío');
-      return;
-    }
-
-    this.guardandoComentario.set(true);
-    const idTiquete = this.tiqueteId();
-
-    const body = {
-      tipo: tipo,
-      contenido: contenido.trim()
-    };
-
-    this.http.post<any>(`${environment.endPointTiquete}/${idTiquete}/comentarios`, body)
-      .subscribe({
-        next: (response) => {
-          if (response.success) {
-            this.notification.success(
-              'Éxito', 
-              tipo === 'EXTERNAL' ? 'Comentario público agregado exitosamente' : 'Comentario interno agregado exitosamente'
-            );
-            
-            // Limpiar el campo correspondiente
-            if (tipo === 'EXTERNAL') {
-              this.comentarioExternal = '';
-            } else {
-              this.comentarioInternal = '';
-            }
-
-            // Recargar el detalle del ticket para mostrar el nuevo comentario
-            this.loadTiqueteDetail(idTiquete);
-          } else {
-            this.notification.error('Error', 'No se pudo agregar el comentario');
-          }
-          this.guardandoComentario.set(false);
-        },
-        error: (error) => {
-          console.error('Error al agregar comentario:', error);
-          this.notification.error('Error', 'No se pudo agregar el comentario');
-          this.guardandoComentario.set(false);
-        }
-      });
-  }
 }
