@@ -26,9 +26,8 @@ export enum Prioridad {
 }
 
 export enum EstadoTiquete {
-  ABIERTO = 'ABIERTO',
-  EN_PROGRESO = 'EN_PROGRESO',
   PENDIENTE = 'PENDIENTE',
+  EN_PROGRESO = 'EN_PROGRESO',
   RESUELTO = 'RESUELTO',
   CERRADO = 'CERRADO',
   CANCELADO = 'CANCELADO',

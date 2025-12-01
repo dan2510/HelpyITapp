@@ -17,7 +17,8 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { ReactiveFormsModule } from '@angular/forms';
+import { MatTabsModule } from '@angular/material/tabs';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { TiqueteRoutingModule } from './tiquete-routing-module';
 import { TiqueteIndex } from './tiquete-index/tiquete-index';
 import { TiqueteDetail } from './tiquete-detail/tiquete-detail';
@@ -34,6 +35,7 @@ import { TiqueteForm } from './tiquete-form/tiquete-form';
     RouterModule, 
     TiqueteRoutingModule,
     ReactiveFormsModule,
+    FormsModule,
     MatCardModule,
     MatButtonModule,
     MatIconModule,
@@ -49,7 +51,8 @@ import { TiqueteForm } from './tiquete-form/tiquete-form';
     MatSelectModule,
     MatFormFieldModule,
     MatInputModule,
-    MatAutocompleteModule
+    MatAutocompleteModule,
+    MatTabsModule
   ]
 })
 export class TiqueteModule { }

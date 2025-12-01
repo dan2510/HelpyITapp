@@ -525,18 +525,6 @@
 }
 
 /* Colores de estado personalizados en detalle de técnico */
-::ng-deep .ticket-chip.estado-abierto {
-  background-color: #2196F3 !important;
-  color: white !important;
-}
-
-::ng-deep .ticket-chip.estado-abierto .mdc-evolution-chip__cell--primary,
-::ng-deep .ticket-chip.estado-abierto .mat-mdc-chip-action-label,
-::ng-deep .ticket-chip.estado-abierto .mdc-evolution-chip__text-label,
-::ng-deep .ticket-chip.estado-abierto span {
-  color: white !important;
-}
-
 ::ng-deep .ticket-chip.estado-asignado {
   background-color: #1976D2 !important;
   color: white !important;

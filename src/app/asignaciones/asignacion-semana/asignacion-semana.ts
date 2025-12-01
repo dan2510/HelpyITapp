@@ -130,8 +130,6 @@ export class AsignacionSemana implements OnInit {
   getEstadoColor(estado: EstadoTiquete | string): string {
     const estadoStr = typeof estado === 'string' ? estado.toUpperCase() : estado;
     switch (estadoStr) {
-      case EstadoTiquete.ABIERTO:
-      case 'ABIERTO': return 'abierto';
       case EstadoTiquete.ASIGNADO:
       case 'ASIGNADO': return 'asignado';
       case EstadoTiquete.EN_PROGRESO:
@@ -144,7 +142,7 @@ export class AsignacionSemana implements OnInit {
       case 'CERRADO': return 'cerrado';
       case EstadoTiquete.CANCELADO:
       case 'CANCELADO': return 'cancelado';
-      default: return 'abierto';
+      default: return 'pendiente';
     }
   }
 

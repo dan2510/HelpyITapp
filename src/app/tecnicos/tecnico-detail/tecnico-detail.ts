@@ -114,7 +114,7 @@ export class TecnicoDetail implements OnInit {
 
   getEstadoTicketColor(estado: string): string {
     switch (estado.toUpperCase()) {
-      case 'ABIERTO': return 'abierto';
+      case 'PENDIENTE': return 'pendiente';
       case 'EN_PROGRESO': return 'en-progreso';
       case 'ASIGNADO': return 'asignado';
       case 'PENDIENTE': return 'pendiente';

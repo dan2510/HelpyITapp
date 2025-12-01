@@ -31,11 +31,15 @@ export class TiqueteDetail implements OnInit {
 
   // Formulario para actualizar estado
   estadoForm!: FormGroup;
-  protected readonly mostrandoFormEstado = signal<boolean>(false);
   protected readonly archivosSeleccionados = signal<File[]>([]);
   protected readonly archivosSubidos = signal<string[]>([]);
   protected readonly uploading = signal<boolean>(false);
   protected readonly estadosDisponibles = signal<EstadoTiquete[]>([]);
+
+  // Comentarios
+  comentarioExternal: string = '';
+  comentarioInternal: string = '';
+  protected readonly guardandoComentario = signal<boolean>(false);
 
   constructor(
     private route: ActivatedRoute,
@@ -72,6 +76,8 @@ export class TiqueteDetail implements OnInit {
           this.tiquete.set(response.data.tiquete);
           // Inicializar el técnico seleccionado con el técnico actual
           this.tecnicoSeleccionado.set(response.data.tiquete.tecnicoActual?.id || null);
+          // Inicializar el formulario con los estados disponibles
+          this.initEstadoForm();
           console.log('Detalle del tiquete cargado:', response.data.tiquete);
         } else {
           this.error.set('Error en la respuesta del servidor');
@@ -201,7 +207,6 @@ export class TiqueteDetail implements OnInit {
 
   getEstadoColor(estado: EstadoTiquete): string {
     switch (estado) {
-      case EstadoTiquete.ABIERTO: return 'abierto';
       case EstadoTiquete.ASIGNADO: return 'asignado';
       case EstadoTiquete.EN_PROGRESO: return 'en-progreso';
       case EstadoTiquete.PENDIENTE: return 'pendiente';
@@ -409,38 +414,28 @@ export class TiqueteDetail implements OnInit {
   // ========== MÉTODOS PARA ACTUALIZAR ESTADO ==========
 
   initEstadoForm(): void {
-    this.estadoForm = this.fb.group({
-      nuevoEstado: ['', Validators.required],
-      observacion: ['', [Validators.required, Validators.minLength(10)]]
-    });
-  }
-
-  mostrarFormularioEstado(): void {
     const tiquete = this.tiquete();
-    if (!tiquete) return;
+    const estadoActual = tiquete?.estado || EstadoTiquete.PENDIENTE;
+    
+    this.estadoForm = this.fb.group({
+      nuevoEstado: [estadoActual, Validators.required], // Por defecto el estado actual
+      observacion: ['', [Validators.required, Validators.minLength(10)]],
+      tipoObservacion: ['INTERNAL', Validators.required] // Por defecto Internal
+    });
 
     // Calcular estados disponibles según el estado actual
-    const estadosDisponibles = this.getEstadosDisponibles(tiquete.estado);
-    this.estadosDisponibles.set(estadosDisponibles);
-
-    if (estadosDisponibles.length === 0) {
-      this.notification.info('Información', 'Este ticket no puede avanzar más en el flujo');
-      return;
+    if (tiquete) {
+      const estadosDisponibles = this.getEstadosDisponibles(tiquete.estado);
+      this.estadosDisponibles.set(estadosDisponibles);
     }
-
-    // Si solo hay un estado disponible, seleccionarlo automáticamente
-    if (estadosDisponibles.length === 1) {
-      this.estadoForm.patchValue({ nuevoEstado: estadosDisponibles[0] });
-    }
-
-    this.mostrandoFormEstado.set(true);
   }
 
   cancelarActualizacionEstado(): void {
-    this.mostrandoFormEstado.set(false);
     this.estadoForm.reset();
     this.archivosSeleccionados.set([]);
     this.archivosSubidos.set([]);
+    // Resetear el formulario con valores por defecto
+    this.initEstadoForm();
   }
 
   getEstadosDisponibles(estadoActual: EstadoTiquete): EstadoTiquete[] {
@@ -454,15 +449,43 @@ export class TiqueteDetail implements OnInit {
     return flujo[estadoActual] || [];
   }
 
+  getEstadoRetroceso(estadoActual: EstadoTiquete): EstadoTiquete | null {
+    // Mapeo para retroceder un estado
+    const retroceso: { [key in EstadoTiquete]?: EstadoTiquete } = {
+      [EstadoTiquete.ASIGNADO]: EstadoTiquete.PENDIENTE,
+      [EstadoTiquete.EN_PROGRESO]: EstadoTiquete.ASIGNADO,
+      [EstadoTiquete.RESUELTO]: EstadoTiquete.EN_PROGRESO,
+      [EstadoTiquete.CERRADO]: EstadoTiquete.RESUELTO
+    };
+
+    return retroceso[estadoActual] || null;
+  }
+
+  getTodosEstadosDisponibles(): { actual: EstadoTiquete; siguiente: EstadoTiquete | null; retroceso: EstadoTiquete | null } {
+    const tiquete = this.tiquete();
+    if (!tiquete) {
+      return { actual: EstadoTiquete.PENDIENTE, siguiente: null, retroceso: null };
+    }
+
+    const estadoActual = tiquete.estado;
+    const estadosAvance = this.getEstadosDisponibles(estadoActual);
+    const estadoSiguiente = estadosAvance.length > 0 ? estadosAvance[0] : null;
+    const estadoRetroceso = this.getEstadoRetroceso(estadoActual);
+
+    return {
+      actual: estadoActual,
+      siguiente: estadoSiguiente,
+      retroceso: estadoRetroceso
+    };
+  }
+
   puedeActualizarEstado(): boolean {
     const tiquete = this.tiquete();
     if (!tiquete) return false;
 
-    // Solo técnicos y admins pueden actualizar el estado
-    // Además, no se puede actualizar si ya está cerrado
+    // Se puede actualizar estado o agregar observación si no está cerrado o cancelado
     return tiquete.estado !== EstadoTiquete.CERRADO && 
-           tiquete.estado !== EstadoTiquete.CANCELADO &&
-           this.getEstadosDisponibles(tiquete.estado).length > 0;
+           tiquete.estado !== EstadoTiquete.CANCELADO;
   }
 
   async actualizarEstado(): Promise<void> {
@@ -475,28 +498,81 @@ export class TiqueteDetail implements OnInit {
     const tiquete = this.tiquete();
     if (!tiquete) return;
 
-    // Validar que hay al menos una imagen
-    if (this.archivosSeleccionados().length === 0) {
-      this.notification.warning('Validación', 'Se requiere al menos una imagen como evidencia');
-      return;
-    }
+    const nuevoEstado = this.estadoForm.get('nuevoEstado')?.value;
+    const estadoCambia = nuevoEstado !== tiquete.estado;
+    const estadosRetroceso = this.getEstadoRetroceso(tiquete.estado);
+    const esRetroceso = estadosRetroceso === nuevoEstado;
 
-    // Validar que hay técnico asignado (excepto desde Pendiente)
-    if (tiquete.estado !== EstadoTiquete.PENDIENTE && !tiquete.tecnicoActual) {
-      this.notification.warning('Validación', 'No se puede avanzar el estado sin un técnico asignado');
-      return;
+    // Si cambia el estado, validar imágenes y técnico
+    if (estadoCambia) {
+      // Validar que hay al menos una imagen cuando se cambia el estado
+      if (this.archivosSeleccionados().length === 0) {
+        this.notification.warning('Validación', 'Se requiere al menos una imagen como evidencia al cambiar el estado');
+        return;
+      }
+
+      // Validar que hay técnico asignado (excepto desde Pendiente o retrocediendo)
+      if (tiquete.estado !== EstadoTiquete.PENDIENTE && !esRetroceso && !tiquete.tecnicoActual) {
+        this.notification.warning('Validación', 'No se puede avanzar el estado sin un técnico asignado');
+        return;
+      }
     }
 
     this.loading.set(true);
     this.uploading.set(true);
 
     try {
-      // Subir archivos primero
-      const nombresArchivos = await this.subirArchivos();
+      // Subir archivos si hay (opcional cuando solo se agrega observación)
+      let nombresArchivos: string[] = [];
+      if (this.archivosSeleccionados().length > 0) {
+        nombresArchivos = await this.subirArchivos();
+      }
 
-      // Actualizar estado
-      const nuevoEstado = this.estadoForm.get('nuevoEstado')?.value;
+      // Actualizar estado u observación
       const observacion = this.estadoForm.get('observacion')?.value.trim();
+      const tipoObservacion = this.estadoForm.get('tipoObservacion')?.value || 'INTERNAL';
+
+      // Si no cambia el estado, solo agregar observación
+      if (!estadoCambia) {
+        // Llamar al endpoint de comentarios
+        this.http.post<any>(
+          `${environment.apiURL}/${environment.endPointTiquete}/${tiquete.id}/comentarios`,
+          {
+            tipo: tipoObservacion,
+            contenido: observacion
+          }
+        ).subscribe({
+          next: (response: any) => {
+            if (response.success) {
+              this.loading.set(false);
+              this.uploading.set(false);
+              Swal.fire({
+                icon: 'success',
+                title: '¡Éxito!',
+                text: 'Observación agregada exitosamente',
+                showConfirmButton: false,
+                timer: 1500
+              }).then(() => {
+                this.loadTiqueteDetail(tiquete.id);
+                this.cancelarActualizacionEstado();
+              });
+            } else {
+              this.loading.set(false);
+              this.uploading.set(false);
+              this.notification.error('Error', response.message || 'Error al agregar la observación');
+            }
+          },
+          error: (error: any) => {
+            this.loading.set(false);
+            this.uploading.set(false);
+            const errorMessage = error.error?.message || 'Error al agregar la observación';
+            this.notification.error('Error', errorMessage);
+          }
+        });
+        return;
+      }
+
+      // Si cambia el estado, usar el endpoint de actualización de estado
 
       // Llamar directamente al endpoint usando HttpClient
       this.http.patch<any>(
@@ -504,7 +580,8 @@ export class TiqueteDetail implements OnInit {
         {
           nuevoEstado,
           observacion,
-          imagenes: nombresArchivos
+          imagenes: nombresArchivos,
+          tipoObservacion: tipoObservacion // EXTERNAL o INTERNAL
         }
       ).subscribe({
         next: (response: any) => {
@@ -635,15 +712,13 @@ export class TiqueteDetail implements OnInit {
       [EstadoTiquete.EN_PROGRESO]: 'En Proceso',
       [EstadoTiquete.RESUELTO]: 'Resuelto',
       [EstadoTiquete.CERRADO]: 'Cerrado',
-      [EstadoTiquete.CANCELADO]: 'Cancelado',
-      [EstadoTiquete.ABIERTO]: 'Abierto'
+      [EstadoTiquete.CANCELADO]: 'Cancelado'
     };
     return nombres[estado] || estado;
   }
 
   getEstadoIcon(estado: EstadoTiquete): string {
     switch (estado) {
-      case EstadoTiquete.ABIERTO: return 'inbox';
       case EstadoTiquete.ASIGNADO: return 'assignment_ind';
       case EstadoTiquete.EN_PROGRESO: return 'hourglass_empty';
       case EstadoTiquete.PENDIENTE: return 'schedule';
@@ -652,5 +727,64 @@ export class TiqueteDetail implements OnInit {
       case EstadoTiquete.CANCELADO: return 'cancel';
       default: return 'help';
     }
+  }
+
+  // Método para obtener comentarios desde historiales
+  getComentarios(): any[] {
+    const tiquete = this.tiquete();
+    if (!tiquete || !tiquete.historiales) {
+      return [];
+    }
+    return tiquete.historiales.filter((hist: any) => 
+      hist.tipo === 'COMENTARIO_EXTERNAL' || hist.tipo === 'COMENTARIO_INTERNAL'
+    );
+  }
+
+  // Método para agregar comentario (external o internal)
+  agregarComentario(tipo: 'EXTERNAL' | 'INTERNAL'): void {
+    const contenido = tipo === 'EXTERNAL' ? this.comentarioExternal : this.comentarioInternal;
+    
+    if (!contenido || contenido.trim().length === 0) {
+      this.notification.warning('Advertencia', 'El comentario no puede estar vacío');
+      return;
+    }
+
+    this.guardandoComentario.set(true);
+    const idTiquete = this.tiqueteId();
+
+    const body = {
+      tipo: tipo,
+      contenido: contenido.trim()
+    };
+
+    this.http.post<any>(`${environment.endPointTiquete}/${idTiquete}/comentarios`, body)
+      .subscribe({
+        next: (response) => {
+          if (response.success) {
+            this.notification.success(
+              'Éxito', 
+              tipo === 'EXTERNAL' ? 'Comentario público agregado exitosamente' : 'Comentario interno agregado exitosamente'
+            );
+            
+            // Limpiar el campo correspondiente
+            if (tipo === 'EXTERNAL') {
+              this.comentarioExternal = '';
+            } else {
+              this.comentarioInternal = '';
+            }
+
+            // Recargar el detalle del ticket para mostrar el nuevo comentario
+            this.loadTiqueteDetail(idTiquete);
+          } else {
+            this.notification.error('Error', 'No se pudo agregar el comentario');
+          }
+          this.guardandoComentario.set(false);
+        },
+        error: (error) => {
+          console.error('Error al agregar comentario:', error);
+          this.notification.error('Error', 'No se pudo agregar el comentario');
+          this.guardandoComentario.set(false);
+        }
+      });
   }
 }

@@ -103,7 +103,6 @@ export class TiqueteIndex implements OnInit {
 
   getEstadoColor(estado: EstadoTiquete): string {
     switch (estado) {
-      case EstadoTiquete.ABIERTO: return 'abierto';
       case EstadoTiquete.ASIGNADO: return 'asignado';
       case EstadoTiquete.EN_PROGRESO: return 'en-progreso';
       case EstadoTiquete.PENDIENTE: return 'pendiente';
@@ -116,7 +115,6 @@ export class TiqueteIndex implements OnInit {
 
   getEstadoIcon(estado: EstadoTiquete): string {
     switch (estado) {
-      case EstadoTiquete.ABIERTO: return 'inbox';
       case EstadoTiquete.ASIGNADO: return 'assignment_ind';
       case EstadoTiquete.EN_PROGRESO: return 'hourglass_empty';
       case EstadoTiquete.PENDIENTE: return 'schedule';

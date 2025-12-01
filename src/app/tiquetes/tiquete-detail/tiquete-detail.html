@@ -191,41 +191,8 @@
         </mat-card-content>
       </mat-card>
 
-      <!-- SECCIÓN 1.5: Actualizar Estado (Solo si se puede actualizar) -->
-      @if (puedeActualizarEstado() && !mostrandoFormEstado()) {
-        <mat-card class="info-card update-estado-card">
-          <mat-card-header class="card-header">
-            <div mat-card-avatar class="avatar-update">
-              <mat-icon class="avatar-icon">update</mat-icon>
-            </div>
-            <mat-card-title>Actualizar Estado del Ticket</mat-card-title>
-            <mat-card-subtitle>Avanzar en el flujo de trabajo</mat-card-subtitle>
-          </mat-card-header>
-          <mat-card-content>
-            <div class="update-estado-info">
-              <p class="info-text">
-                <mat-icon>info</mat-icon>
-                Estado actual: <strong>{{ tiquete()!.estado }}</strong>
-              </p>
-              <p class="info-text">
-                <mat-icon>arrow_forward</mat-icon>
-                Próximo estado disponible: <strong>{{ getEstadoNombre(getEstadosDisponibles(tiquete()!.estado)[0]) }}</strong>
-              </p>
-              <button 
-                mat-raised-button 
-                color="primary" 
-                (click)="mostrarFormularioEstado()"
-                class="update-button">
-                <mat-icon>play_arrow</mat-icon>
-                Actualizar Estado
-              </button>
-            </div>
-          </mat-card-content>
-        </mat-card>
-      }
-
-      <!-- Formulario de Actualización de Estado -->
-      @if (mostrandoFormEstado()) {
+      <!-- Formulario de Actualización de Estado (Siempre visible) -->
+      @if (puedeActualizarEstado()) {
         <mat-card class="info-card estado-form-card">
           <mat-card-header class="card-header">
             <div mat-card-avatar class="avatar-form">
@@ -245,65 +212,134 @@
 
               <!-- Nuevo Estado -->
               <mat-form-field appearance="outline" class="full-width">
-                <mat-label>Nuevo Estado</mat-label>
+                <mat-label>Estado</mat-label>
                 <mat-select formControlName="nuevoEstado" required>
-                  @for (estado of estadosDisponibles(); track estado) {
-                    <mat-option [value]="estado">
-                      {{ getEstadoNombre(estado) }}
+                  <mat-select-trigger>
+                    @if (estadoForm.get('nuevoEstado')?.value) {
+                      @if (getTodosEstadosDisponibles().retroceso === estadoForm.get('nuevoEstado')?.value) {
+                        {{ getEstadoNombre(estadoForm.get('nuevoEstado')?.value) }} (Retroceder)
+                      } @else if (getTodosEstadosDisponibles().actual === estadoForm.get('nuevoEstado')?.value) {
+                        {{ getEstadoNombre(estadoForm.get('nuevoEstado')?.value) }} (Actual)
+                      } @else if (getTodosEstadosDisponibles().siguiente === estadoForm.get('nuevoEstado')?.value) {
+                        {{ getEstadoNombre(estadoForm.get('nuevoEstado')?.value) }} (Avanzar)
+                      } @else {
+                        {{ getEstadoNombre(estadoForm.get('nuevoEstado')?.value) }}
+                      }
+                    }
+                  </mat-select-trigger>
+                  @if (getTodosEstadosDisponibles().retroceso) {
+                    <mat-option [value]="getTodosEstadosDisponibles().retroceso">
+                      <div class="estado-option">
+                        <mat-icon>arrow_back</mat-icon>
+                        <span>{{ getEstadoNombre(getTodosEstadosDisponibles().retroceso!) }} (Retroceder)</span>
+                      </div>
+                    </mat-option>
+                  }
+                  
+                  <!-- Estado Actual (por defecto) -->
+                  <mat-option [value]="getTodosEstadosDisponibles().actual">
+                    <div class="estado-option">
+                      <mat-icon>info</mat-icon>
+                      <span>{{ getEstadoNombre(getTodosEstadosDisponibles().actual) }} (Actual)</span>
+                    </div>
+                  </mat-option>
+                  
+                  @if (getTodosEstadosDisponibles().siguiente) {
+                    <mat-option [value]="getTodosEstadosDisponibles().siguiente">
+                      <div class="estado-option">
+                        <mat-icon>arrow_forward</mat-icon>
+                        <span>{{ getEstadoNombre(getTodosEstadosDisponibles().siguiente!) }} (Avanzar)</span>
+                      </div>
                     </mat-option>
                   }
                 </mat-select>
-                <mat-icon matPrefix>arrow_forward</mat-icon>
+                <mat-icon matPrefix>label</mat-icon>
+                <mat-hint>Seleccione el estado: retroceder, mantener actual o avanzar</mat-hint>
                 @if (estadoForm.get('nuevoEstado')?.hasError('required') && estadoForm.get('nuevoEstado')?.touched) {
-                  <mat-error>El nuevo estado es obligatorio</mat-error>
+                  <mat-error>El estado es obligatorio</mat-error>
                 }
               </mat-form-field>
 
-              <!-- Observación -->
-              <mat-form-field appearance="outline" class="full-width">
-                <mat-label>Observación (Obligatoria)</mat-label>
-                <textarea 
-                  matInput 
-                  formControlName="observacion" 
-                  rows="4"
-                  placeholder="Describa el motivo del cambio de estado..."
-                  required></textarea>
-                <mat-icon matPrefix>note</mat-icon>
-                <mat-hint>Mínimo 10 caracteres</mat-hint>
-                @if (estadoForm.get('observacion')?.hasError('required') && estadoForm.get('observacion')?.touched) {
-                  <mat-error>La observación es obligatoria</mat-error>
-                }
-                @if (estadoForm.get('observacion')?.hasError('minlength') && estadoForm.get('observacion')?.touched) {
-                  <mat-error>La observación debe tener al menos 10 caracteres</mat-error>
-                }
-              </mat-form-field>
+              <!-- Observación con opción External/Internal -->
+              <div class="observacion-section">
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>Observación (Obligatoria)</mat-label>
+                  <textarea 
+                    matInput 
+                    formControlName="observacion" 
+                    rows="4"
+                    placeholder="Describa el motivo del cambio de estado..."
+                    required></textarea>
+                  <mat-icon matPrefix>note</mat-icon>
+                  <mat-hint>Mínimo 10 caracteres</mat-hint>
+                  @if (estadoForm.get('observacion')?.hasError('required') && estadoForm.get('observacion')?.touched) {
+                    <mat-error>La observación es obligatoria</mat-error>
+                  }
+                  @if (estadoForm.get('observacion')?.hasError('minlength') && estadoForm.get('observacion')?.touched) {
+                    <mat-error>La observación debe tener al menos 10 caracteres</mat-error>
+                  }
+                </mat-form-field>
+
+                <!-- Selector de tipo de observación (External/Internal) -->
+                <mat-form-field appearance="outline" class="full-width tipo-observacion-field">
+                  <mat-label>Tipo de Observación</mat-label>
+                  <mat-select formControlName="tipoObservacion">
+                    <mat-select-trigger>
+                      @if (estadoForm.get('tipoObservacion')?.value === 'INTERNAL') {
+                        Interna (solo técnicos/admin)
+                      } @else if (estadoForm.get('tipoObservacion')?.value === 'EXTERNAL') {
+                        Pública (visible para el cliente)
+                      }
+                    </mat-select-trigger>
+                    <mat-option value="INTERNAL">
+                      <div class="tipo-option">
+                        <mat-icon>lock</mat-icon>
+                        <span>Interna (solo técnicos/admin)</span>
+                      </div>
+                    </mat-option>
+                    <mat-option value="EXTERNAL">
+                      <div class="tipo-option">
+                        <mat-icon>public</mat-icon>
+                        <span>Pública (visible para el cliente)</span>
+                      </div>
+                    </mat-option>
+                  </mat-select>
+                  <mat-icon matPrefix>visibility</mat-icon>
+                  <mat-hint>Seleccione si la observación es pública o interna</mat-hint>
+                </mat-form-field>
+              </div>
 
               <!-- Carga de Imágenes -->
               <div class="file-upload-section">
                 <h4 class="section-title">
                   <mat-icon>image</mat-icon>
-                  Evidencias (Al menos una imagen requerida)
+                  Evidencias 
+                  @if (estadoForm.get('nuevoEstado')?.value !== tiquete()!.estado) {
+                    <span class="required-indicator">(Al menos una imagen requerida)</span>
+                  } @else {
+                    <span class="optional-indicator">(Opcional si solo agrega observación)</span>
+                  }
                 </h4>
                 
                 <!-- Input de archivos -->
                 <div class="file-input-container">
                   <input 
                     type="file" 
-                    id="fileInput" 
+                    #fileInputEstado
+                    id="fileInputEstado" 
                     multiple 
                     accept="image/*,.jpg,.jpeg,.png,.gif,.webp,.bmp"
                     (change)="onFileSelected($event)"
                     style="display: none;">
-                  <label for="fileInput">
-                    <button 
-                      mat-raised-button 
-                      color="accent" 
-                      type="button"
-                      class="upload-button">
-                      <mat-icon>cloud_upload</mat-icon>
-                      Seleccionar Imágenes
-                    </button>
-                  </label>
+                  <button 
+                    mat-raised-button 
+                    color="accent" 
+                    type="button"
+                    (click)="fileInputEstado.click()"
+                    class="upload-button">
+                    <mat-icon>cloud_upload</mat-icon>
+                    Seleccionar Imágenes
+                  </button>
                 </div>
 
                 <!-- Lista de archivos seleccionados -->
@@ -334,7 +370,11 @@
                 } @else {
                   <p class="no-files-message">
                     <mat-icon>info</mat-icon>
-                    No hay archivos seleccionados. Por favor, seleccione al menos una imagen.
+                    @if (estadoForm.get('nuevoEstado')?.value !== tiquete()!.estado) {
+                      No hay archivos seleccionados. Por favor, seleccione al menos una imagen.
+                    } @else {
+                      No hay archivos seleccionados. Las imágenes son opcionales cuando solo agrega observación.
+                    }
                   </p>
                 }
               </div>
@@ -345,13 +385,17 @@
                   mat-raised-button 
                   color="primary" 
                   type="submit"
-                  [disabled]="estadoForm.invalid || archivosSeleccionados().length === 0 || loading() || uploading()">
+                  [disabled]="estadoForm.invalid || (estadoForm.get('nuevoEstado')?.value !== tiquete()!.estado && archivosSeleccionados().length === 0) || loading() || uploading()">
                   @if (loading() || uploading()) {
                     <mat-spinner diameter="20" class="inline-spinner"></mat-spinner>
                   } @else {
                     <mat-icon>save</mat-icon>
                   }
-                  Actualizar Estado
+                  @if (estadoForm.get('nuevoEstado')?.value === tiquete()!.estado) {
+                    Guardar Observación
+                  } @else {
+                    Actualizar Estado
+                  }
                 </button>
                 <button 
                   mat-button 
@@ -483,6 +527,48 @@
           @if ((tiquete()!.historiales || []).length > 0) {
             <div class="history-timeline">
               @for (historial of tiquete()!.historiales || []; track historial.id; let i = $index; let last = $last) {
+                @if (historial.tipo === 'COMENTARIO_EXTERNAL' || historial.tipo === 'COMENTARIO_INTERNAL') {
+                  <!-- Comentario -->
+                  <div class="timeline-item comentario-item">
+                    <div class="timeline-dot" [class]="'dot-' + (historial.tipo === 'COMENTARIO_EXTERNAL' ? 'external' : 'internal')">
+                      <mat-icon>{{ historial.tipo === 'COMENTARIO_EXTERNAL' ? 'public' : 'lock' }}</mat-icon>
+                    </div>
+                    <div class="timeline-content">
+                      <div class="history-event-card comentario-card-timeline" [class.external]="historial.tipo === 'COMENTARIO_EXTERNAL'" [class.internal]="historial.tipo === 'COMENTARIO_INTERNAL'">
+                        <div class="event-header">
+                          <div class="event-state-change">
+                            <mat-icon>{{ historial.tipo === 'COMENTARIO_EXTERNAL' ? 'public' : 'lock' }}</mat-icon>
+                            <span class="estado-chip-timeline">{{ historial.tipo === 'COMENTARIO_EXTERNAL' ? 'Comentario Público' : 'Comentario Interno' }}</span>
+                          </div>
+                          <div class="event-date">
+                            <mat-icon class="date-icon-timeline">schedule</mat-icon>
+                            <span>{{ historial.cambiadoen | date:'short' }}</span>
+                          </div>
+                        </div>
+                        <div class="event-details">
+                          <div class="change-item-timeline">
+                            <mat-icon class="change-icon-timeline">person</mat-icon>
+                            <div class="change-content-timeline">
+                              <span class="change-label-timeline">Usuario:</span>
+                              <span class="change-value-timeline">{{ historial.cambiadopor?.nombrecompleto || 'Usuario' }}</span>
+                              <span class="change-email-timeline">{{ historial.cambiadopor?.correo }}</span>
+                            </div>
+                          </div>
+                          @if (historial.observacion) {
+                            <div class="change-item-timeline">
+                              <mat-icon class="change-icon-timeline">comment</mat-icon>
+                              <div class="change-content-timeline">
+                                <span class="change-label-timeline">Comentario:</span>
+                                <p class="observacion-text-timeline">{{ historial.observacion }}</p>
+                              </div>
+                            </div>
+                          }
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                } @else {
+                  <!-- Cambio de estado -->
                 <div class="timeline-item">
                   <!-- Línea vertical de conexión -->
                   @if (!last) {
@@ -608,6 +694,7 @@
                     </mat-card>
                   </div>
                 </div>
+                }
               }
             </div>
           } @else {

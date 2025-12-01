@@ -344,10 +344,6 @@
 }
 
 /* Colores de estado personalizados en detalle - Iconos */
-.status-icon.abierto {
-  color: #2196F3 !important;
-}
-
 .status-icon.asignado {
   color: #1976D2 !important;
 }
@@ -418,19 +414,6 @@
 }
 
 /* Colores de estado personalizados en detalle - Chips grandes */
-::ng-deep .status-chip-large.abierto {
-  background-color: #2196F3 !important;
-  color: white !important;
-}
-
-::ng-deep .status-chip-large.abierto .mdc-evolution-chip__cell--primary,
-::ng-deep .status-chip-large.abierto .mat-mdc-chip-action-label,
-::ng-deep .status-chip-large.abierto .mdc-evolution-chip__text-label,
-::ng-deep .status-chip-large.abierto mat-icon,
-::ng-deep .status-chip-large.abierto span {
-  color: white !important;
-}
-
 ::ng-deep .status-chip-large.asignado {
   background-color: #1976D2 !important;
   color: white !important;
@@ -510,18 +493,6 @@
 }
 
 /* Colores de estado personalizados en detalle - Chips pequeños del historial */
-::ng-deep .estado-chip-small.abierto {
-  background-color: #2196F3 !important;
-  color: white !important;
-}
-
-::ng-deep .estado-chip-small.abierto .mdc-evolution-chip__cell--primary,
-::ng-deep .estado-chip-small.abierto .mat-mdc-chip-action-label,
-::ng-deep .estado-chip-small.abierto .mdc-evolution-chip__text-label,
-::ng-deep .estado-chip-small.abierto span {
-  color: white !important;
-}
-
 ::ng-deep .estado-chip-small.asignado {
   background-color: #1976D2 !important;
   color: white !important;
@@ -1931,4 +1902,220 @@
   .form-actions button {
     width: 100%;
   }
+}
+
+/* Estilos para comentarios estilo Jira */
+.jira-style {
+  width: 100%;
+}
+
+.description-content {
+  width: 100%;
+}
+
+.description-display {
+  margin-bottom: 24px;
+  padding: 16px;
+  background-color: #f5f5f5;
+  border-radius: 4px;
+  border-left: 4px solid #1976d2;
+}
+
+.comment-form-section {
+  margin-top: 24px;
+  padding: 16px;
+  background-color: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+}
+
+.jira-tabs {
+  margin-top: 16px;
+}
+
+.jira-tabs .mat-mdc-tab-body-content {
+  padding: 16px 0;
+}
+
+.tab-content {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.tab-content button {
+  align-self: flex-start;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.comentarios-list {
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 2px solid #e0e0e0;
+}
+
+.comentarios-title {
+  margin-bottom: 16px;
+  font-size: 18px;
+  font-weight: 500;
+  color: #333;
+}
+
+.comentario-card {
+  margin-bottom: 16px;
+  transition: box-shadow 0.3s ease;
+}
+
+.comentario-card:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.comentario-card.external {
+  border-left: 4px solid #4caf50;
+}
+
+.comentario-card.internal {
+  border-left: 4px solid #ff9800;
+}
+
+.comentario-avatar {
+  background-color: #e0e0e0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.comentario-avatar mat-icon {
+  color: #666;
+}
+
+.comentario-card.external .comentario-avatar {
+  background-color: #c8e6c9;
+}
+
+.comentario-card.external .comentario-avatar mat-icon {
+  color: #4caf50;
+}
+
+.comentario-card.internal .comentario-avatar {
+  background-color: #ffe0b2;
+}
+
+.comentario-card.internal .comentario-avatar mat-icon {
+  color: #ff9800;
+}
+
+.comentario-contenido {
+  margin: 0;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  line-height: 1.6;
+  color: #333;
+}
+
+/* Estilos para comentarios en timeline */
+.comentario-item {
+  margin-bottom: 16px;
+}
+
+.comentario-card-timeline {
+  border-left: 4px solid #e0e0e0;
+}
+
+.comentario-card-timeline.external {
+  border-left-color: #4caf50;
+  background-color: #f1f8f4;
+}
+
+.comentario-card-timeline.internal {
+  border-left-color: #ff9800;
+  background-color: #fff8f0;
+}
+
+.dot-external {
+  background-color: #4caf50;
+  color: white;
+}
+
+.dot-internal {
+  background-color: #ff9800;
+  color: white;
+}
+
+/* Estilos para comentarios en formulario de actualización de estado */
+.comentarios-section-estado {
+  margin: 24px 0;
+  padding: 16px;
+  background-color: #f9f9f9;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+}
+
+.comentarios-section-estado .section-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+  font-size: 16px;
+  font-weight: 500;
+  color: #333;
+}
+
+.comentarios-section-estado .section-title mat-icon {
+  color: #1976d2;
+}
+
+.jira-tabs-estado {
+  margin-top: 8px;
+}
+
+.jira-tabs-estado .mat-mdc-tab-body-content {
+  padding: 16px 0;
+}
+
+/* Estilos para sección de observación con tipo */
+.observacion-section {
+  margin-bottom: 24px;
+}
+
+.tipo-observacion-field {
+  margin-top: 16px;
+}
+
+.tipo-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tipo-option mat-icon {
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+}
+
+/* Estilos para opciones de estado */
+.estado-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.estado-option mat-icon {
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+}
+
+.required-indicator {
+  color: #f44336;
+  font-weight: 500;
+}
+
+.optional-indicator {
+  color: #666;
+  font-style: italic;
 }

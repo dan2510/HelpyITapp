@@ -240,18 +240,6 @@
 }
 
 /* Colores de estado personalizados - consistentes con otras vistas */
-::ng-deep .estado-chip.abierto {
-  background-color: #2196F3 !important;
-  color: white !important;
-}
-
-::ng-deep .estado-chip.abierto .mdc-evolution-chip__cell--primary,
-::ng-deep .estado-chip.abierto .mat-mdc-chip-action-label,
-::ng-deep .estado-chip.abierto .mdc-evolution-chip__text-label,
-::ng-deep .estado-chip.abierto span {
-  color: white !important;
-}
-
 ::ng-deep .estado-chip.asignado {
   background-color: #1976D2 !important;
   color: white !important;
