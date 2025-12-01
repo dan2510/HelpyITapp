@@ -9,6 +9,7 @@ import { UsuariosModule } from './usuarios/usuarios-module';
 import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { NgxSonnerToaster } from 'ngx-sonner'
 import { HttpErrorInterceptorService } from './share/interceptor/http-error-interceptor.service';
+import { HttpAuthInterceptorService } from './share/interceptor/http-auth-interceptor.service';
 
 
 @NgModule({
@@ -27,6 +28,11 @@ import { HttpErrorInterceptorService } from './share/interceptor/http-error-inte
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideHttpClient(withInterceptorsFromDi()),
+    {
+      provide: HTTP_INTERCEPTORS, 
+      useClass: HttpAuthInterceptorService, 
+      multi: true
+    },
     {
       provide: HTTP_INTERCEPTORS, 
       useClass: HttpErrorInterceptorService, 

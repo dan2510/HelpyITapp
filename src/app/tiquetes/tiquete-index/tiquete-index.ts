@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { TiqueteService } from '../../share/services/api/tiquete.service';
 import { TiqueteModel } from '../../share/models/TiqueteModel';
 import { NotificationService } from '../../share/services/app/notification.service';
+import { AuthenticationService } from '../../share/services/app/authentication.service';
 import { Prioridad, EstadoTiquete, RoleNombre } from '../../share/models/EnumsModel';
 
 @Component({
@@ -13,9 +14,6 @@ import { Prioridad, EstadoTiquete, RoleNombre } from '../../share/models/EnumsMo
   styleUrl: './tiquete-index.css',
 })
 export class TiqueteIndex implements OnInit {
-  // CAMBIAR ESTE VALOR: 1=Admin, 5=Cliente, 3=Técnico
-  private readonly ID_USUARIO_FIJO = 1;
-  
   protected readonly tiquetes = signal<TiqueteModel[]>([]);
   protected readonly loading = signal<boolean>(false);
   protected readonly error = signal<string>('');
@@ -24,10 +22,23 @@ export class TiqueteIndex implements OnInit {
   constructor(
     private tiqueteService: TiqueteService,
     private router: Router,
-    private notification: NotificationService
+    private notification: NotificationService,
+    private authService: AuthenticationService
   ) {}
 
   ngOnInit(): void {
+    // Verificar autenticación
+    if (!this.authService.authenticated()) {
+      this.router.navigate(['/usuario/login']);
+      return;
+    }
+    
+    // Obtener rol del usuario autenticado
+    const usuario = this.authService.usuario();
+    if (usuario && usuario.rol) {
+      this.rolActual.set(usuario.rol.nombre);
+    }
+    
     this.loadTiquetes();
   }
 
@@ -35,7 +46,8 @@ export class TiqueteIndex implements OnInit {
     this.loading.set(true);
     this.error.set('');
 
-    this.tiqueteService.getMethod(`usuario/${this.ID_USUARIO_FIJO}`).subscribe({
+    // Usar la nueva ruta que obtiene tiquetes del usuario autenticado
+    this.tiqueteService.getMethod('mis-tiquetes').subscribe({
       next: (response: any) => {
         if (response.success) {
           this.tiquetes.set(response.data.tiquetes);
@@ -50,7 +62,12 @@ export class TiqueteIndex implements OnInit {
         console.error('Error al cargar tiquetes:', error);
         this.error.set('Error al conectar con el servidor');
         this.loading.set(false);
-        this.notification.error('Error', 'No se pudieron cargar los tiquetes');
+        if (error.status === 401) {
+          this.notification.error('Error', 'Debe iniciar sesión');
+          this.router.navigate(['/usuario/login']);
+        } else {
+          this.notification.error('Error', 'No se pudieron cargar los tiquetes');
+        }
       }
     });
   }

@@ -3,6 +3,7 @@ import { Component, OnInit, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { AsignacionService } from '../../share/services/api/asignacion.service';
 import { NotificationService } from '../../share/services/app/notification.service';
+import { AuthenticationService } from '../../share/services/app/authentication.service';
 import { EstadoTiquete, Prioridad } from '../../share/models/EnumsModel';
 
 interface DiaAsignaciones {
@@ -18,9 +19,6 @@ interface DiaAsignaciones {
   styleUrl: './asignacion-semana.css',
 })
 export class AsignacionSemana implements OnInit {
-  // ID del técnico
-  private readonly ID_TECNICO = 3; // Carlos Rodríguez
-
   protected readonly asignaciones = signal<any[]>([]);
   protected readonly diasSemana = signal<DiaAsignaciones[]>([]);
   protected readonly loading = signal<boolean>(false);
@@ -31,10 +29,32 @@ export class AsignacionSemana implements OnInit {
   constructor(
     private asignacionService: AsignacionService,
     private router: Router,
-    private notification: NotificationService
+    private notification: NotificationService,
+    private authService: AuthenticationService
   ) {}
 
   ngOnInit(): void {
+    // Verificar autenticación y que sea técnico o admin
+    if (!this.authService.authenticated()) {
+      this.router.navigate(['/usuario/login']);
+      return;
+    }
+
+    const usuario = this.authService.usuario();
+    if (usuario && usuario.rol && usuario.rol.nombre !== 'TECNICO' && usuario.rol.nombre !== 'ADMIN') {
+      this.notification.warning('Acceso Restringido', 'Solo los técnicos y administradores pueden ver asignaciones');
+      this.router.navigate(['/inicio']);
+      return;
+    }
+
+    if (usuario) {
+      if (usuario.rol?.nombre === 'ADMIN') {
+        this.tecnicoNombre.set('Todas las Asignaciones');
+      } else {
+        this.tecnicoNombre.set(usuario.nombrecompleto);
+      }
+    }
+
     this.loadAsignaciones();
   }
 
@@ -42,12 +62,15 @@ export class AsignacionSemana implements OnInit {
     this.loading.set(true);
     this.error.set('');
 
-    this.asignacionService.getAsignacionesPorSemana(this.ID_TECNICO).subscribe({
+    // Usar la nueva ruta que obtiene asignaciones del técnico autenticado
+    this.asignacionService.getAsignacionesPorSemana().subscribe({
       next: (response: any) => {
         if (response.success) {
           this.asignaciones.set(response.data.asignaciones);
           this.semanaActual.set(response.data.semana);
-          this.tecnicoNombre.set(response.data.tecnico.nombrecompleto);
+          if (response.data.tecnico) {
+            this.tecnicoNombre.set(response.data.tecnico.nombrecompleto);
+          }
           this.organizarPorDias(response.data.asignaciones, response.data.semana);
           console.log('Asignaciones cargadas:', response.data.asignaciones);
         } else {
@@ -59,7 +82,15 @@ export class AsignacionSemana implements OnInit {
         console.error('Error al cargar asignaciones:', error);
         this.error.set('No se pudieron cargar las asignaciones');
         this.loading.set(false);
-        this.notification.error('Error', 'No se pudieron cargar las asignaciones');
+        if (error.status === 401) {
+          this.notification.error('Error', 'Debe iniciar sesión');
+          this.router.navigate(['/usuario/login']);
+        } else if (error.status === 403) {
+          this.notification.error('Error', 'Solo los técnicos y administradores pueden ver asignaciones');
+          this.router.navigate(['/inicio']);
+        } else {
+          this.notification.error('Error', 'No se pudieron cargar las asignaciones');
+        }
       }
     });
   }

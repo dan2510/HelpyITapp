@@ -4,8 +4,8 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { TiqueteService } from '../../share/services/api/tiquete.service';
 import { EtiquetaService } from '../../share/services/api/etiqueta.service';
-import { UsuarioService } from '../../share/services/api/usuario.service';
 import { NotificationService } from '../../share/services/app/notification.service';
+import { AuthenticationService } from '../../share/services/app/authentication.service';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment.development';
 import { EtiquetaModel } from '../../share/models/EtiquetaModel';
@@ -20,9 +20,6 @@ import Swal from 'sweetalert2';
   styleUrl: './tiquete-form.css',
 })
 export class TiqueteForm implements OnInit {
-  
-  // ID de usuario fijo (simula autenticación)
-  private readonly ID_USUARIO_FIJO = 5; // Juan Pérez
 
   tiqueteForm!: FormGroup;
   
@@ -43,14 +40,28 @@ export class TiqueteForm implements OnInit {
     private router: Router,
     private tiqueteService: TiqueteService,
     private etiquetaService: EtiquetaService,
-    private usuarioService: UsuarioService,
     private notification: NotificationService,
+    private authService: AuthenticationService,
     private http: HttpClient
   ) {
     this.initForm();
   }
 
   ngOnInit(): void {
+    // Verificar autenticación
+    if (!this.authService.authenticated()) {
+      this.router.navigate(['/usuario/login']);
+      return;
+    }
+
+    // Verificar que el usuario puede crear tiquetes (cliente o admin)
+    const usuario = this.authService.usuario();
+    if (usuario && usuario.rol && usuario.rol.nombre !== 'CLIENTE' && usuario.rol.nombre !== 'ADMIN') {
+      this.notification.warning('Acceso Restringido', 'Solo los clientes pueden crear tiquetes');
+      this.router.navigate(['/inicio']);
+      return;
+    }
+
     this.loadInitialData();
   }
 
@@ -76,8 +87,31 @@ export class TiqueteForm implements OnInit {
     this.loadingData.set(true);
     this.error.set('');
 
+    // Obtener usuario autenticado
+    const usuario = this.authService.usuario();
+    if (usuario) {
+      this.usuarioSolicitante.set(usuario);
+      this.tiqueteForm.patchValue({
+        nombreSolicitante: usuario.nombrecompleto,
+        correoSolicitante: usuario.correo
+      });
+    } else {
+      // Si no hay usuario pero hay token, cargar perfil
+      this.authService.getUserProfile().subscribe({
+        next: (user) => {
+          if (user) {
+            this.usuarioSolicitante.set(user);
+            this.tiqueteForm.patchValue({
+              nombreSolicitante: user.nombrecompleto,
+              correoSolicitante: user.correo
+            });
+          }
+        }
+      });
+    }
+
     let completedRequests = 0;
-    const totalRequests = 3;
+    const totalRequests = 2; // Solo prioridades y etiquetas
 
     const checkAllLoaded = () => {
       completedRequests++;
@@ -86,84 +120,38 @@ export class TiqueteForm implements OnInit {
       }
     };
 
-    //  1. CARGAR USUARIO SOLICITANTE usando UsuarioService
-    this.usuarioService.getById(this.ID_USUARIO_FIJO).subscribe({
+    //  1. CARGAR PRIORIDADES
+    this.tiqueteService.getMethod('prioridades').subscribe({
       next: (response: any) => {
-        // El backend devuelve { success: true, data: { usuario: {...} } }
-        if (response.success && response.data && response.data.usuario) {
-          this.usuarioSolicitante.set(response.data.usuario);
-          this.tiqueteForm.patchValue({
-            nombreSolicitante: response.data.usuario.nombrecompleto,
-            correoSolicitante: response.data.usuario.correo
-          });
-        } else if (response.id) {
-          // Si el backend devuelve directamente el objeto usuario
-          this.usuarioSolicitante.set(response);
-          this.tiqueteForm.patchValue({
-            nombreSolicitante: response.nombrecompleto,
-            correoSolicitante: response.correo
-          });
-        } else {
-          console.warn('⚠️ Respuesta usuario sin datos válidos');
-        }
-        checkAllLoaded();
-      },
-      error: (error) => {
-        this.notification.error('Error', 'No se pudo cargar la información del usuario');
-        checkAllLoaded();
-      }
-    });
-
-    //  2. CARGAR PRIORIDADES - SIN /api
-    const urlPrioridades = `${environment.apiURL}/${environment.endPointTiquete}/prioridades`;
-    
-    this.http.get<any>(urlPrioridades).subscribe({
-      next: (response) => {
-        if (response.success && response.data.prioridades) {
+        if (response.success && response.data && response.data.prioridades) {
           this.prioridades.set(response.data.prioridades);
-        } else {
-          console.warn('⚠️ Respuesta de prioridades sin datos:', response);
+        } else if (Array.isArray(response)) {
+          this.prioridades.set(response);
+        } else if (response.data && Array.isArray(response.data)) {
+          this.prioridades.set(response.data);
         }
         checkAllLoaded();
       },
       error: (error) => {
-        this.notification.error('Error', 'No se pudieron cargar las prioridades');
+        console.error('Error al cargar prioridades:', error);
         checkAllLoaded();
       }
     });
 
-    //  3. CARGAR ETIQUETAS usando EtiquetaService
+    //  2. CARGAR ETIQUETAS
     this.etiquetaService.get().subscribe({
-      next: (response: any) => {
-        // El backend devuelve { success: true, data: { etiquetas: [...] } }
-        let etiquetasData: EtiquetaModel[] = [];
-        
-        if (Array.isArray(response)) {
-          etiquetasData = response;
-        } else if (response.success && response.data && response.data.etiquetas) {
-          etiquetasData = response.data.etiquetas;
-        } else if (response.data && response.data.etiquetas) {
-          etiquetasData = response.data.etiquetas;
-        }
-        
-        // Formatear etiquetas para incluir categoría en el formato esperado
-        const etiquetasFormateadas = etiquetasData.map(etiq => ({
-          ...etiq,
-          categoria: etiq.categorias && etiq.categorias.length > 0 
-            ? etiq.categorias[0].categoria 
-            : (etiq.categoria || undefined)
-        }));
-        
-        this.etiquetas.set(etiquetasFormateadas);
-        this.etiquetasFiltradas.set(etiquetasFormateadas);
+      next: (etiquetas: EtiquetaModel[]) => {
+        this.etiquetas.set(etiquetas);
+        this.etiquetasFiltradas.set(etiquetas);
         checkAllLoaded();
       },
       error: (error) => {
-        this.notification.error('Error', 'No se pudieron cargar las etiquetas');
+        console.error('Error al cargar etiquetas:', error);
         checkAllLoaded();
       }
     });
   }
+
 
   // Método para mostrar el nombre de la etiqueta en el input
   displayEtiqueta(etiqueta: EtiquetaModel | null): string {
@@ -261,8 +249,8 @@ export class TiqueteForm implements OnInit {
         descripcion: this.tiqueteForm.get('descripcion')?.value.trim(),
         prioridad: this.tiqueteForm.get('prioridad')?.value,
         idetiqueta: idetiqueta,
-        idcliente: this.ID_USUARIO_FIJO,
         imagenes: nombresArchivos // Enviar los nombres de archivos subidos
+        // idcliente ya no se envía, se obtiene del usuario autenticado en el backend
       };
       
       const url = `${environment.apiURL}/${environment.endPointTiquete}`;

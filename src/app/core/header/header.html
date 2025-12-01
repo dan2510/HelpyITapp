@@ -15,6 +15,7 @@
     </button>
 
 <!-- Menú Tickets -->
+@if (authenticated()) {
 <button mat-button [matMenuTriggerFor]="ticketsMenu" class="nav-item">
   <mat-icon>confirmation_number</mat-icon>
   <span>Tickets</span>
@@ -23,24 +24,19 @@
 <mat-menu #ticketsMenu="matMenu" class="modern-menu">
   <button mat-menu-item [routerLink]="['/tiquetes']" [routerLinkActive]="'active-link'">
     <mat-icon>list</mat-icon>
-    <span>Lista de Tickets</span>
+    <span>@if (esAdmin()) { Todos los Tickets } @else if (esTecnico()) { Mis Tickets Asignados } @else { Mis Tickets }</span>
   </button>
+  @if (esCliente() || esAdmin()) {
   <button mat-menu-item [routerLink]="['/tiquetes/nuevo']" [routerLinkActive]="'active-link'">
     <mat-icon>add_circle_outline</mat-icon>
     <span>Crear Ticket</span>
   </button>
-  <button mat-menu-item>
-    <mat-icon>assignment</mat-icon>
-    <span>Tickets Asignados</span>
-  </button>
-  <mat-divider></mat-divider>
-  <button mat-menu-item>
-    <mat-icon>search</mat-icon>
-    <span>Buscar Tickets</span>
-  </button>
+  }
 </mat-menu>
+}
 
-    <!-- Menú Técnicos -->
+    <!-- Menú Técnicos - Solo para ADMIN -->
+    @if (esAdmin()) {
     <button mat-button [matMenuTriggerFor]="tecnicosMenu" class="nav-item">
       <mat-icon>engineering</mat-icon>
       <span>Técnicos</span>
@@ -60,34 +56,38 @@
         <span>Disponibilidad</span>
       </button>
     </mat-menu>
+    }
 
-    <!-- Menú Categorías -->
-<button mat-button [matMenuTriggerFor]="categoriasMenu" class="nav-item">
-  <mat-icon>category</mat-icon>
-  <span>Categorías</span>
-  <mat-icon class="dropdown-icon">keyboard_arrow_down</mat-icon>
-</button>
-<mat-menu #categoriasMenu="matMenu" class="modern-menu">
-  <button mat-menu-item [routerLink]="['/categorias']" [routerLinkActive]="'active-link'">
-    <mat-icon>list</mat-icon>
-    <span>Lista de Categorías</span>
-  </button>
-  <button mat-menu-item [routerLink]="['/categorias/nuevo']" [routerLinkActive]="'active-link'">
-    <mat-icon>add_circle_outline</mat-icon>
-    <span>Nueva Categoría</span>
-  </button>
-  <mat-divider></mat-divider>
-  <button mat-menu-item>
-    <mat-icon>policy</mat-icon>
-    <span>Políticas SLA</span>
-  </button>
-  <button mat-menu-item>
-    <mat-icon>label</mat-icon>
-    <span>Etiquetas</span>
-  </button>
-</mat-menu>
+    <!-- Menú Categorías - Solo para ADMIN -->
+    @if (esAdmin()) {
+    <button mat-button [matMenuTriggerFor]="categoriasMenu" class="nav-item">
+      <mat-icon>category</mat-icon>
+      <span>Categorías</span>
+      <mat-icon class="dropdown-icon">keyboard_arrow_down</mat-icon>
+    </button>
+    <mat-menu #categoriasMenu="matMenu" class="modern-menu">
+      <button mat-menu-item [routerLink]="['/categorias']" [routerLinkActive]="'active-link'">
+        <mat-icon>list</mat-icon>
+        <span>Lista de Categorías</span>
+      </button>
+      <button mat-menu-item [routerLink]="['/categorias/nuevo']" [routerLinkActive]="'active-link'">
+        <mat-icon>add_circle_outline</mat-icon>
+        <span>Nueva Categoría</span>
+      </button>
+      <mat-divider></mat-divider>
+      <button mat-menu-item>
+        <mat-icon>policy</mat-icon>
+        <span>Políticas SLA</span>
+      </button>
+      <button mat-menu-item>
+        <mat-icon>label</mat-icon>
+        <span>Etiquetas</span>
+      </button>
+    </mat-menu>
+    }
 
-    <!-- Menú Reportes -->
+    <!-- Menú Reportes - Solo para ADMIN -->
+    @if (esAdmin()) {
     <button mat-button [matMenuTriggerFor]="reportesMenu" class="nav-item">
       <mat-icon>analytics</mat-icon>
       <span>Reportes</span>
@@ -110,11 +110,16 @@
         <mat-icon>star</mat-icon>
         <span>Satisfacción Cliente</span>
       </button>
-      <button mat-menu-item [routerLink]="['/asignaciones']" [routerLinkActive]="'active-link'">
-  <mat-icon>view_week</mat-icon>
-  <span>Vista de Asignaciones</span>
-</button>
     </mat-menu>
+    }
+
+    <!-- Vista de Asignaciones - Para TÉCNICO y ADMIN -->
+    @if (esTecnico() || esAdmin()) {
+    <button mat-button [routerLink]="['/asignaciones']" [routerLinkActive]="'active-nav-item'" class="nav-item">
+      <mat-icon>view_week</mat-icon>
+      <span>@if (esTecnico()) { Mis Asignaciones } @else { Asignaciones }</span>
+    </button>
+    }
     
   </nav>
 
@@ -148,21 +153,22 @@
     </mat-menu>
 
     <!-- Usuario -->
+    @if (authenticated()) {
     <div class="user-profile">
-      <span class="user-email">usuario@empresa.com</span>
+      <span class="user-email">{{ usuario()?.correo || 'Usuario' }}</span>
       <button mat-icon-button [matMenuTriggerFor]="userMenu" class="user-avatar">
         <div class="avatar-circle">
-          <span>U</span>
+          <span>{{ getIniciales() }}</span>
         </div>
       </button>
       <mat-menu #userMenu="matMenu" class="modern-menu user-menu">
         <div class="user-info">
           <div class="user-avatar-large">
-            <span>U</span>
+            <span>{{ getIniciales() }}</span>
           </div>
           <div class="user-details">
-            <div class="user-name">Usuario Admin</div>
-            <div class="user-role">Administrador</div>
+            <div class="user-name">{{ getNombreCompleto() }}</div>
+            <div class="user-role">{{ getNombreRol() }}</div>
           </div>
         </div>
         <mat-divider></mat-divider>
@@ -175,11 +181,17 @@
           <span>Configuración</span>
         </button>
         <mat-divider></mat-divider>
-        <button mat-menu-item>
+        <button mat-menu-item (click)="logout()">
           <mat-icon>logout</mat-icon>
           <span>Cerrar Sesión</span>
         </button>
       </mat-menu>
     </div>
+    } @else {
+    <button mat-button [routerLink]="['/usuario/login']" class="nav-item">
+      <mat-icon>login</mat-icon>
+      <span>Iniciar Sesión</span>
+    </button>
+    }
   </div>
 </mat-toolbar>

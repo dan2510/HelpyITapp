@@ -12,13 +12,12 @@ export class AsignacionService {
 
   constructor(private http: HttpClient) { }
 
-  // Obtener asignaciones por semana
+  // Obtener asignaciones por semana del técnico autenticado
   getAsignacionesPorSemana(
-    idTecnico: number, 
     fechaInicio?: string, 
     fechaFin?: string
   ): Observable<AsignacionTiquete> {
-    let url = `${this.urlAPI}/asignaciones/tecnico/${idTecnico}/semana`;
+    let url = `${this.urlAPI}/asignaciones/mis-asignaciones/semana`;
     
     // Agregar parámetros de fecha si existen
     if (fechaInicio && fechaFin) {
