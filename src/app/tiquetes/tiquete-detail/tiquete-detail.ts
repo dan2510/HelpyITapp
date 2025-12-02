@@ -1,5 +1,5 @@
 // src/app/tiquetes/tiquete-detail/tiquete-detail.ts
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, signal, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { TiqueteService } from '../../share/services/api/tiquete.service';
@@ -12,6 +12,8 @@ import { environment } from '../../../environments/environment.development';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 import Swal from 'sweetalert2';
+import { TranslationService } from '../../share/services/app/translation.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-tiquete-detail',
@@ -34,6 +36,9 @@ export class TiqueteDetail implements OnInit {
   protected readonly archivosSeleccionados = signal<File[]>([]);
   protected readonly archivosSubidos = signal<string[]>([]);
   protected readonly uploading = signal<boolean>(false);
+  protected readonly translationService = inject(TranslationService);
+  private translate = inject(TranslateService);
+  
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -211,9 +216,14 @@ export class TiqueteDetail implements OnInit {
   }
 
   formatearFecha(fecha: Date | string | null | undefined): string {
-    if (!fecha) return 'No disponible';
+    if (!fecha) {
+      const currentLang = this.translate.currentLang || 'es';
+      return currentLang === 'en' ? 'Not available' : 'No disponible';
+    }
     const date = new Date(fecha);
-    return date.toLocaleDateString('es-ES', {
+    const currentLang = this.translate.currentLang || 'es';
+    const locale = currentLang === 'en' ? 'en-US' : 'es-ES';
+    return date.toLocaleDateString(locale, {
       year: 'numeric',
       month: 'long',
       day: 'numeric',
@@ -225,7 +235,9 @@ export class TiqueteDetail implements OnInit {
   formatearFechaCorta(fecha: Date | string | null | undefined): string {
     if (!fecha) return 'N/A';
     const date = new Date(fecha);
-    return date.toLocaleDateString('es-ES', {
+    const currentLang = this.translate.currentLang || 'es';
+    const locale = currentLang === 'en' ? 'en-US' : 'es-ES';
+    return date.toLocaleDateString(locale, {
       year: 'numeric',
       month: 'short',
       day: 'numeric'
@@ -694,15 +706,11 @@ export class TiqueteDetail implements OnInit {
   }
 
   getEstadoNombre(estado: EstadoTiquete): string {
-    const nombres: { [key in EstadoTiquete]: string } = {
-      [EstadoTiquete.PENDIENTE]: 'Pendiente',
-      [EstadoTiquete.ASIGNADO]: 'Asignado',
-      [EstadoTiquete.EN_PROGRESO]: 'En Proceso',
-      [EstadoTiquete.RESUELTO]: 'Resuelto',
-      [EstadoTiquete.CERRADO]: 'Cerrado',
-      [EstadoTiquete.CANCELADO]: 'Cancelado'
-    };
-    return nombres[estado] || estado;
+    return this.translationService.translateTicketState(estado);
+  }
+
+  getPrioridadNombre(prioridad: Prioridad): string {
+    return this.translationService.translatePriority(prioridad);
   }
 
   getEstadoIcon(estado: EstadoTiquete): string {

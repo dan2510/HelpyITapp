@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { NotificacionService } from '../../share/services/app/notificacion.service';
 import { NotificacionModel, TipoNotificacion, EstadoNotificacion } from '../../share/models/NotificacionModel';
 import { NotificationService } from '../../share/services/app/notification.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-notificaciones-panel',
@@ -14,6 +15,7 @@ export class NotificacionesPanel implements OnInit {
   private notificacionService = inject(NotificacionService);
   private router = inject(Router);
   private notification = inject(NotificationService);
+  private translate = inject(TranslateService);
 
   readonly notificaciones = computed(() => this.notificacionService.notificacionesOrdenadas());
   readonly cantidadNoLeidas = computed(() => this.notificacionService.cantidadNoLeidas());
@@ -71,13 +73,30 @@ export class NotificacionesPanel implements OnInit {
     const diffMins = Math.floor(diffMs / 60000);
     const diffHours = Math.floor(diffMs / 3600000);
     const diffDays = Math.floor(diffMs / 86400000);
+    const currentLang = this.translate.currentLang || 'es';
 
-    if (diffMins < 1) return 'Hace un momento';
-    if (diffMins < 60) return `Hace ${diffMins} minuto${diffMins > 1 ? 's' : ''}`;
-    if (diffHours < 24) return `Hace ${diffHours} hora${diffHours > 1 ? 's' : ''}`;
-    if (diffDays < 7) return `Hace ${diffDays} día${diffDays > 1 ? 's' : ''}`;
+    if (diffMins < 1) return currentLang === 'en' ? 'Just now' : 'Hace un momento';
+    if (diffMins < 60) {
+      if (currentLang === 'en') {
+        return `${diffMins} minute${diffMins > 1 ? 's' : ''} ago`;
+      }
+      return `Hace ${diffMins} minuto${diffMins > 1 ? 's' : ''}`;
+    }
+    if (diffHours < 24) {
+      if (currentLang === 'en') {
+        return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
+      }
+      return `Hace ${diffHours} hora${diffHours > 1 ? 's' : ''}`;
+    }
+    if (diffDays < 7) {
+      if (currentLang === 'en') {
+        return `${diffDays} day${diffDays > 1 ? 's' : ''} ago`;
+      }
+      return `Hace ${diffDays} día${diffDays > 1 ? 's' : ''}`;
+    }
     
-    return date.toLocaleDateString('es-ES', {
+    const locale = currentLang === 'en' ? 'en-US' : 'es-ES';
+    return date.toLocaleDateString(locale, {
       day: 'numeric',
       month: 'short',
       year: date.getFullYear() !== ahora.getFullYear() ? 'numeric' : undefined
@@ -98,12 +117,18 @@ export class NotificacionesPanel implements OnInit {
     this.notificacionService.marcarComoLeida(notificacion.id).subscribe({
       next: (response) => {
         if (response.success) {
-          this.notification.success('Notificación', 'Marcada como leída');
+          this.notification.success(
+            this.translate.instant('NOTIFICATIONS.TITLE'),
+            this.translate.instant('NOTIFICATIONS.NOTIFICATION_MARKED')
+          );
         }
       },
       error: (error) => {
         console.error('Error al marcar notificación como leída:', error);
-        this.notification.error('Error', 'No se pudo marcar la notificación como leída');
+        this.notification.error(
+          this.translate.instant('COMMON.ERROR'),
+          this.translate.instant('NOTIFICATIONS.ERROR_MARKING')
+        );
       }
     });
   }
@@ -116,12 +141,18 @@ export class NotificacionesPanel implements OnInit {
     this.notificacionService.marcarTodasComoLeidas().subscribe({
       next: (response) => {
         if (response.success) {
-          this.notification.success('Notificaciones', 'Todas marcadas como leídas');
+          this.notification.success(
+            this.translate.instant('NOTIFICATIONS.TITLE'),
+            this.translate.instant('NOTIFICATIONS.ALL_MARKED_READ')
+          );
         }
       },
       error: (error) => {
         console.error('Error al marcar todas como leídas:', error);
-        this.notification.error('Error', 'No se pudieron marcar todas las notificaciones');
+        this.notification.error(
+          this.translate.instant('COMMON.ERROR'),
+          this.translate.instant('NOTIFICATIONS.ERROR_MARKING_ALL')
+        );
       }
     });
   }

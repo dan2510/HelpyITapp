@@ -16,6 +16,7 @@ import { LayoutModule } from '@angular/cdk/layout';
 import { MatCardModule } from '@angular/material/card';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ReactiveFormsModule } from '@angular/forms';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   declarations: [
@@ -37,6 +38,7 @@ import { ReactiveFormsModule } from '@angular/forms';
     MatRadioModule,
     MatProgressSpinnerModule,
     ReactiveFormsModule,
+    TranslateModule
   ]
 })
 export class UsuariosModule { }

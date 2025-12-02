@@ -24,9 +24,18 @@ export class HttpErrorInterceptorService implements HttpInterceptor {
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
     console.log('Request URL: ' + request.url);
+    
+    // Excluir peticiones a assets (archivos estáticos) del manejo de errores
+    const isAssetRequest = request.url.includes('/assets/');
+    
     //Capturar el error
     return next.handle(request).pipe(
       catchError((error: HttpErrorResponse) => {
+        // No mostrar errores para peticiones a assets
+        if (isAssetRequest) {
+          throw new Error(error.message);
+        }
+        
         let message: string | null = null;
         if (error.error instanceof ErrorEvent) {
           console.log('Error del Lado del Cliente');

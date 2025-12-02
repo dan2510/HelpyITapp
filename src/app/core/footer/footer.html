@@ -10,56 +10,56 @@
           <span class="footer-title">HelpyIT</span>
         </div>
         <p class="footer-description">
-          Sistema de gestión de incidentes técnicos para equipos de soporte eficientes.
+          {{ 'FOOTER.DESCRIPTION' | translate }}
         </p>
       </div>
 
       <!-- Enlaces rápidos -->
       <div class="footer-links">
         <div class="footer-column">
-          <h4 class="footer-heading">Producto</h4>
+          <h4 class="footer-heading">{{ 'FOOTER.PRODUCT' | translate }}</h4>
           <ul class="footer-list">
-            <li><a href="#" class="footer-link">Tickets</a></li>
-            <li><a href="#" class="footer-link">Técnicos</a></li>
-            <li><a href="#" class="footer-link">Reportes</a></li>
+            <li><a href="#" class="footer-link">{{ 'FOOTER.TICKETS' | translate }}</a></li>
+            <li><a href="#" class="footer-link">{{ 'FOOTER.TECHNICIANS' | translate }}</a></li>
+            <li><a href="#" class="footer-link">{{ 'FOOTER.REPORTS' | translate }}</a></li>
           </ul>
         </div>
 
         <div class="footer-column">
-          <h4 class="footer-heading">Soporte</h4>
+          <h4 class="footer-heading">{{ 'FOOTER.SUPPORT' | translate }}</h4>
           <ul class="footer-list">
-            <li><a href="#" class="footer-link">Documentación</a></li>
-            <li><a href="#" class="footer-link">API</a></li>
-            <li><a href="#" class="footer-link">Centro de Ayuda</a></li>
-            <li><a href="#" class="footer-link">Contacto</a></li>
+            <li><a href="#" class="footer-link">{{ 'FOOTER.DOCUMENTATION' | translate }}</a></li>
+            <li><a href="#" class="footer-link">{{ 'FOOTER.API' | translate }}</a></li>
+            <li><a href="#" class="footer-link">{{ 'FOOTER.HELP_CENTER' | translate }}</a></li>
+            <li><a href="#" class="footer-link">{{ 'FOOTER.CONTACT' | translate }}</a></li>
           </ul>
         </div>
 
         <div class="footer-column">
-          <h4 class="footer-heading">Empresa</h4>
+          <h4 class="footer-heading">{{ 'FOOTER.COMPANY' | translate }}</h4>
           <ul class="footer-list">
-            <li><a href="#" class="footer-link">Acerca de</a></li>
-            <li><a href="#" class="footer-link">Blog</a></li>
-            <li><a href="#" class="footer-link">Carreras</a></li>
-            <li><a href="#" class="footer-link">Privacidad</a></li>
+            <li><a href="#" class="footer-link">{{ 'FOOTER.ABOUT' | translate }}</a></li>
+            <li><a href="#" class="footer-link">{{ 'FOOTER.BLOG' | translate }}</a></li>
+            <li><a href="#" class="footer-link">{{ 'FOOTER.CAREERS' | translate }}</a></li>
+            <li><a href="#" class="footer-link">{{ 'FOOTER.PRIVACY' | translate }}</a></li>
           </ul>
         </div>
       </div>
 
       <!-- Redes sociales -->
       <div class="footer-social">
-        <h4 class="footer-heading">Síguenos</h4>
+        <h4 class="footer-heading">{{ 'FOOTER.FOLLOW_US' | translate }}</h4>
         <div class="social-links">
-          <button mat-icon-button class="social-btn" matTooltip="LinkedIn">
+          <button mat-icon-button class="social-btn" [matTooltip]="'FOOTER.LINKEDIN' | translate">
             <mat-icon>work</mat-icon>
           </button>
-          <button mat-icon-button class="social-btn" matTooltip="Twitter">
+          <button mat-icon-button class="social-btn" [matTooltip]="'FOOTER.TWITTER' | translate">
             <mat-icon>alternate_email</mat-icon>
           </button>
-          <button mat-icon-button class="social-btn" matTooltip="GitHub">
+          <button mat-icon-button class="social-btn" [matTooltip]="'FOOTER.GITHUB' | translate">
             <mat-icon>code</mat-icon>
           </button>
-          <button mat-icon-button class="social-btn" matTooltip="YouTube">
+          <button mat-icon-button class="social-btn" [matTooltip]="'FOOTER.YOUTUBE' | translate">
             <mat-icon>play_arrow</mat-icon>
           </button>
         </div>
@@ -72,15 +72,15 @@
     <!-- Copyright y información legal -->
     <div class="footer-bottom">
       <div class="footer-copyright">
-        <p>&copy; {{ today | date : "yyyy" }} HelpyIT. Todos los derechos reservados.</p>
-        <p class="footer-course">ISW-811 Aplicaciones Web Utilizando Software Libre</p>
+        <p>&copy; {{ today | date : "yyyy" }} HelpyIT. {{ 'FOOTER.COPYRIGHT' | translate }}</p>
+        <p class="footer-course">{{ 'FOOTER.COURSE' | translate }}</p>
       </div>
       <div class="footer-legal">
-        <a href="#" class="footer-legal-link">Términos</a>
+        <a href="#" class="footer-legal-link">{{ 'FOOTER.TERMS' | translate }}</a>
         <span class="footer-separator">|</span>
-        <a href="#" class="footer-legal-link">Privacidad</a>
+        <a href="#" class="footer-legal-link">{{ 'FOOTER.PRIVACY' | translate }}</a>
         <span class="footer-separator">|</span>
-        <a href="#" class="footer-legal-link">Cookies</a>
+        <a href="#" class="footer-legal-link">{{ 'FOOTER.COOKIES' | translate }}</a>
       </div>
     </div>
   </div>

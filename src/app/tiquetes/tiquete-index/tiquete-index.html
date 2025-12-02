@@ -14,7 +14,7 @@
           (click)="crearNuevoTicket()"
           class="create-button">
           <mat-icon>add</mat-icon>
-          Nuevo Ticket
+          {{ 'TICKETS.NEW_TICKET' | translate }}
         </button>
       </div>
     </mat-card-header>
@@ -27,7 +27,7 @@
       @if (loading()) {
         <div class="loading-container">
           <mat-spinner diameter="50"></mat-spinner>
-          <p>Cargando tiquetes...</p>
+          <p>{{ 'TICKETS.LOADING' | translate }}</p>
         </div>
       }
 
@@ -35,7 +35,7 @@
       @if (error() && !loading()) {
         <div class="error-container">
           <mat-icon color="warn" class="error-icon">error_outline</mat-icon>
-          <h3>Error al cargar los datos</h3>
+          <h3>{{ 'TICKETS.ERROR_LOADING' | translate }}</h3>
           <p>{{ error() }}</p>
           <button 
             mat-raised-button 
@@ -43,7 +43,7 @@
             (click)="retry()"
             class="retry-button">
             <mat-icon>refresh</mat-icon>
-            Reintentar
+            {{ 'COMMON.RETRY' | translate }}
           </button>
         </div>
       }
@@ -80,7 +80,7 @@
                   </mat-icon>
                   <mat-chip 
                     [class]="'priority-chip ' + getPrioridadColor(tiquete.prioridad)">
-                    {{ tiquete.prioridad }}
+                    {{ getPrioridadTexto(tiquete.prioridad) }}
                   </mat-chip>
                 </div>
 
@@ -92,7 +92,7 @@
                   </mat-icon>
                   <mat-chip 
                     [class]="'status-chip ' + getEstadoColor(tiquete.estado)">
-                    {{ tiquete.estado }}
+                    {{ getEstadoNombre(tiquete.estado) }}
                   </mat-chip>
                 </div>
 
@@ -100,7 +100,7 @@
                 <div class="info-row date-section">
                   <mat-icon class="date-icon">event</mat-icon>
                   <span class="date-text">
-                    Creado: <strong>{{ formatearFecha(tiquete.creadoen) }}</strong>
+                    {{ 'TICKETS.CREATED_LABEL' | translate }}: <strong>{{ formatearFecha(tiquete.creadoen) }}</strong>
                   </span>
                 </div>
 
@@ -109,7 +109,7 @@
                   <div class="info-row user-section">
                     <mat-icon class="user-icon">person</mat-icon>
                     <span class="user-text">
-                      Cliente: <strong>{{ tiquete.cliente?.nombrecompleto }}</strong>
+                      {{ 'TICKETS.CLIENT_LABEL' | translate }}: <strong>{{ tiquete.cliente?.nombrecompleto }}</strong>
                     </span>
                   </div>
                 }
@@ -118,7 +118,7 @@
                   <div class="info-row user-section">
                     <mat-icon class="user-icon">engineering</mat-icon>
                     <span class="user-text">
-                      Técnico: <strong>{{ tiquete.tecnicoActual?.nombrecompleto }}</strong>
+                      {{ 'TICKETS.TECHNICIAN_LABEL' | translate }}: <strong>{{ tiquete.tecnicoActual?.nombrecompleto }}</strong>
                     </span>
                   </div>
                 }
@@ -127,7 +127,7 @@
                   <div class="info-row user-section">
                     <mat-icon class="user-icon">person</mat-icon>
                     <span class="user-text">
-                      Solicitante: <strong>{{ tiquete.cliente?.nombrecompleto }}</strong>
+                      {{ 'TICKETS.REQUESTER_LABEL' | translate }}: <strong>{{ tiquete.cliente?.nombrecompleto }}</strong>
                     </span>
                   </div>
                 }
@@ -141,7 +141,7 @@
                   (click)="verDetalle(tiquete.id); $event.stopPropagation()"
                   class="detail-button">
                   <mat-icon>visibility</mat-icon>
-                  Ver Detalle
+                  {{ 'TICKETS.VIEW_DETAIL' | translate }}
                 </button>
               </mat-card-actions>
             </mat-card>
@@ -153,15 +153,15 @@
       @if (!loading() && !error() && tiquetes().length === 0) {
         <div class="empty-state">
           <mat-icon class="empty-icon">inbox</mat-icon>
-          <h3>No hay tickets disponibles</h3>
-          <p>No se encontraron tickets para el usuario actual.</p>
+          <h3>{{ 'TICKETS.NO_TICKETS' | translate }}</h3>
+          <p>{{ 'TICKETS.NO_TICKETS_DESC' | translate }}</p>
           <button 
             mat-raised-button 
             color="primary" 
             (click)="retry()"
             class="refresh-button">
             <mat-icon>refresh</mat-icon>
-            Actualizar
+            {{ 'COMMON.REFRESH' | translate }}
           </button>
         </div>
       }

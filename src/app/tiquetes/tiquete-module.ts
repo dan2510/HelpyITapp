@@ -23,6 +23,7 @@ import { TiqueteRoutingModule } from './tiquete-routing-module';
 import { TiqueteIndex } from './tiquete-index/tiquete-index';
 import { TiqueteDetail } from './tiquete-detail/tiquete-detail';
 import { TiqueteForm } from './tiquete-form/tiquete-form';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   declarations: [
@@ -52,7 +53,8 @@ import { TiqueteForm } from './tiquete-form/tiquete-form';
     MatFormFieldModule,
     MatInputModule,
     MatAutocompleteModule,
-    MatTabsModule
+    MatTabsModule,
+    TranslateModule
   ]
 })
 export class TiqueteModule { }

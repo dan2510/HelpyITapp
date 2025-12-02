@@ -126,6 +126,29 @@
   background-color: rgba(255, 255, 255, 0.1) !important;
 }
 
+/* Botón de idioma */
+.language-button {
+  color: white !important;
+  border-radius: 8px !important;
+  transition: all 0.3s ease;
+}
+
+.language-button:hover {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.check-icon {
+  margin-left: auto;
+  color: #0052cc;
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+}
+
+.mat-menu-item.active {
+  background-color: rgba(0, 82, 204, 0.1);
+}
+
 .user-profile {
   display: flex;
   align-items: center;

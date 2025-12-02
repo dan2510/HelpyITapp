@@ -10,6 +10,9 @@ import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@a
 import { NgxSonnerToaster } from 'ngx-sonner'
 import { HttpErrorInterceptorService } from './share/interceptor/http-error-interceptor.service';
 import { HttpAuthInterceptorService } from './share/interceptor/http-auth-interceptor.service';
+import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { HttpClient } from '@angular/common/http';
 
 
 @NgModule({
@@ -24,6 +27,16 @@ import { HttpAuthInterceptorService } from './share/interceptor/http-auth-interc
     UsuariosModule,
     NgxSonnerToaster,  
     AppRoutingModule,
+    TranslateModule.forRoot({
+      loader: {
+        provide: TranslateLoader,
+        useFactory: (http: HttpClient) => {
+          return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
+        },
+        deps: [HttpClient]
+      },
+      defaultLanguage: 'es'
+    })
   ],
   providers: [
     provideBrowserGlobalErrorListeners(),

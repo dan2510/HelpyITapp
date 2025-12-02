@@ -1,9 +1,11 @@
-import { Component, OnInit, computed, inject } from '@angular/core';
+import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { environment } from '../../../environments/environment.development';
 import { AuthenticationService } from '../../share/services/app/authentication.service';
 import { NotificationService } from '../../share/services/app/notification.service';
 import { NotificacionService } from '../../share/services/app/notificacion.service';
+import { TranslateService } from '@ngx-translate/core';
+import { TranslationService } from '../../share/services/app/translation.service';
 
 @Component({
   selector: 'app-header',
@@ -13,9 +15,14 @@ import { NotificacionService } from '../../share/services/app/notificacion.servi
 })
 export class Header implements OnInit {
   private notificacionService = inject(NotificacionService);
+  private translate = inject(TranslateService);
+  private translationService = inject(TranslationService);
 
   // Contador de notificaciones para el badge
   readonly cantidadNotificaciones = this.notificacionService.cantidadNoLeidas;
+
+  // Idioma actual
+  currentLanguage = signal<string>('es');
 
   // URL del logo - el servidor sirve las imágenes desde /images que apunta a assets/uploads
   logoUrl = `${environment.apiURL}/images/helpyIT.jpg`;
@@ -35,6 +42,11 @@ export class Header implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    // Cargar idioma guardado
+    const savedLanguage = localStorage.getItem('language') || 'es';
+    this.currentLanguage.set(savedLanguage);
+    this.translate.use(savedLanguage);
+
     // Si hay token pero no hay usuario, cargar el perfil
     if (this.authService.authenticated() && !this.usuario()) {
       this.authService.getUserProfile().subscribe({
@@ -103,11 +115,23 @@ export class Header implements OnInit {
   // Obtener nombre del rol
   getNombreRol(): string {
     const rol = this.rolUsuario();
-    switch (rol) {
-      case 'ADMIN': return 'Administrador';
-      case 'TECNICO': return 'Técnico';
-      case 'CLIENTE': return 'Cliente';
-      default: return 'Usuario';
-    }
+    return this.translationService.translateRole(rol);
+  }
+
+  // Cambiar idioma
+  changeLanguage(lang: string): void {
+    this.translate.use(lang);
+    this.currentLanguage.set(lang);
+    localStorage.setItem('language', lang);
+  }
+
+  // Obtener idioma actual
+  getCurrentLanguage(): string {
+    return this.currentLanguage();
+  }
+
+  // Verificar si el idioma es español
+  isSpanish(): boolean {
+    return this.currentLanguage() === 'es';
   }
 }

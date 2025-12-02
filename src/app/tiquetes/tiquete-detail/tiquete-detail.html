@@ -8,7 +8,7 @@
       (click)="regresarAlListado()"
       class="back-button">
       <mat-icon>arrow_back</mat-icon>
-      Volver al listado
+      {{ 'TICKETS.BACK_TO_LIST' | translate }}
     </button>
   </div>
 
@@ -16,7 +16,7 @@
   @if (loading()) {
     <div class="loading-container">
       <mat-spinner diameter="60"></mat-spinner>
-      <p>Cargando información del tiquete...</p>
+      <p>{{ 'TICKETS.LOADING' | translate }}</p>
     </div>
   }
 
@@ -24,7 +24,7 @@
   @if (error() && !loading()) {
     <div class="error-container">
       <mat-icon color="warn" class="error-icon">error_outline</mat-icon>
-      <h3>Error al cargar los datos</h3>
+      <h3>{{ 'TICKETS.ERROR_LOADING' | translate }}</h3>
       <p>{{ error() }}</p>
       <div class="error-actions">
         <button 
@@ -33,14 +33,14 @@
           (click)="retry()"
           class="retry-button">
           <mat-icon>refresh</mat-icon>
-          Reintentar
+          {{ 'COMMON.RETRY' | translate }}
         </button>
         <button 
           mat-button 
           (click)="regresarAlListado()"
           class="back-button-error">
           <mat-icon>arrow_back</mat-icon>
-          Volver
+          {{ 'COMMON.BACK' | translate }}
         </button>
       </div>
     </div>
@@ -66,7 +66,7 @@
             <div class="info-item description-item">
               <mat-icon class="info-icon">description</mat-icon>
               <div class="info-content">
-                <span class="info-label">Descripción</span>
+                <span class="info-label">{{ 'COMMON.DESCRIPTION' | translate }}</span>
                 <p class="info-value description-text">{{ tiquete()!.descripcion }}</p>
               </div>
             </div>
@@ -75,17 +75,17 @@
             <div class="info-item badges-item">
               <mat-icon class="info-icon">local_offer</mat-icon>
               <div class="info-content">
-                <span class="info-label">Estado y Prioridad</span>
+                <span class="info-label">{{ 'TICKETS.STATE_AND_PRIORITY' | translate }}</span>
                 <div class="badges-container">
                   <mat-chip 
                     [class]="'status-chip-large ' + getEstadoColor(tiquete()!.estado)">
                     <mat-icon [class]="'status-icon ' + getEstadoColor(tiquete()!.estado)">label</mat-icon>
-                    {{ tiquete()!.estado }}
+                    {{ getEstadoNombre(tiquete()!.estado) }}
                   </mat-chip>
                   <mat-chip 
                     [class]="'priority-chip-large ' + getPrioridadColor(tiquete()!.prioridad)">
                     <mat-icon>{{ getPrioridadIcon(tiquete()!.prioridad) }}</mat-icon>
-                    {{ tiquete()!.prioridad }}
+                    {{ translationService.translatePriority(tiquete()!.prioridad) }}
                   </mat-chip>
                 </div>
               </div>
@@ -95,7 +95,7 @@
             <div class="info-item">
               <mat-icon class="info-icon">category</mat-icon>
               <div class="info-content">
-                <span class="info-label">Categoría</span>
+                <span class="info-label">{{ 'TICKETS.CATEGORY' | translate }}</span>
                 <span class="info-value">{{ tiquete()!.categoria?.nombre }}</span>
                 <span class="info-description">{{ tiquete()!.categoria?.descripcion }}</span>
               </div>
@@ -105,7 +105,7 @@
             <div class="info-item">
               <mat-icon class="info-icon">person</mat-icon>
               <div class="info-content">
-                <span class="info-label">Usuario Solicitante</span>
+                <span class="info-label">{{ 'TICKETS.USER_REQUESTER' | translate }}</span>
                 <span class="info-value">{{ tiquete()!.cliente?.nombrecompleto }}</span>
                 <span class="info-description">{{ tiquete()!.cliente?.correo }}</span>
               </div>
@@ -116,14 +116,14 @@
               <mat-icon class="info-icon">engineering</mat-icon>
               <div class="info-content">
                 <div class="tecnico-header">
-                  <span class="info-label">Técnico Asignado</span>
+                  <span class="info-label">{{ 'TICKETS.ASSIGNED_TECHNICIAN' | translate }}</span>
                   @if (!editandoTecnico()) {
                     <button 
                       mat-icon-button 
                       color="primary" 
                       (click)="iniciarEdicionTecnico()"
                       class="edit-tecnico-button"
-                      matTooltip="Cambiar técnico asignado">
+                      [matTooltip]="'TICKETS.CHANGE_TECHNICIAN' | translate">
                       <mat-icon>edit</mat-icon>
                     </button>
                   }
@@ -132,11 +132,11 @@
                 @if (editandoTecnico()) {
                   <div class="tecnico-selector">
                     <mat-form-field appearance="outline" class="tecnico-select-field">
-                      <mat-label>Seleccionar Técnico</mat-label>
+                      <mat-label>{{ 'TICKETS.SELECT_TECHNICIAN' | translate }}</mat-label>
                       <mat-select [value]="tecnicoSeleccionado()" (selectionChange)="tecnicoSeleccionado.set($event.value)">
-                        <mat-option [value]="null">Sin asignar</mat-option>
+                        <mat-option [value]="null">{{ 'TICKETS.UNASSIGNED' | translate }}</mat-option>
                         @if (loadingTecnicos()) {
-                          <mat-option disabled>Cargando técnicos...</mat-option>
+                          <mat-option disabled>{{ 'TICKETS.LOADING_TECHNICIANS' | translate }}</mat-option>
                         } @else {
                           @for (tecnico of tecnicos(); track tecnico.id) {
                             <mat-option [value]="tecnico.id">
@@ -157,14 +157,14 @@
                         (click)="guardarTecnico()"
                         [disabled]="loading()">
                         <mat-icon>save</mat-icon>
-                        Guardar
+                        {{ 'COMMON.SAVE' | translate }}
                       </button>
                       <button 
                         mat-button 
                         (click)="cancelarEdicionTecnico()"
                         [disabled]="loading()">
                         <mat-icon>close</mat-icon>
-                        Cancelar
+                        {{ 'COMMON.CANCEL' | translate }}
                       </button>
                     </div>
                   </div>
@@ -173,7 +173,7 @@
                     <span class="info-value">{{ tiquete()!.tecnicoActual?.nombrecompleto }}</span>
                     <span class="info-description">{{ tiquete()!.tecnicoActual?.correo }}</span>
                   } @else {
-                    <span class="info-value no-asignado">Sin asignar</span>
+                    <span class="info-value no-asignado">{{ 'TICKETS.UNASSIGNED' | translate }}</span>
                   }
                 }
               </div>
@@ -183,7 +183,7 @@
             <div class="info-item">
               <mat-icon class="info-icon">event</mat-icon>
               <div class="info-content">
-                <span class="info-label">Fecha de Creación</span>
+                <span class="info-label">{{ 'TICKETS.CREATED_DATE' | translate }}</span>
                 <span class="info-value">{{ formatearFecha(tiquete()!.creadoen) }}</span>
               </div>
             </div>
@@ -198,30 +198,30 @@
             <div mat-card-avatar class="avatar-form">
               <mat-icon class="avatar-icon">edit</mat-icon>
             </div>
-            <mat-card-title>Actualizar Estado del Ticket</mat-card-title>
-            <mat-card-subtitle>Complete los campos requeridos</mat-card-subtitle>
+            <mat-card-title>{{ 'TICKETS.UPDATE_STATUS_TITLE' | translate }}</mat-card-title>
+            <mat-card-subtitle>{{ 'TICKETS.UPDATE_STATUS_SUBTITLE' | translate }}</mat-card-subtitle>
           </mat-card-header>
           <mat-card-content>
             <form [formGroup]="estadoForm" (ngSubmit)="actualizarEstado()">
               <!-- Estado Actual (Solo lectura) -->
               <mat-form-field appearance="outline" class="full-width">
-                <mat-label>Estado Actual</mat-label>
-                <input matInput [value]="tiquete()!.estado" readonly>
+                <mat-label>{{ 'TICKETS.CURRENT_STATE' | translate }}</mat-label>
+                <input matInput [value]="translationService.translateTicketState(tiquete()!.estado)" readonly>
                 <mat-icon matPrefix>label</mat-icon>
               </mat-form-field>
 
               <!-- Nuevo Estado -->
               <mat-form-field appearance="outline" class="full-width">
-                <mat-label>Estado</mat-label>
+                <mat-label>{{ 'TICKETS.NEW_STATE' | translate }}</mat-label>
                 <mat-select formControlName="nuevoEstado" required>
                   <mat-select-trigger>
                     @if (estadoForm.get('nuevoEstado')?.value) {
                       @if (getTodosEstadosDisponibles().retroceso === estadoForm.get('nuevoEstado')?.value) {
-                        {{ getEstadoNombre(estadoForm.get('nuevoEstado')?.value) }} (Retroceder)
+                        {{ getEstadoNombre(estadoForm.get('nuevoEstado')?.value) }} ({{ 'COMMON.ROLLBACK' | translate }})
                       } @else if (getTodosEstadosDisponibles().actual === estadoForm.get('nuevoEstado')?.value) {
-                        {{ getEstadoNombre(estadoForm.get('nuevoEstado')?.value) }} (Actual)
+                        {{ getEstadoNombre(estadoForm.get('nuevoEstado')?.value) }} ({{ 'COMMON.CURRENT' | translate }})
                       } @else if (getTodosEstadosDisponibles().siguiente === estadoForm.get('nuevoEstado')?.value) {
-                        {{ getEstadoNombre(estadoForm.get('nuevoEstado')?.value) }} (Avanzar)
+                        {{ getEstadoNombre(estadoForm.get('nuevoEstado')?.value) }} ({{ 'COMMON.ADVANCE' | translate }})
                       } @else {
                         {{ getEstadoNombre(estadoForm.get('nuevoEstado')?.value) }}
                       }
@@ -231,7 +231,7 @@
                     <mat-option [value]="getTodosEstadosDisponibles().retroceso">
                       <div class="estado-option">
                         <mat-icon>arrow_back</mat-icon>
-                        <span>{{ getEstadoNombre(getTodosEstadosDisponibles().retroceso!) }} (Retroceder)</span>
+                        <span>{{ getEstadoNombre(getTodosEstadosDisponibles().retroceso!) }} ({{ 'COMMON.ROLLBACK' | translate }})</span>
                       </div>
                     </mat-option>
                   }
@@ -240,7 +240,7 @@
                   <mat-option [value]="getTodosEstadosDisponibles().actual">
                     <div class="estado-option">
                       <mat-icon>info</mat-icon>
-                      <span>{{ getEstadoNombre(getTodosEstadosDisponibles().actual) }} (Actual)</span>
+                      <span>{{ getEstadoNombre(getTodosEstadosDisponibles().actual) }} ({{ 'COMMON.CURRENT' | translate }})</span>
                     </div>
                   </mat-option>
                   
@@ -248,64 +248,64 @@
                     <mat-option [value]="getTodosEstadosDisponibles().siguiente">
                       <div class="estado-option">
                         <mat-icon>arrow_forward</mat-icon>
-                        <span>{{ getEstadoNombre(getTodosEstadosDisponibles().siguiente!) }} (Avanzar)</span>
+                        <span>{{ getEstadoNombre(getTodosEstadosDisponibles().siguiente!) }} ({{ 'COMMON.ADVANCE' | translate }})</span>
                       </div>
                     </mat-option>
                   }
                 </mat-select>
                 <mat-icon matPrefix>label</mat-icon>
-                <mat-hint>Seleccione el estado: retroceder, mantener actual o avanzar</mat-hint>
+                <mat-hint>{{ 'TICKETS.SELECT_STATE' | translate }}</mat-hint>
                 @if (estadoForm.get('nuevoEstado')?.hasError('required') && estadoForm.get('nuevoEstado')?.touched) {
-                  <mat-error>El estado es obligatorio</mat-error>
+                  <mat-error>{{ 'TICKETS.STATE_REQUIRED' | translate }}</mat-error>
                 }
               </mat-form-field>
 
               <!-- Observación con opción External/Internal -->
               <div class="observacion-section">
                 <mat-form-field appearance="outline" class="full-width">
-                  <mat-label>Observación (Obligatoria)</mat-label>
+                  <mat-label>{{ 'TICKETS.OBSERVATION_REQUIRED' | translate }}</mat-label>
                   <textarea 
                     matInput 
                     formControlName="observacion" 
                     rows="4"
-                    placeholder="Describa el motivo del cambio de estado..."
+                    [placeholder]="'TICKETS.OBSERVATION_PLACEHOLDER' | translate"
                     required></textarea>
                   <mat-icon matPrefix>note</mat-icon>
-                  <mat-hint>Mínimo 10 caracteres</mat-hint>
+                  <mat-hint>{{ 'COMMON.MIN_CHARS' | translate }}</mat-hint>
                   @if (estadoForm.get('observacion')?.hasError('required') && estadoForm.get('observacion')?.touched) {
-                    <mat-error>La observación es obligatoria</mat-error>
+                    <mat-error>{{ 'TICKETS.OBSERVATION_REQUIRED_ERROR' | translate }}</mat-error>
                   }
                   @if (estadoForm.get('observacion')?.hasError('minlength') && estadoForm.get('observacion')?.touched) {
-                    <mat-error>La observación debe tener al menos 10 caracteres</mat-error>
+                    <mat-error>{{ 'TICKETS.OBSERVATION_MINLENGTH_ERROR' | translate }}</mat-error>
                   }
                 </mat-form-field>
 
                 <!-- Selector de tipo de observación (External/Internal) -->
                 <mat-form-field appearance="outline" class="full-width tipo-observacion-field">
-                  <mat-label>Tipo de Observación</mat-label>
+                  <mat-label>{{ 'TICKETS.OBSERVATION_TYPE' | translate }}</mat-label>
                   <mat-select formControlName="tipoObservacion">
                     <mat-select-trigger>
                       @if (estadoForm.get('tipoObservacion')?.value === 'INTERNAL') {
-                        Interna (solo técnicos/admin)
+                        {{ 'TICKETS.INTERNAL_DESC' | translate }}
                       } @else if (estadoForm.get('tipoObservacion')?.value === 'EXTERNAL') {
-                        Pública (visible para el cliente)
+                        {{ 'TICKETS.EXTERNAL_DESC' | translate }}
                       }
                     </mat-select-trigger>
                     <mat-option value="INTERNAL">
                       <div class="tipo-option">
                         <mat-icon>lock</mat-icon>
-                        <span>Interna (solo técnicos/admin)</span>
+                        <span>{{ 'TICKETS.INTERNAL_DESC' | translate }}</span>
                       </div>
                     </mat-option>
                     <mat-option value="EXTERNAL">
                       <div class="tipo-option">
                         <mat-icon>public</mat-icon>
-                        <span>Pública (visible para el cliente)</span>
+                        <span>{{ 'TICKETS.EXTERNAL_DESC' | translate }}</span>
                       </div>
                     </mat-option>
                   </mat-select>
                   <mat-icon matPrefix>visibility</mat-icon>
-                  <mat-hint>Seleccione si la observación es pública o interna</mat-hint>
+                  <mat-hint>{{ 'TICKETS.OBSERVATION_TYPE_HINT' | translate }}</mat-hint>
                 </mat-form-field>
               </div>
 
@@ -313,11 +313,11 @@
               <div class="file-upload-section">
                 <h4 class="section-title">
                   <mat-icon>image</mat-icon>
-                  Evidencias 
+                  {{ 'TICKETS.EVIDENCE' | translate }} 
                   @if (estadoForm.get('nuevoEstado')?.value !== tiquete()!.estado) {
-                    <span class="required-indicator">(Al menos una imagen requerida)</span>
+                    <span class="required-indicator">({{ 'TICKETS.EVIDENCE_REQUIRED_INDICATOR' | translate }})</span>
                   } @else {
-                    <span class="optional-indicator">(Opcional si solo agrega observación)</span>
+                    <span class="optional-indicator">({{ 'TICKETS.EVIDENCE_OPTIONAL_INDICATOR' | translate }})</span>
                   }
                 </h4>
                 
@@ -338,7 +338,7 @@
                     (click)="fileInputEstado.click()"
                     class="upload-button">
                     <mat-icon>cloud_upload</mat-icon>
-                    Seleccionar Imágenes
+                    {{ 'TICKETS.SELECT_IMAGES' | translate }}
                   </button>
                 </div>
 
@@ -361,7 +361,7 @@
                           color="warn" 
                           (click)="removerArchivo(archivo)"
                           type="button"
-                          matTooltip="Remover archivo">
+                          [matTooltip]="'TICKETS.REMOVE_FILE' | translate">
                           <mat-icon>delete</mat-icon>
                         </button>
                       </div>
@@ -371,9 +371,9 @@
                   <p class="no-files-message">
                     <mat-icon>info</mat-icon>
                     @if (estadoForm.get('nuevoEstado')?.value !== tiquete()!.estado) {
-                      No hay archivos seleccionados. Por favor, seleccione al menos una imagen.
+                      {{ 'TICKETS.NO_FILES_SELECTED' | translate }}
                     } @else {
-                      No hay archivos seleccionados. Las imágenes son opcionales cuando solo agrega observación.
+                      {{ 'TICKETS.NO_FILES_OPTIONAL' | translate }}
                     }
                   </p>
                 }
@@ -392,9 +392,9 @@
                     <mat-icon>save</mat-icon>
                   }
                   @if (estadoForm.get('nuevoEstado')?.value === tiquete()!.estado) {
-                    Guardar Observación
+                    {{ 'TICKETS.SAVE_OBSERVATION' | translate }}
                   } @else {
-                    Actualizar Estado
+                    {{ 'TICKETS.UPDATE_STATUS' | translate }}
                   }
                 </button>
                 <button 
@@ -403,7 +403,7 @@
                   (click)="cancelarActualizacionEstado()"
                   [disabled]="loading() || uploading()">
                   <mat-icon>close</mat-icon>
-                  Cancelar
+                  {{ 'COMMON.CANCEL' | translate }}
                 </button>
               </div>
             </form>

@@ -1,11 +1,13 @@
 // src/app/tiquetes/tiquete-index/tiquete-index.ts
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, signal, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { TiqueteService } from '../../share/services/api/tiquete.service';
 import { TiqueteModel } from '../../share/models/TiqueteModel';
 import { NotificationService } from '../../share/services/app/notification.service';
 import { AuthenticationService } from '../../share/services/app/authentication.service';
 import { Prioridad, EstadoTiquete, RoleNombre } from '../../share/models/EnumsModel';
+import { TranslationService } from '../../share/services/app/translation.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-tiquete-index',
@@ -18,6 +20,9 @@ export class TiqueteIndex implements OnInit {
   protected readonly loading = signal<boolean>(false);
   protected readonly error = signal<string>('');
   protected readonly rolActual = signal<string>('');
+
+  private translationService = inject(TranslationService);
+  private translate = inject(TranslateService);
 
   constructor(
     private tiqueteService: TiqueteService,
@@ -127,7 +132,9 @@ export class TiqueteIndex implements OnInit {
 
   formatearFecha(fecha: Date | string): string {
     const date = new Date(fecha);
-    return date.toLocaleDateString('es-ES', {
+    const currentLang = this.translate.currentLang || 'es';
+    const locale = currentLang === 'en' ? 'en-US' : 'es-ES';
+    return date.toLocaleDateString(locale, {
       year: 'numeric',
       month: 'short',
       day: 'numeric'
@@ -136,7 +143,9 @@ export class TiqueteIndex implements OnInit {
 
   formatearFechaHora(fecha: Date | string): string {
     const date = new Date(fecha);
-    return date.toLocaleDateString('es-ES', {
+    const currentLang = this.translate.currentLang || 'es';
+    const locale = currentLang === 'en' ? 'en-US' : 'es-ES';
+    return date.toLocaleDateString(locale, {
       year: 'numeric',
       month: 'short',
       day: 'numeric',
@@ -150,20 +159,24 @@ export class TiqueteIndex implements OnInit {
   }
 
   getTituloSegunRol(): string {
-    switch (this.rolActual()) {
-      case 'ADMIN': return 'Todos los Tickets';
-      case 'CLIENTE': return 'Mis Tickets';
-      case 'TECNICO': return 'Tickets Asignados';
-      default: return 'Lista de Tickets';
-    }
+    const rol = this.rolActual();
+    const key = `TICKETS.TITLE_BY_ROLE.${rol}`;
+    const translation = this.translate.instant(key);
+    return translation !== key ? translation : this.translate.instant('TICKETS.TITLE_BY_ROLE.DEFAULT');
   }
 
   getSubtituloSegunRol(): string {
-    switch (this.rolActual()) {
-      case 'ADMIN': return 'Vista completa del sistema';
-      case 'CLIENTE': return 'Tickets creados por ti';
-      case 'TECNICO': return 'Tickets asignados a tu cargo';
-      default: return 'Gestión de tickets';
-    }
+    const rol = this.rolActual();
+    const key = `TICKETS.SUBTITLE_BY_ROLE.${rol}`;
+    const translation = this.translate.instant(key);
+    return translation !== key ? translation : this.translate.instant('TICKETS.SUBTITLE_BY_ROLE.DEFAULT');
+  }
+
+  getEstadoNombre(estado: EstadoTiquete): string {
+    return this.translationService.translateTicketState(estado);
+  }
+
+  getPrioridadTexto(prioridad: Prioridad): string {
+    return this.translationService.translatePriority(prioridad);
   }
 }

@@ -10,6 +10,7 @@ import { environment } from '../../../../environments/environment.development';
 export class NotificacionService {
   private http = inject(HttpClient);
   private readonly apiURL = `${environment.apiURL}/notificaciones`;
+  private readonly tokenKey = 'currentUser';
 
   /**
    * Signal principal con el estado de las notificaciones
@@ -46,14 +47,28 @@ export class NotificacionService {
   );
 
   constructor() {
-    // Cargar notificaciones al inicializar el servicio
-    this.cargarNotificaciones();
+    // No cargar notificaciones en el constructor
+    // Se cargarán cuando el usuario esté autenticado
+  }
+
+  /**
+   * Verificar si el usuario está autenticado
+   * Sin crear dependencia circular con AuthenticationService
+   */
+  private isAuthenticated(): boolean {
+    return !!localStorage.getItem(this.tokenKey);
   }
 
   /**
    * Cargar notificaciones desde el servidor
+   * Solo carga si el usuario está autenticado
    */
   cargarNotificaciones(): void {
+    // Solo cargar si el usuario está autenticado
+    if (!this.isAuthenticated()) {
+      return;
+    }
+
     this.http.get<{ success: boolean; data: NotificacionModel[] }>(this.apiURL)
       .subscribe({
         next: (response) => {
@@ -62,7 +77,10 @@ export class NotificacionService {
           }
         },
         error: (error) => {
-          console.error('Error al cargar notificaciones:', error);
+          // Solo loguear errores que no sean 401 (no autenticado)
+          if (error.status !== 401) {
+            console.error('Error al cargar notificaciones:', error);
+          }
         }
       });
   }

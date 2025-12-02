@@ -117,7 +117,6 @@ export class TecnicoDetail implements OnInit {
       case 'PENDIENTE': return 'pendiente';
       case 'EN_PROGRESO': return 'en-progreso';
       case 'ASIGNADO': return 'asignado';
-      case 'PENDIENTE': return 'pendiente';
       case 'RESUELTO': return 'resuelto';
       case 'CERRADO': return 'cerrado';
       case 'CANCELADO': return 'cancelado';
