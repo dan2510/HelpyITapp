@@ -1,10 +1,11 @@
-import { Injectable, computed, effect, signal } from '@angular/core';
+import { Injectable, computed, effect, signal, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { UsuarioModel } from '../../models/UsuarioModel';
 import { environment } from '../../../../environments/environment.development';
+import { NotificacionService } from './notificacion.service';
 
 @Injectable({
   providedIn: 'root',
@@ -25,6 +26,8 @@ export class AuthenticationService {
   /** Datos del usuario logueado */
   usuario = signal<UsuarioModel | null>(null);
 
+  private notificacionService = inject(NotificacionService);
+
   constructor(
     private http: HttpClient,
     private router: Router
@@ -36,7 +39,12 @@ export class AuthenticationService {
     effect(() => {
       const token = this.tokenUser();
       if (token && !this.usuario()) {
-        this.getUserProfile().subscribe();
+        this.getUserProfile().subscribe({
+          next: () => {
+            // Recargar notificaciones después de obtener el perfil
+            this.notificacionService.cargarNotificaciones();
+          }
+        });
       }
     });
   }
@@ -54,6 +62,8 @@ export class AuthenticationService {
           const strToken = String(token);
           localStorage.setItem(this.tokenKey, strToken);
           this.tokenUser.set(strToken);
+          // Recargar notificaciones después del login
+          // Se cargará automáticamente cuando se obtenga el perfil del usuario
         })
       );
   }
@@ -65,7 +75,9 @@ export class AuthenticationService {
   getUserProfile(): Observable<UsuarioModel | null> {
     return this.http.get<UsuarioModel>(`${this.apiUrl}/usuario/profile`).pipe(
       tap((user) => {
-        this.usuario.set(user)
+        this.usuario.set(user);
+        // Recargar notificaciones después de obtener el perfil
+        this.notificacionService.cargarNotificaciones();
       }),
       catchError(() => {
         this.logout(); 

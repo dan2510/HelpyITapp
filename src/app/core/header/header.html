@@ -125,9 +125,16 @@
   <!-- Sección de usuario y notificaciones -->
   <div class="user-section">
     <!-- Notificaciones -->
-    <button mat-icon-button class="notification-button" matTooltip="Notificaciones" [matBadge]="notificationCount" matBadgeColor="warn" [matBadgeHidden]="notificationCount === 0">
+    <button mat-icon-button class="notification-button" matTooltip="Notificaciones" 
+            [matBadge]="cantidadNotificaciones().toString()" 
+            matBadgeColor="warn" 
+            [matBadgeHidden]="cantidadNotificaciones() === 0"
+            [matMenuTriggerFor]="notificacionesMenu">
       <mat-icon>notifications</mat-icon>
     </button>
+    <mat-menu #notificacionesMenu="matMenu" class="notificaciones-menu" xPosition="before">
+      <app-notificaciones-panel></app-notificaciones-panel>
+    </mat-menu>
 
     <!-- Ayuda -->
     <button mat-icon-button matTooltip="Ayuda" [matMenuTriggerFor]="helpMenu">

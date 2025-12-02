@@ -1,8 +1,9 @@
-import { Component, OnInit, computed } from '@angular/core';
+import { Component, OnInit, computed, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { environment } from '../../../environments/environment.development';
 import { AuthenticationService } from '../../share/services/app/authentication.service';
 import { NotificationService } from '../../share/services/app/notification.service';
+import { NotificacionService } from '../../share/services/app/notificacion.service';
 
 @Component({
   selector: 'app-header',
@@ -11,8 +12,10 @@ import { NotificationService } from '../../share/services/app/notification.servi
   styleUrl: './header.css',
 })
 export class Header implements OnInit {
+  private notificacionService = inject(NotificacionService);
+
   // Contador de notificaciones para el badge
-  notificationCount = 3; // Puedes conectar esto con un servicio real
+  readonly cantidadNotificaciones = this.notificacionService.cantidadNoLeidas;
 
   // URL del logo - el servidor sirve las imágenes desde /images que apunta a assets/uploads
   logoUrl = `${environment.apiURL}/images/helpyIT.jpg`;
@@ -34,7 +37,15 @@ export class Header implements OnInit {
   ngOnInit(): void {
     // Si hay token pero no hay usuario, cargar el perfil
     if (this.authService.authenticated() && !this.usuario()) {
-      this.authService.getUserProfile().subscribe();
+      this.authService.getUserProfile().subscribe({
+        next: () => {
+          // Recargar notificaciones después de cargar el perfil
+          this.notificacionService.cargarNotificaciones();
+        }
+      });
+    } else if (this.authService.authenticated()) {
+      // Si ya está autenticado, cargar notificaciones
+      this.notificacionService.cargarNotificaciones();
     }
   }
 

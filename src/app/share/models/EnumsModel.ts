@@ -44,7 +44,8 @@ export enum TipoNotificacion {
   ASIGNACION = 'ASIGNACION',
   CAMBIO_ESTADO = 'CAMBIO_ESTADO',
   MENSAJE = 'MENSAJE',
-  RECORDATORIO = 'RECORDATORIO'
+  RECORDATORIO = 'RECORDATORIO',
+  INICIO_SESION = 'INICIO_SESION'
 }
 
 export enum EstadoNotificacion {

@@ -1,0 +1,69 @@
+<div class="notificaciones-panel">
+  <!-- Header del panel -->
+  <div class="panel-header">
+    <h3>Notificaciones</h3>
+    @if (cantidadNoLeidas() > 0) {
+      <button mat-icon-button 
+              matTooltip="Marcar todas como leídas" 
+              (click)="marcarTodasComoLeidas()"
+              class="mark-all-read">
+        <mat-icon>done_all</mat-icon>
+      </button>
+    }
+  </div>
+
+  <mat-divider></mat-divider>
+
+  <!-- Lista de notificaciones -->
+  <div class="notificaciones-list">
+    @if (tieneNotificaciones()) {
+      @for (notificacion of notificaciones(); track notificacion.id) {
+        <div class="notificacion-item" 
+             [class.no-leida]="esNoLeida(notificacion.estado)"
+             (click)="abrirNotificacion(notificacion)">
+          <div class="notificacion-icon">
+            <mat-icon [color]="getColorTipo(notificacion.tipo)">
+              {{ getIconoTipo(notificacion.tipo) }}
+            </mat-icon>
+          </div>
+          
+          <div class="notificacion-content">
+            <div class="notificacion-header">
+              <span class="notificacion-titulo">{{ notificacion.titulo }}</span>
+              @if (esNoLeida(notificacion.estado)) {
+                <span class="badge-no-leida"></span>
+              }
+            </div>
+            <p class="notificacion-contenido">{{ notificacion.contenido }}</p>
+            <div class="notificacion-footer">
+              <span class="notificacion-fecha">{{ formatearFecha(notificacion.creadaen) }}</span>
+              @if (notificacion.usuarioOrigen) {
+                <span class="notificacion-usuario">por {{ notificacion.usuarioOrigen.nombrecompleto }}</span>
+              }
+            </div>
+          </div>
+
+          <div class="notificacion-actions">
+            @if (esNoLeida(notificacion.estado)) {
+              <button mat-icon-button 
+                      matTooltip="Marcar como leída"
+                      (click)="marcarComoLeida(notificacion, $event)"
+                      class="mark-read-button">
+                <mat-icon>check_circle_outline</mat-icon>
+              </button>
+            }
+          </div>
+        </div>
+        @if (!$last) {
+          <mat-divider></mat-divider>
+        }
+      }
+    } @else {
+      <div class="no-notificaciones">
+        <mat-icon>notifications_off</mat-icon>
+        <p>No hay notificaciones</p>
+      </div>
+    }
+  </div>
+</div>
+
