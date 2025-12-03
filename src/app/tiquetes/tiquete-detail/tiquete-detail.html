@@ -417,7 +417,7 @@
           <div mat-card-avatar class="avatar-sla">
             <mat-icon class="avatar-icon">schedule</mat-icon>
           </div>
-          <mat-card-title>SLA y Cumplimiento</mat-card-title>
+          <mat-card-title>{{ 'TICKETS.SLA_AND_COMPLIANCE' | translate }}</mat-card-title>
           <mat-card-subtitle>{{ tiquete()!.sla?.nombre }}</mat-card-subtitle>
         </mat-card-header>
 
@@ -431,7 +431,7 @@
               <div class="metric-card">
                 <div class="metric-header">
                   <mat-icon class="metric-icon response">speed</mat-icon>
-                  <h4>SLA de Respuesta</h4>
+                  <h4>{{ 'TICKETS.SLA_RESPONSE' | translate }}</h4>
                 </div>
                 <div class="metric-content">
                   <div class="metric-values">
@@ -439,7 +439,7 @@
                       {{ tiquete()!.sla?.tiempoRespuestaHoras || 0 }}h
                     </div>
                     <div class="metric-value-secondary">
-                      Tiempo máximo: {{ tiquete()!.sla?.maxminutosrespuesta || 0 }} min
+                      {{ 'TICKETS.MAX_TIME' | translate }} {{ tiquete()!.sla?.maxminutosrespuesta || 0 }} min
                     </div>
                   </div>
                   
@@ -455,12 +455,12 @@
 
                   @if (tiquete()!.cumplimiento?.horasRespuesta) {
                     <p class="tiempo-real">
-                      Tiempo real: <strong>{{ tiquete()!.cumplimiento.horasRespuesta }}h</strong>
+                      {{ 'TICKETS.REAL_TIME' | translate }} <strong>{{ tiquete()!.cumplimiento.horasRespuesta }}h</strong>
                     </p>
                   }
 
                   <div class="fecha-info">
-                    <small>Vence: {{ formatearFechaCorta(tiquete()!.vencerespuesta) }}</small>
+                    <small>{{ 'TICKETS.DUE_DATE' | translate }} {{ formatearFechaCorta(tiquete()!.vencerespuesta) }}</small>
                   </div>
                 </div>
               </div>
@@ -469,7 +469,7 @@
               <div class="metric-card">
                 <div class="metric-header">
                   <mat-icon class="metric-icon resolution">check_circle</mat-icon>
-                  <h4>SLA de Resolución</h4>
+                  <h4>{{ 'TICKETS.SLA_RESOLUTION' | translate }}</h4>
                 </div>
                 <div class="metric-content">
                   <div class="metric-values">
@@ -477,7 +477,7 @@
                       {{ tiquete()!.sla?.tiempoResolucionHoras || 0 }}h
                     </div>
                     <div class="metric-value-secondary">
-                      Tiempo máximo: {{ tiquete()!.sla?.maxminutosresolucion || 0 }} min
+                      {{ 'TICKETS.MAX_TIME' | translate }} {{ tiquete()!.sla?.maxminutosresolucion || 0 }} min
                     </div>
                   </div>
                   
@@ -493,18 +493,18 @@
 
                   @if (tiquete()!.cumplimiento?.diasResolucion) {
                     <p class="tiempo-real">
-                      Días de resolución: <strong>{{ tiquete()!.cumplimiento.diasResolucion }} días</strong>
+                      {{ 'TICKETS.RESOLUTION_DAYS' | translate }} <strong>{{ tiquete()!.cumplimiento.diasResolucion }} {{ 'TICKETS.DAYS' | translate }}</strong>
                     </p>
                   }
 
                   @if (tiquete()!.cumplimiento?.horasResolucion) {
                     <p class="tiempo-real">
-                      Horas totales: <strong>{{ tiquete()!.cumplimiento.horasResolucion }}h</strong>
+                      {{ 'TICKETS.TOTAL_HOURS' | translate }} <strong>{{ tiquete()!.cumplimiento.horasResolucion }}h</strong>
                     </p>
                   }
 
                   <div class="fecha-info">
-                    <small>Vence: {{ formatearFechaCorta(tiquete()!.venceresolucion) }}</small>
+                    <small>{{ 'TICKETS.DUE_DATE' | translate }} {{ formatearFechaCorta(tiquete()!.venceresolucion) }}</small>
                   </div>
                 </div>
               </div>
@@ -519,8 +519,8 @@
           <div mat-card-avatar class="avatar-history">
             <mat-icon class="avatar-icon">history</mat-icon>
           </div>
-          <mat-card-title>Historial de Ticket</mat-card-title>
-          <mat-card-subtitle>{{ (tiquete()!.historiales || []).length }} cambios registrados</mat-card-subtitle>
+          <mat-card-title>{{ 'TICKETS.HISTORY_TITLE' | translate }}</mat-card-title>
+          <mat-card-subtitle>{{ (tiquete()!.historiales || []).length }} {{ 'TICKETS.REGISTERED_CHANGES' | translate }}</mat-card-subtitle>
         </mat-card-header>
 
         <mat-card-content>
@@ -538,7 +538,7 @@
                         <div class="event-header">
                           <div class="event-state-change">
                             <mat-icon>{{ historial.tipo === 'COMENTARIO_EXTERNAL' ? 'public' : 'lock' }}</mat-icon>
-                            <span class="estado-chip-timeline">{{ historial.tipo === 'COMENTARIO_EXTERNAL' ? 'Comentario Público' : 'Comentario Interno' }}</span>
+                            <span class="estado-chip-timeline">{{ historial.tipo === 'COMENTARIO_EXTERNAL' ? ('TICKETS.PUBLIC_COMMENT' | translate) : ('TICKETS.INTERNAL_COMMENT_LABEL' | translate) }}</span>
                           </div>
                           <div class="event-date">
                             <mat-icon class="date-icon-timeline">schedule</mat-icon>
@@ -549,8 +549,8 @@
                           <div class="change-item-timeline">
                             <mat-icon class="change-icon-timeline">person</mat-icon>
                             <div class="change-content-timeline">
-                              <span class="change-label-timeline">Usuario:</span>
-                              <span class="change-value-timeline">{{ historial.cambiadopor?.nombrecompleto || 'Usuario' }}</span>
+                              <span class="change-label-timeline">{{ 'TICKETS.USER_LABEL' | translate }}</span>
+                              <span class="change-value-timeline">{{ historial.cambiadopor?.nombrecompleto || ('TICKETS.USER_LABEL' | translate) }}</span>
                               <span class="change-email-timeline">{{ historial.cambiadopor?.correo }}</span>
                             </div>
                           </div>
@@ -558,7 +558,7 @@
                             <div class="change-item-timeline">
                               <mat-icon class="change-icon-timeline">comment</mat-icon>
                               <div class="change-content-timeline">
-                                <span class="change-label-timeline">Comentario:</span>
+                                <span class="change-label-timeline">{{ 'TICKETS.COMMENT_LABEL' | translate }}</span>
                                 <p class="observacion-text-timeline">{{ historial.observacion }}</p>
                               </div>
                             </div>
@@ -588,12 +588,12 @@
                         <div class="event-state-change">
                           <mat-chip 
                             [class]="'estado-chip-timeline ' + getEstadoColor(historial.estadoanterior)">
-                            {{ historial.estadoanterior }}
+                            {{ getEstadoNombre(historial.estadoanterior) }}
                           </mat-chip>
                           <mat-icon class="arrow-icon-timeline">arrow_forward</mat-icon>
                           <mat-chip 
                             [class]="'estado-chip-timeline ' + getEstadoColor(historial.estadonuevo)">
-                            {{ historial.estadonuevo }}
+                            {{ getEstadoNombre(historial.estadonuevo) }}
                           </mat-chip>
                         </div>
                         <div class="event-date">
@@ -607,7 +607,7 @@
                         <div class="change-item-timeline">
                           <mat-icon class="change-icon-timeline">person</mat-icon>
                           <div class="change-content-timeline">
-                            <span class="change-label-timeline">Modificado por</span>
+                            <span class="change-label-timeline">{{ 'TICKETS.MODIFIED_BY' | translate }}</span>
                             <span class="change-value-timeline">{{ historial.cambiadopor?.nombrecompleto }}</span>
                             <span class="change-email-timeline">{{ historial.cambiadopor?.correo }}</span>
                           </div>
@@ -617,7 +617,7 @@
                           <div class="change-item-timeline">
                             <mat-icon class="change-icon-timeline">note</mat-icon>
                             <div class="change-content-timeline">
-                              <span class="change-label-timeline">Observación</span>
+                              <span class="change-label-timeline">{{ 'TICKETS.OBSERVATION_LABEL' | translate }}</span>
                               <p class="observacion-text-timeline">{{ historial.observacion }}</p>
                             </div>
                           </div>
@@ -628,7 +628,7 @@
                           <div class="evidencias-section-timeline">
                             <h5 class="evidencias-title-timeline">
                               <mat-icon>image</mat-icon>
-                              Evidencias ({{ historial.imagenes.length }})
+                              {{ 'TICKETS.EVIDENCES' | translate }} ({{ historial.imagenes.length }})
                             </h5>
                             <div class="evidencias-grid-timeline">
                               @for (imagen of historial.imagenes || []; track imagen.id) {
@@ -649,7 +649,7 @@
                                           target="_blank"
                                           class="image-link-timeline"
                                           mat-icon-button
-                                          matTooltip="Ver imagen en tamaño completo"
+                                          [matTooltip]="'TICKETS.VIEW_FULL_SIZE_IMAGE' | translate"
                                           (click)="$event.stopPropagation()">
                                           <mat-icon>open_in_new</mat-icon>
                                         </a>
@@ -662,7 +662,7 @@
                                         [href]="getImageUrl(imagen.rutaarchivo)" 
                                         target="_blank"
                                         class="file-download-link-timeline"
-                                        matTooltip="Descargar archivo">
+                                        [matTooltip]="'TICKETS.DOWNLOAD_FILE' | translate">
                                         <mat-icon>download</mat-icon>
                                       </a>
                                     </div>
@@ -700,7 +700,7 @@
           } @else {
             <div class="no-items">
               <mat-icon>info</mat-icon>
-              <span>No hay historial de cambios registrado</span>
+              <span>{{ 'TICKETS.NO_HISTORY_REGISTERED' | translate }}</span>
             </div>
           }
         </mat-card-content>
@@ -712,7 +712,7 @@
           <div mat-card-avatar class="avatar-dates">
             <mat-icon class="avatar-icon">event</mat-icon>
           </div>
-          <mat-card-title>Fechas Importantes</mat-card-title>
+          <mat-card-title>{{ 'TICKETS.IMPORTANT_DATES' | translate }}</mat-card-title>
         </mat-card-header>
 
         <mat-card-content>
@@ -720,7 +720,7 @@
             <div class="date-item">
               <mat-icon class="date-icon">add_circle</mat-icon>
               <div class="date-content">
-                <span class="date-label">Creado</span>
+                <span class="date-label">{{ 'TICKETS.CREATED' | translate }}</span>
                 <span class="date-value">{{ formatearFecha(tiquete()!.creadoen) }}</span>
               </div>
             </div>
@@ -729,7 +729,7 @@
               <div class="date-item">
                 <mat-icon class="date-icon">reply</mat-icon>
                 <div class="date-content">
-                  <span class="date-label">Primera Respuesta</span>
+                  <span class="date-label">{{ 'TICKETS.FIRST_RESPONSE' | translate }}</span>
                   <span class="date-value">{{ formatearFecha(tiquete()!.primerarespuestaen) }}</span>
                 </div>
               </div>
@@ -739,7 +739,7 @@
               <div class="date-item">
                 <mat-icon class="date-icon">check_circle</mat-icon>
                 <div class="date-content">
-                  <span class="date-label">Resuelto</span>
+                  <span class="date-label">{{ 'TICKETS.RESOLVED' | translate }}</span>
                   <span class="date-value">{{ formatearFecha(tiquete()!.resueltoen) }}</span>
                 </div>
               </div>
@@ -749,7 +749,7 @@
               <div class="date-item">
                 <mat-icon class="date-icon">done_all</mat-icon>
                 <div class="date-content">
-                  <span class="date-label">Cerrado</span>
+                  <span class="date-label">{{ 'TICKETS.CLOSED' | translate }}</span>
                   <span class="date-value">{{ formatearFecha(tiquete()!.cerradoen) }}</span>
                 </div>
               </div>
@@ -764,12 +764,12 @@
           <div mat-card-avatar class="avatar-ratings">
             <mat-icon class="avatar-icon">star</mat-icon>
           </div>
-          <mat-card-title>Valoraciones del Servicio</mat-card-title>
+          <mat-card-title>{{ 'TICKETS.SERVICE_RATINGS' | translate }}</mat-card-title>
           <mat-card-subtitle>
             @if ((tiquete()!.valoraciones || []).length > 0) {
-              {{ (tiquete()!.valoraciones || []).length }} valoración(es)
+              {{ (tiquete()!.valoraciones || []).length }} {{ (tiquete()!.valoraciones || []).length === 1 ? ('TICKETS.RATING' | translate) : ('TICKETS.RATINGS' | translate) }}
             } @else {
-              Sin valoraciones
+              {{ 'TICKETS.NO_RATINGS' | translate }}
             }
           </mat-card-subtitle>
         </mat-card-header>
@@ -814,7 +814,7 @@
           } @else {
             <div class="no-items">
               <mat-icon>star_border</mat-icon>
-              <span>Este ticket aún no ha sido valorado</span>
+              <span>{{ 'TICKETS.NOT_RATED_YET' | translate }}</span>
             </div>
           }
         </mat-card-content>

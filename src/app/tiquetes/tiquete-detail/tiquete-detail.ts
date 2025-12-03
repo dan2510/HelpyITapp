@@ -255,8 +255,8 @@ export class TiqueteDetail implements OnInit {
   }
 
   getCumplimientoTexto(cumplido: boolean | null): string {
-    if (cumplido === null) return 'Pendiente';
-    return cumplido ? 'Cumplido' : 'No Cumplido';
+    if (cumplido === null) return this.translationService.translate('TICKETS.COMPLIANCE_PENDING');
+    return cumplido ? this.translationService.translate('TICKETS.COMPLIANCE_MET') : this.translationService.translate('TICKETS.COMPLIANCE_NOT_MET');
   }
 
   getEstrellas(calificacion: number): string[] {
@@ -705,7 +705,7 @@ export class TiqueteDetail implements OnInit {
     });
   }
 
-  getEstadoNombre(estado: EstadoTiquete): string {
+  getEstadoNombre(estado: EstadoTiquete | string): string {
     return this.translationService.translateTicketState(estado);
   }
 
