@@ -75,24 +75,23 @@ export class NotificacionesPanel implements OnInit {
     const diffDays = Math.floor(diffMs / 86400000);
     const currentLang = this.translate.currentLang || 'es';
 
-    if (diffMins < 1) return currentLang === 'en' ? 'Just now' : 'Hace un momento';
+    if (diffMins < 1) {
+      return this.translate.instant('NOTIFICATIONS.TIME.JUST_NOW');
+    }
+    
     if (diffMins < 60) {
-      if (currentLang === 'en') {
-        return `${diffMins} minute${diffMins > 1 ? 's' : ''} ago`;
-      }
-      return `Hace ${diffMins} minuto${diffMins > 1 ? 's' : ''}`;
+      const key = diffMins === 1 ? 'NOTIFICATIONS.TIME.MINUTE_AGO' : 'NOTIFICATIONS.TIME.MINUTES_AGO';
+      return this.translate.instant(key, { minutes: diffMins });
     }
+    
     if (diffHours < 24) {
-      if (currentLang === 'en') {
-        return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
-      }
-      return `Hace ${diffHours} hora${diffHours > 1 ? 's' : ''}`;
+      const key = diffHours === 1 ? 'NOTIFICATIONS.TIME.HOUR_AGO' : 'NOTIFICATIONS.TIME.HOURS_AGO';
+      return this.translate.instant(key, { hours: diffHours });
     }
+    
     if (diffDays < 7) {
-      if (currentLang === 'en') {
-        return `${diffDays} day${diffDays > 1 ? 's' : ''} ago`;
-      }
-      return `Hace ${diffDays} día${diffDays > 1 ? 's' : ''}`;
+      const key = diffDays === 1 ? 'NOTIFICATIONS.TIME.DAY_AGO' : 'NOTIFICATIONS.TIME.DAYS_AGO';
+      return this.translate.instant(key, { days: diffDays });
     }
     
     const locale = currentLang === 'en' ? 'en-US' : 'es-ES';

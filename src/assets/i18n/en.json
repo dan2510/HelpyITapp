@@ -211,6 +211,15 @@
     "ALL_MARKED_READ": "All notifications marked as read",
     "ERROR_MARKING": "Could not mark notification as read",
     "ERROR_MARKING_ALL": "Could not mark all notifications as read",
+    "TIME": {
+      "JUST_NOW": "Just now",
+      "MINUTE_AGO": "{{minutes}} minute ago",
+      "MINUTES_AGO": "{{minutes}} minutes ago",
+      "HOUR_AGO": "{{hours}} hour ago",
+      "HOURS_AGO": "{{hours}} hours ago",
+      "DAY_AGO": "{{days}} day ago",
+      "DAYS_AGO": "{{days}} days ago"
+    },
     "TYPES": {
       "ASIGNACION": "Assignment",
       "CAMBIO_ESTADO": "State Change",

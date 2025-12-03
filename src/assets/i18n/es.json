@@ -211,6 +211,15 @@
     "ALL_MARKED_READ": "Todas las notificaciones marcadas como leídas",
     "ERROR_MARKING": "No se pudo marcar la notificación como leída",
     "ERROR_MARKING_ALL": "No se pudieron marcar todas las notificaciones como leídas",
+    "TIME": {
+      "JUST_NOW": "Hace un momento",
+      "MINUTE_AGO": "Hace {{minutes}} minuto",
+      "MINUTES_AGO": "Hace {{minutes}} minutos",
+      "HOUR_AGO": "Hace {{hours}} hora",
+      "HOURS_AGO": "Hace {{hours}} horas",
+      "DAY_AGO": "Hace {{days}} día",
+      "DAYS_AGO": "Hace {{days}} días"
+    },
     "TYPES": {
       "ASIGNACION": "Asignación",
       "CAMBIO_ESTADO": "Cambio de Estado",
