@@ -157,25 +157,6 @@
       <app-notificaciones-panel></app-notificaciones-panel>
     </mat-menu>
 
-    <!-- Ayuda -->
-    <button mat-icon-button [matTooltip]="'HEADER.HELP' | translate" [matMenuTriggerFor]="helpMenu">
-      <mat-icon>help_outline</mat-icon>
-    </button>
-    <mat-menu #helpMenu="matMenu" class="modern-menu">
-      <button mat-menu-item>
-        <mat-icon>book</mat-icon>
-        <span>{{ 'HEADER.DOCUMENTATION' | translate }}</span>
-      </button>
-      <button mat-menu-item>
-        <mat-icon>support</mat-icon>
-        <span>{{ 'HEADER.TECHNICAL_SUPPORT' | translate }}</span>
-      </button>
-      <button mat-menu-item>
-        <mat-icon>info</mat-icon>
-        <span>{{ 'HEADER.ABOUT' | translate }}</span>
-      </button>
-    </mat-menu>
-
     <!-- Usuario -->
     @if (authenticated()) {
     <div class="user-profile">
