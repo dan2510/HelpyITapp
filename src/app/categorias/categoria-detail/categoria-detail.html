@@ -8,7 +8,7 @@
       (click)="regresarAlListado()"
       class="back-button">
       <mat-icon>arrow_back</mat-icon>
-      Volver al listado
+      {{ 'CATEGORIES.BACK_TO_LIST' | translate }}
     </button>
     @if (categoria()) {
       <button 
@@ -17,7 +17,7 @@
         (click)="editarCategoria()"
         class="edit-button">
         <mat-icon>edit</mat-icon>
-        Editar Categoría
+        {{ 'CATEGORIES.EDIT_CATEGORY' | translate }}
       </button>
     }
   </div>
@@ -26,7 +26,7 @@
   @if (loading()) {
     <div class="loading-container">
       <mat-spinner diameter="60"></mat-spinner>
-      <p>Cargando información de la categoría...</p>
+      <p>{{ 'CATEGORIES.LOADING_DETAIL' | translate }}</p>
     </div>
   }
 
@@ -34,7 +34,7 @@
   @if (error() && !loading()) {
     <div class="error-container">
       <mat-icon color="warn" class="error-icon">error_outline</mat-icon>
-      <h3>Error al cargar los datos</h3>
+      <h3>{{ 'CATEGORIES.ERROR_LOADING_DETAIL' | translate }}</h3>
       <p>{{ error() }}</p>
       <div class="error-actions">
         <button 
@@ -43,14 +43,14 @@
           (click)="retry()"
           class="retry-button">
           <mat-icon>refresh</mat-icon>
-          Reintentar
+          {{ 'COMMON.RETRY' | translate }}
         </button>
         <button 
           mat-button 
           (click)="regresarAlListado()"
           class="back-button-error">
           <mat-icon>arrow_back</mat-icon>
-          Volver
+          {{ 'COMMON.BACK' | translate }}
         </button>
       </div>
     </div>
@@ -75,7 +75,7 @@
             <div class="info-item">
               <mat-icon class="info-icon">tag</mat-icon>
               <div class="info-content">
-                <span class="info-label">ID de Categoría</span>
+                <span class="info-label">{{ 'CATEGORIES.CATEGORY_ID' | translate }}</span>
                 <span class="info-value">#{{ categoria()!.id }}</span>
               </div>
             </div>
@@ -84,7 +84,7 @@
             <div class="info-item">
               <mat-icon class="info-icon">verified</mat-icon>
               <div class="info-content">
-                <span class="info-label">Estado</span>
+                <span class="info-label">{{ 'COMMON.STATUS' | translate }}</span>
                 <mat-chip 
                   [color]="getEstadoColor(categoria()!.activo)"
                   class="status-chip">
@@ -102,7 +102,7 @@
           <div mat-card-avatar class="avatar-sla">
             <mat-icon class="avatar-icon">schedule</mat-icon>
           </div>
-          <mat-card-title>Política SLA</mat-card-title>
+          <mat-card-title>{{ 'CATEGORIES.SLA_POLICY' | translate }}</mat-card-title>
           <mat-card-subtitle>{{ categoria()!.sla?.nombre }}</mat-card-subtitle>
         </mat-card-header>
 
@@ -115,14 +115,14 @@
               <div class="metric-card">
                 <div class="metric-header">
                   <mat-icon class="metric-icon response">speed</mat-icon>
-                  <h4>Tiempo de Respuesta</h4>
+                  <h4>{{ 'CATEGORIES.RESPONSE_TIME' | translate }}</h4>
                 </div>
                 <div class="metric-values">
                   <div class="metric-value-primary">
                     {{ formatearHoras(categoria()!.sla?.maxminutosrespuesta || 0) }}
                   </div>
                   <div class="metric-value-secondary">
-                    {{ categoria()!.sla?.tiempoRespuestaHoras || 0 }}h máximo
+                    {{ categoria()!.sla?.tiempoRespuestaHoras || 0 }}{{ 'CATEGORIES.HOURS_MAX' | translate }}
                   </div>
                 </div>
                 <mat-progress-bar 
@@ -137,14 +137,14 @@
               <div class="metric-card">
                 <div class="metric-header">
                   <mat-icon class="metric-icon resolution">check_circle</mat-icon>
-                  <h4>Tiempo de Resolución</h4>
+                  <h4>{{ 'CATEGORIES.RESOLUTION_TIME' | translate }}</h4>
                 </div>
                 <div class="metric-values">
                   <div class="metric-value-primary">
                     {{ formatearHoras(categoria()!.sla?.maxminutosresolucion || 0) }}
                   </div>
                   <div class="metric-value-secondary">
-                    {{ categoria()!.sla?.tiempoResolucionHoras || 0 }}h máximo
+                    {{ categoria()!.sla?.tiempoResolucionHoras || 0 }}{{ 'CATEGORIES.HOURS_MAX' | translate }}
                   </div>
                 </div>
                 <mat-progress-bar 
@@ -161,14 +161,14 @@
               <div class="validity-item">
                 <mat-icon class="validity-icon">event</mat-icon>
                 <div class="validity-content">
-                  <span class="validity-label">Vigente desde</span>
+                  <span class="validity-label">{{ 'CATEGORIES.VALID_FROM' | translate }}</span>
                   <span class="validity-value">{{ formatearFecha(categoria()!.sla?.vigentedesde) }}</span>
                 </div>
               </div>
               <div class="validity-item">
                 <mat-icon class="validity-icon">event_available</mat-icon>
                 <div class="validity-content">
-                  <span class="validity-label">Vigente hasta</span>
+                  <span class="validity-label">{{ 'CATEGORIES.VALID_UNTIL' | translate }}</span>
                   <span class="validity-value">{{ formatearFecha(categoria()!.sla?.vigentehasta) }}</span>
                 </div>
               </div>
@@ -183,7 +183,7 @@
           <div mat-card-avatar class="avatar-tags">
             <mat-icon class="avatar-icon">label</mat-icon>
           </div>
-          <mat-card-title>Etiquetas Asociadas</mat-card-title>
+          <mat-card-title>{{ 'CATEGORIES.ASSOCIATED_TAGS' | translate }}</mat-card-title>
         </mat-card-header>
 
         <mat-card-content>
@@ -202,7 +202,7 @@
           } @else {
             <div class="no-items">
               <mat-icon>info</mat-icon>
-              <span>No hay etiquetas asociadas a esta categoría</span>
+              <span>{{ 'CATEGORIES.NO_TAGS_ASSOCIATED' | translate }}</span>
             </div>
           }
         </mat-card-content>
@@ -214,7 +214,7 @@
           <div mat-card-avatar class="avatar-specialties">
             <mat-icon class="avatar-icon">engineering</mat-icon>
           </div>
-          <mat-card-title>Especialidades Técnicas</mat-card-title>
+          <mat-card-title>{{ 'CATEGORIES.TECHNICAL_SPECIALTIES' | translate }}</mat-card-title>
         </mat-card-header>
 
         <mat-card-content>
@@ -230,7 +230,7 @@
                   <mat-chip 
                     [color]="especialidad.activo ? 'primary' : 'warn'"
                     class="specialty-status">
-                    {{ especialidad.activo ? 'Activa' : 'Inactiva' }}
+                    {{ getEspecialidadEstadoText(especialidad.activo) }}
                   </mat-chip>
                 </div>
               }
@@ -238,7 +238,7 @@
           } @else {
             <div class="no-items">
               <mat-icon>info</mat-icon>
-              <span>No hay especialidades requeridas para esta categoría</span>
+              <span>{{ 'CATEGORIES.NO_SPECIALTIES_REQUIRED' | translate }}</span>
             </div>
           }
         </mat-card-content>

@@ -1,9 +1,10 @@
 // src/app/categorias/categoria-index/categoria-index.ts
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, signal, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { CategoriaService } from '../../share/services/api/categoria.service';
 import { CategoriaModel } from '../../share/models/CategoriaModel';
 import { NotificationService } from '../../share/services/app/notification.service';
+import { TranslationService } from '../../share/services/app/translation.service';
 
 @Component({
   selector: 'app-categoria-index',
@@ -15,6 +16,7 @@ export class CategoriaIndex implements OnInit {
   protected readonly categorias = signal<CategoriaModel[]>([]);
   protected readonly loading = signal<boolean>(false);
   protected readonly error = signal<string>('');
+  private translationService = inject(TranslationService);
 
   constructor(
     private categoriaService: CategoriaService,
@@ -36,15 +38,18 @@ export class CategoriaIndex implements OnInit {
           this.categorias.set(response.data.categorias);
           console.log('Categorías cargadas:', response.data.categorias);
         } else {
-          this.error.set('Error en la respuesta del servidor');
+          this.error.set(this.translationService.translate('CATEGORIES.ERROR_SERVER_RESPONSE'));
         }
         this.loading.set(false);
       },
       error: (error) => {
         console.error('Error al cargar categorías:', error);
-        this.error.set('Error al conectar con el servidor');
+        this.error.set(this.translationService.translate('CATEGORIES.ERROR_CONNECTION'));
         this.loading.set(false);
-        this.notification.error('Error', 'No se pudieron cargar las categorías');
+        this.notification.error(
+          this.translationService.translate('COMMON.ERROR'), 
+          this.translationService.translate('CATEGORIES.ERROR_LOADING_CATEGORIES')
+        );
       }
     });
   }
@@ -62,7 +67,7 @@ export class CategoriaIndex implements OnInit {
   }
 
   getEstadoText(activo: boolean): string {
-    return activo ? 'Activa' : 'Inactiva';
+    return activo ? this.translationService.translate('CATEGORIES.ACTIVE') : this.translationService.translate('CATEGORIES.INACTIVE');
   }
 
   getTiempoRespuestaColor(minutos: number): string {

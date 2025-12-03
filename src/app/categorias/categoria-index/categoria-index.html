@@ -5,9 +5,9 @@
       <div mat-card-avatar class="header-icon">
         <mat-icon>category</mat-icon>
       </div>
-      <mat-card-title>Lista de Categorías</mat-card-title>
+      <mat-card-title>{{ 'CATEGORIES.TITLE' | translate }}</mat-card-title>
       <mat-card-subtitle>
-        Categorías de tickets y sus políticas SLA
+        {{ 'CATEGORIES.SUBTITLE' | translate }}
       </mat-card-subtitle>
       <div class="header-actions">
         <button 
@@ -16,7 +16,7 @@
           (click)="crearNuevaCategoria()"
           class="create-button">
           <mat-icon>add</mat-icon>
-          Nueva Categoría
+          {{ 'CATEGORIES.NEW_CATEGORY' | translate }}
         </button>
       </div>
     </mat-card-header>
@@ -26,7 +26,7 @@
       @if (loading()) {
         <div class="loading-container">
           <mat-spinner diameter="50"></mat-spinner>
-          <p>Cargando categorías...</p>
+          <p>{{ 'CATEGORIES.LOADING' | translate }}</p>
         </div>
       }
 
@@ -34,7 +34,7 @@
       @if (error() && !loading()) {
         <div class="error-container">
           <mat-icon color="warn" class="error-icon">error_outline</mat-icon>
-          <h3>Error al cargar los datos</h3>
+          <h3>{{ 'CATEGORIES.ERROR_LOADING' | translate }}</h3>
           <p>{{ error() }}</p>
           <button 
             mat-raised-button 
@@ -42,7 +42,7 @@
             (click)="retry()"
             class="retry-button">
             <mat-icon>refresh</mat-icon>
-            Reintentar
+            {{ 'COMMON.RETRY' | translate }}
           </button>
         </div>
       }
@@ -92,7 +92,7 @@
                   <div class="sla-info">
                     <span class="sla-name">{{ categoria.politicaSla.nombre }}</span>
                     <span class="sla-time">
-                      Respuesta: 
+                      {{ 'CATEGORIES.RESPONSE' | translate }}: 
                       <strong [ngClass]="'tiempo-' + getTiempoRespuestaColor(categoria.politicaSla.maxminutosrespuesta)">
                         {{ formatearTiempoRespuesta(categoria.politicaSla.maxminutosrespuesta) }}
                       </strong>
@@ -109,7 +109,7 @@
                   (click)="verDetalle(categoria.id); $event.stopPropagation()"
                   class="detail-button">
                   <mat-icon>visibility</mat-icon>
-                  Ver Detalle
+                  {{ 'CATEGORIES.VIEW_DETAIL' | translate }}
                 </button>
               </mat-card-actions>
             </mat-card>
@@ -121,15 +121,15 @@
       @if (!loading() && !error() && categorias().length === 0) {
         <div class="empty-state">
           <mat-icon class="empty-icon">folder_off</mat-icon>
-          <h3>No hay categorías disponibles</h3>
-          <p>No se encontraron categorías registradas en el sistema.</p>
+          <h3>{{ 'CATEGORIES.NO_CATEGORIES' | translate }}</h3>
+          <p>{{ 'CATEGORIES.NO_CATEGORIES_DESC' | translate }}</p>
           <button 
             mat-raised-button 
             color="primary" 
             (click)="retry()"
             class="refresh-button">
             <mat-icon>refresh</mat-icon>
-            Actualizar
+            {{ 'COMMON.REFRESH' | translate }}
           </button>
         </div>
       }

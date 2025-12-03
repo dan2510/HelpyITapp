@@ -1,9 +1,11 @@
 // src/app/asignaciones/asignacion-semana/asignacion-semana.ts
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, signal, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { AsignacionService } from '../../share/services/api/asignacion.service';
 import { NotificationService } from '../../share/services/app/notification.service';
 import { AuthenticationService } from '../../share/services/app/authentication.service';
+import { TranslationService } from '../../share/services/app/translation.service';
+import { TranslateService } from '@ngx-translate/core';
 import { EstadoTiquete, Prioridad } from '../../share/models/EnumsModel';
 
 interface DiaAsignaciones {
@@ -25,6 +27,8 @@ export class AsignacionSemana implements OnInit {
   protected readonly error = signal<string>('');
   protected readonly semanaActual = signal<{ inicio: Date; fin: Date } | null>(null);
   protected readonly tecnicoNombre = signal<string>('');
+  private translationService = inject(TranslationService);
+  private translate = inject(TranslateService);
 
   constructor(
     private asignacionService: AsignacionService,
@@ -42,14 +46,17 @@ export class AsignacionSemana implements OnInit {
 
     const usuario = this.authService.usuario();
     if (usuario && usuario.rol && usuario.rol.nombre !== 'TECNICO' && usuario.rol.nombre !== 'ADMIN') {
-      this.notification.warning('Acceso Restringido', 'Solo los técnicos y administradores pueden ver asignaciones');
+      this.notification.warning(
+        this.translationService.translate('ASSIGNMENTS.ACCESS_RESTRICTED'), 
+        this.translationService.translate('ASSIGNMENTS.ONLY_TECHNICIANS_ADMINS')
+      );
       this.router.navigate(['/inicio']);
       return;
     }
 
     if (usuario) {
       if (usuario.rol?.nombre === 'ADMIN') {
-        this.tecnicoNombre.set('Todas las Asignaciones');
+        this.tecnicoNombre.set(this.translationService.translate('ASSIGNMENTS.ALL_ASSIGNMENTS'));
       } else {
         this.tecnicoNombre.set(usuario.nombrecompleto);
       }
@@ -74,22 +81,31 @@ export class AsignacionSemana implements OnInit {
           this.organizarPorDias(response.data.asignaciones, response.data.semana);
           console.log('Asignaciones cargadas:', response.data.asignaciones);
         } else {
-          this.error.set('Error en la respuesta del servidor');
+          this.error.set(this.translationService.translate('ASSIGNMENTS.ERROR_SERVER_RESPONSE'));
         }
         this.loading.set(false);
       },
       error: (error) => {
         console.error('Error al cargar asignaciones:', error);
-        this.error.set('No se pudieron cargar las asignaciones');
+        this.error.set(this.translationService.translate('ASSIGNMENTS.ERROR_LOADING_ASSIGNMENTS'));
         this.loading.set(false);
         if (error.status === 401) {
-          this.notification.error('Error', 'Debe iniciar sesión');
+          this.notification.error(
+            this.translationService.translate('COMMON.ERROR'), 
+            this.translationService.translate('ASSIGNMENTS.MUST_LOGIN')
+          );
           this.router.navigate(['/usuario/login']);
         } else if (error.status === 403) {
-          this.notification.error('Error', 'Solo los técnicos y administradores pueden ver asignaciones');
+          this.notification.error(
+            this.translationService.translate('COMMON.ERROR'), 
+            this.translationService.translate('ASSIGNMENTS.ONLY_TECHNICIANS_ADMINS')
+          );
           this.router.navigate(['/inicio']);
         } else {
-          this.notification.error('Error', 'No se pudieron cargar las asignaciones');
+          this.notification.error(
+            this.translationService.translate('COMMON.ERROR'), 
+            this.translationService.translate('ASSIGNMENTS.ERROR_LOADING_ASSIGNMENTS')
+          );
         }
       }
     });
@@ -119,8 +135,20 @@ export class AsignacionSemana implements OnInit {
   }
 
   getNombreDia(dia: number): string {
-    const nombres = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+    const nombres = [
+      this.translationService.translate('ASSIGNMENTS.SUNDAY'),
+      this.translationService.translate('ASSIGNMENTS.MONDAY'),
+      this.translationService.translate('ASSIGNMENTS.TUESDAY'),
+      this.translationService.translate('ASSIGNMENTS.WEDNESDAY'),
+      this.translationService.translate('ASSIGNMENTS.THURSDAY'),
+      this.translationService.translate('ASSIGNMENTS.FRIDAY'),
+      this.translationService.translate('ASSIGNMENTS.SATURDAY')
+    ];
     return nombres[dia];
+  }
+
+  getEstadoTexto(estado: EstadoTiquete | string): string {
+    return this.translationService.translateTicketState(estado);
   }
 
   verDetalle(idTicket: number): void {
@@ -196,7 +224,8 @@ export class AsignacionSemana implements OnInit {
 
   formatearFecha(fecha: Date): string {
     const date = new Date(fecha);
-    return date.toLocaleDateString('es-ES', {
+    const locale = this.translate.currentLang === 'en' ? 'en-US' : 'es-ES';
+    return date.toLocaleDateString(locale, {
       day: '2-digit',
       month: 'short'
     });

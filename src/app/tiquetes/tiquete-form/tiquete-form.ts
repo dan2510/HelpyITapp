@@ -1,11 +1,12 @@
 // src/app/tiquetes/tiquete-form/tiquete-form.ts
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, signal, inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { TiqueteService } from '../../share/services/api/tiquete.service';
 import { EtiquetaService } from '../../share/services/api/etiqueta.service';
 import { NotificationService } from '../../share/services/app/notification.service';
 import { AuthenticationService } from '../../share/services/app/authentication.service';
+import { TranslationService } from '../../share/services/app/translation.service';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment.development';
 import { EtiquetaModel } from '../../share/models/EtiquetaModel';
@@ -34,6 +35,7 @@ export class TiqueteForm implements OnInit {
   protected readonly archivosSeleccionados = signal<File[]>([]);
   protected readonly archivosSubidos = signal<string[]>([]);
   protected readonly uploading = signal<boolean>(false);
+  private translationService = inject(TranslationService);
 
   constructor(
     private fb: FormBuilder,
@@ -57,7 +59,10 @@ export class TiqueteForm implements OnInit {
     // Verificar que el usuario puede crear tiquetes (cliente o admin)
     const usuario = this.authService.usuario();
     if (usuario && usuario.rol && usuario.rol.nombre !== 'CLIENTE' && usuario.rol.nombre !== 'ADMIN') {
-      this.notification.warning('Acceso Restringido', 'Solo los clientes pueden crear tiquetes');
+      this.notification.warning(
+        this.translationService.translate('COMMON.WARNING'), 
+        this.translationService.translate('TICKETS.ONLY_CLIENTS_CAN_CREATE')
+      );
       this.router.navigate(['/inicio']);
       return;
     }
@@ -224,7 +229,10 @@ export class TiqueteForm implements OnInit {
   async onSubmit(): Promise<void> {
     if (this.tiqueteForm.invalid) {
       this.markFormGroupTouched(this.tiqueteForm);
-      this.notification.warning('Validación', 'Por favor complete todos los campos requeridos');
+      this.notification.warning(
+        this.translationService.translate('COMMON.WARNING'), 
+        this.translationService.translate('VALIDATION.COMPLETE_REQUIRED_FIELDS')
+      );
       return;
     }
 
@@ -261,28 +269,36 @@ export class TiqueteForm implements OnInit {
             this.loading.set(false);
             Swal.fire({
               icon: 'success',
-              title: '¡Éxito!',
-              text: 'Ticket creado exitosamente',
+              title: this.translationService.translate('COMMON.SUCCESS'),
+              text: this.translationService.translate('TICKETS.TICKET_CREATED_SUCCESS'),
               showConfirmButton: false,
               timer: 1500
             }).then(() => {
               this.router.navigate(['/tiquetes', response.data.tiquete.id]);
             });
           } else {
-            this.error.set('Error al crear el ticket');
+            this.error.set(this.translationService.translate('TICKETS.ERROR_CREATING_TICKET'));
             this.loading.set(false);
           }
         },
         error: (error: any) => {
-          const errorMessage = error.error?.message || 'Error al crear el ticket';
+          const errorMessage = error.error?.message || this.translationService.translate('TICKETS.ERROR_CREATING_TICKET');
           this.error.set(errorMessage);
           this.loading.set(false);
-          Swal.fire('Error', errorMessage, 'error');
+          Swal.fire(
+            this.translationService.translate('COMMON.ERROR'), 
+            errorMessage, 
+            'error'
+          );
         }
       });
     } catch (error: any) {
       this.loading.set(false);
-      Swal.fire('Error', 'Error al subir los archivos', 'error');
+      Swal.fire(
+        this.translationService.translate('COMMON.ERROR'), 
+        this.translationService.translate('TICKETS.ERROR_UPLOADING_FILES'), 
+        'error'
+      );
     }
   }
 
@@ -304,15 +320,15 @@ export class TiqueteForm implements OnInit {
   getErrorMessage(fieldName: string): string {
     const control = this.tiqueteForm.get(fieldName);
     if (control?.hasError('required')) {
-      return 'Este campo es requerido';
+      return this.translationService.translate('VALIDATION.FIELD_REQUIRED');
     }
     if (control?.hasError('minlength')) {
       const minLength = control.errors?.['minlength'].requiredLength;
-      return `Mínimo ${minLength} caracteres`;
+      return this.translationService.translate('VALIDATION.MIN_LENGTH', { min: minLength });
     }
     if (control?.hasError('maxlength')) {
       const maxLength = control.errors?.['maxlength'].requiredLength;
-      return `Máximo ${maxLength} caracteres`;
+      return this.translationService.translate('VALIDATION.MAX_LENGTH', { max: maxLength });
     }
     return '';
   }
@@ -341,7 +357,10 @@ export class TiqueteForm implements OnInit {
       // Validar tamaño máximo (2MB)
       const archivosValidos = nuevosArchivos.filter(archivo => {
         if (archivo.size > 2 * 1024 * 1024) {
-          this.notification.warning('Archivo muy grande', `${archivo.name} excede el tamaño máximo de 2MB`);
+          this.notification.warning(
+            this.translationService.translate('COMMON.WARNING'), 
+            this.translationService.translate('TICKETS.FILE_TOO_LARGE', { fileName: archivo.name })
+          );
           return false;
         }
         return true;
@@ -409,7 +428,10 @@ export class TiqueteForm implements OnInit {
       this.archivosSubidos.set(nombresArchivos);
       return nombresArchivos;
     } catch (error: any) {
-      this.notification.error('Error', 'No se pudieron subir algunos archivos');
+      this.notification.error(
+        this.translationService.translate('COMMON.ERROR'), 
+        this.translationService.translate('TICKETS.ERROR_UPLOADING_SOME_FILES')
+      );
       throw error;
     } finally {
       this.uploading.set(false);

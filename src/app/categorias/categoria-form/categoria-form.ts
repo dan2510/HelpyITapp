@@ -1,9 +1,10 @@
 // src/app/categorias/categoria-form/categoria-form.ts
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, signal, inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { CategoriaService } from '../../share/services/api/categoria.service';
 import { NotificationService } from '../../share/services/app/notification.service';
+import { TranslationService } from '../../share/services/app/translation.service';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment.development';
 import { CategoriaModel } from '../../share/models/CategoriaModel';
@@ -33,6 +34,8 @@ export class CategoriaForm implements OnInit {
   protected readonly error = signal<string>('');
   protected readonly slaSeleccionado = signal<PoliticaSlaModel | null>(null);
   protected readonly usarSlaPersonalizado = signal<boolean>(false);
+
+  private translationService = inject(TranslationService);
 
   constructor(
     private fb: FormBuilder,
@@ -179,7 +182,10 @@ export class CategoriaForm implements OnInit {
       },
       error: (error) => {
         console.error('Error al cargar etiquetas:', error);
-        this.notification.error('Error', 'No se pudieron cargar las etiquetas');
+        this.notification.error(
+          this.translationService.translate('COMMON.ERROR'), 
+          this.translationService.translate('CATEGORIES.ERROR_LOADING_TAGS')
+        );
         checkAllLoaded();
       }
     });
@@ -194,7 +200,10 @@ export class CategoriaForm implements OnInit {
       },
       error: (error) => {
         console.error('Error al cargar especialidades:', error);
-        this.notification.error('Error', 'No se pudieron cargar las especialidades');
+        this.notification.error(
+          this.translationService.translate('COMMON.ERROR'), 
+          this.translationService.translate('CATEGORIES.ERROR_LOADING_SPECIALTIES')
+        );
         checkAllLoaded();
       }
     });
@@ -216,7 +225,10 @@ export class CategoriaForm implements OnInit {
       },
       error: (error) => {
         console.error('Error al cargar SLAs:', error);
-        this.notification.error('Error', 'No se pudieron cargar los SLAs');
+        this.notification.error(
+          this.translationService.translate('COMMON.ERROR'), 
+          this.translationService.translate('CATEGORIES.ERROR_LOADING_SLAS')
+        );
         checkAllLoaded();
       }
     });
@@ -262,7 +274,10 @@ export class CategoriaForm implements OnInit {
       },
       error: (error) => {
         console.error('Error al cargar categoría:', error);
-        this.notification.error('Error', 'No se pudo cargar la información de la categoría');
+        this.notification.error(
+          this.translationService.translate('COMMON.ERROR'), 
+          this.translationService.translate('CATEGORIES.ERROR_LOADING_CATEGORY')
+        );
         this.loading.set(false);
       }
     });
@@ -288,12 +303,15 @@ export class CategoriaForm implements OnInit {
 
   formatearTiempoSLA(minutos: number): string {
     if (minutos < 60) {
-      return `${minutos} minutos`;
+      return `${minutos} ${this.translationService.translate('CATEGORIES.MINUTES')}`;
     }
     const horas = Math.floor(minutos / 60);
     const mins = minutos % 60;
     if (mins === 0) {
-      return `${horas} ${horas === 1 ? 'hora' : 'horas'}`;
+      const hourText = horas === 1 
+        ? this.translationService.translate('CATEGORIES.HOUR') 
+        : this.translationService.translate('CATEGORIES.HOURS');
+      return `${horas} ${hourText}`;
     }
     return `${horas}h ${mins}m`;
   }
@@ -301,7 +319,10 @@ export class CategoriaForm implements OnInit {
   onSubmit(): void {
     if (this.categoriaForm.invalid) {
       this.markFormGroupTouched(this.categoriaForm);
-      this.notification.warning('Validación', 'Por favor complete todos los campos requeridos correctamente');
+      this.notification.warning(
+        this.translationService.translate('COMMON.WARNING'), 
+        this.translationService.translate('CATEGORIES.VALIDATION_COMPLETE_FIELDS')
+      );
       return;
     }
 
@@ -312,21 +333,33 @@ export class CategoriaForm implements OnInit {
     const maxminutosresolucion = this.categoriaForm.get('maxminutosresolucion')?.value;
 
     if (!usarPersonalizado && !idsla) {
-      this.notification.warning('Validación', 'Debe seleccionar un SLA o establecer tiempos personalizados');
+      this.notification.warning(
+        this.translationService.translate('COMMON.WARNING'), 
+        this.translationService.translate('CATEGORIES.VALIDATION_SLA_REQUIRED')
+      );
       return;
     }
 
     if (usarPersonalizado) {
       if (!maxminutosrespuesta || maxminutosrespuesta <= 0) {
-        this.notification.warning('Validación', 'El tiempo de respuesta debe ser mayor a cero');
+        this.notification.warning(
+          this.translationService.translate('COMMON.WARNING'), 
+          this.translationService.translate('CATEGORIES.VALIDATION_RESPONSE_TIME')
+        );
         return;
       }
       if (!maxminutosresolucion || maxminutosresolucion <= 0) {
-        this.notification.warning('Validación', 'El tiempo de resolución debe ser mayor a cero');
+        this.notification.warning(
+          this.translationService.translate('COMMON.WARNING'), 
+          this.translationService.translate('CATEGORIES.VALIDATION_RESOLUTION_TIME')
+        );
         return;
       }
       if (maxminutosresolucion <= maxminutosrespuesta) {
-        this.notification.warning('Validación', 'El tiempo de resolución debe ser mayor que el tiempo de respuesta');
+        this.notification.warning(
+          this.translationService.translate('COMMON.WARNING'), 
+          this.translationService.translate('CATEGORIES.VALIDATION_RESOLUTION_GREATER')
+        );
         return;
       }
     }
@@ -358,24 +391,28 @@ export class CategoriaForm implements OnInit {
             this.loading.set(false);
             Swal.fire({
               icon: 'success',
-              title: '¡Éxito!',
-              text: 'Categoría actualizada correctamente',
+              title: this.translationService.translate('COMMON.SUCCESS'),
+              text: this.translationService.translate('CATEGORIES.CATEGORY_UPDATED'),
               showConfirmButton: false,
               timer: 1500
             }).then(() => {
               this.router.navigate(['/categorias']);
             });
           } else {
-            this.error.set('Error al guardar la categoría');
+            this.error.set(this.translationService.translate('CATEGORIES.ERROR_SAVING'));
             this.loading.set(false);
           }
         },
         error: (error: any) => {
           console.error('Error al guardar categoría:', error);
-          const errorMessage = error.error?.message || 'Error al guardar la categoría';
+          const errorMessage = error.error?.message || this.translationService.translate('CATEGORIES.ERROR_SAVING');
           this.error.set(errorMessage);
           this.loading.set(false);
-          Swal.fire('Error', errorMessage, 'error');
+          Swal.fire(
+            this.translationService.translate('COMMON.ERROR'), 
+            errorMessage, 
+            'error'
+          );
         }
       });
     } else {
@@ -387,24 +424,28 @@ export class CategoriaForm implements OnInit {
             this.loading.set(false);
             Swal.fire({
               icon: 'success',
-              title: '¡Éxito!',
-              text: 'Categoría creada correctamente',
+              title: this.translationService.translate('COMMON.SUCCESS'),
+              text: this.translationService.translate('CATEGORIES.CATEGORY_CREATED'),
               showConfirmButton: false,
               timer: 1500
             }).then(() => {
               this.router.navigate(['/categorias']);
             });
           } else {
-            this.error.set('Error al guardar la categoría');
+            this.error.set(this.translationService.translate('CATEGORIES.ERROR_SAVING'));
             this.loading.set(false);
           }
         },
         error: (error: any) => {
           console.error('Error al guardar categoría:', error);
-          const errorMessage = error.error?.message || 'Error al guardar la categoría';
+          const errorMessage = error.error?.message || this.translationService.translate('CATEGORIES.ERROR_SAVING');
           this.error.set(errorMessage);
           this.loading.set(false);
-          Swal.fire('Error', errorMessage, 'error');
+          Swal.fire(
+            this.translationService.translate('COMMON.ERROR'), 
+            errorMessage, 
+            'error'
+          );
         }
       });
     }
@@ -428,21 +469,21 @@ export class CategoriaForm implements OnInit {
   getErrorMessage(fieldName: string): string {
     const control = this.categoriaForm.get(fieldName);
     if (control?.hasError('required')) {
-      return 'Este campo es requerido';
+      return this.translationService.translate('VALIDATION.FIELD_REQUIRED');
     }
     if (control?.hasError('minlength')) {
       const minLength = control.errors?.['minlength'].requiredLength;
-      return `Mínimo ${minLength} caracteres`;
+      return this.translationService.translate('VALIDATION.MIN_LENGTH', { min: minLength });
     }
     if (control?.hasError('maxlength')) {
       const maxLength = control.errors?.['maxlength'].requiredLength;
-      return `Máximo ${maxLength} caracteres`;
+      return this.translationService.translate('VALIDATION.MAX_LENGTH', { max: maxLength });
     }
     if (control?.hasError('min')) {
-      return 'El valor debe ser mayor a cero';
+      return this.translationService.translate('VALIDATION.MIN_VALUE');
     }
     if (control?.hasError('arrayMinLength')) {
-      return 'Debe seleccionar al menos una opción';
+      return this.translationService.translate('VALIDATION.SELECT_AT_LEAST_ONE');
     }
     return '';
   }
@@ -455,16 +496,16 @@ export class CategoriaForm implements OnInit {
   getFormError(): string {
     const formErrors = this.categoriaForm.errors;
     if (formErrors?.['slaRequired']) {
-      return 'Debe seleccionar un SLA o establecer tiempos personalizados';
+      return this.translationService.translate('CATEGORIES.VALIDATION_SLA_REQUIRED');
     }
     if (formErrors?.['tiempoRespuestaRequired']) {
-      return 'El tiempo de respuesta es requerido cuando se usa SLA personalizado';
+      return this.translationService.translate('CATEGORIES.VALIDATION_RESPONSE_TIME_REQUIRED');
     }
     if (formErrors?.['tiempoResolucionRequired']) {
-      return 'El tiempo de resolución es requerido cuando se usa SLA personalizado';
+      return this.translationService.translate('CATEGORIES.VALIDATION_RESOLUTION_TIME_REQUIRED');
     }
     if (formErrors?.['tiempoResolucionMayor']) {
-      return 'El tiempo de resolución debe ser mayor que el tiempo de respuesta';
+      return this.translationService.translate('CATEGORIES.VALIDATION_RESOLUTION_GREATER');
     }
     return '';
   }

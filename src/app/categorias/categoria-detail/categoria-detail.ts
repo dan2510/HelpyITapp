@@ -1,9 +1,11 @@
 // src/app/categorias/categoria-detail/categoria-detail.ts
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, signal, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CategoriaService } from '../../share/services/api/categoria.service';
 import { CategoriaModel } from '../../share/models/CategoriaModel';
 import { NotificationService } from '../../share/services/app/notification.service';
+import { TranslationService } from '../../share/services/app/translation.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-categoria-detail',
@@ -16,6 +18,8 @@ export class CategoriaDetail implements OnInit {
   protected readonly loading = signal<boolean>(false);
   protected readonly error = signal<string>('');
   protected readonly categoriaId = signal<number>(0);
+  private translationService = inject(TranslationService);
+  private translate = inject(TranslateService);
 
   constructor(
     private route: ActivatedRoute,
@@ -31,8 +35,11 @@ export class CategoriaDetail implements OnInit {
         this.categoriaId.set(id);
         this.loadCategoriaDetail(id);
       } else {
-        this.error.set('ID de categoría inválido');
-        this.notification.error('Error', 'ID de categoría inválido');
+        this.error.set(this.translationService.translate('CATEGORIES.INVALID_CATEGORY_ID'));
+        this.notification.error(
+          this.translationService.translate('COMMON.ERROR'), 
+          this.translationService.translate('CATEGORIES.INVALID_CATEGORY_ID')
+        );
       }
     });
   }
@@ -47,15 +54,18 @@ export class CategoriaDetail implements OnInit {
           this.categoria.set(response.data.categoria);
           console.log('Detalle de la categoría cargado:', response.data.categoria);
         } else {
-          this.error.set('Error en la respuesta del servidor');
+          this.error.set(this.translationService.translate('CATEGORIES.ERROR_SERVER_RESPONSE'));
         }
         this.loading.set(false);
       },
       error: (error) => {
         console.error('Error al cargar detalle de la categoría:', error);
-        this.error.set('No se pudo cargar la información de la categoría');
+        this.error.set(this.translationService.translate('CATEGORIES.ERROR_LOADING_CATEGORY'));
         this.loading.set(false);
-        this.notification.error('Error', 'No se pudo cargar la información de la categoría');
+        this.notification.error(
+          this.translationService.translate('COMMON.ERROR'), 
+          this.translationService.translate('CATEGORIES.ERROR_LOADING_CATEGORY')
+        );
       }
     });
   }
@@ -81,7 +91,15 @@ export class CategoriaDetail implements OnInit {
   }
 
   getEstadoText(activo: boolean): string {
-    return activo ? 'Activa' : 'Inactiva';
+    return activo 
+      ? this.translationService.translate('CATEGORIES.ACTIVE') 
+      : this.translationService.translate('CATEGORIES.INACTIVE');
+  }
+
+  getEspecialidadEstadoText(activo: boolean): string {
+    return activo 
+      ? this.translationService.translate('CATEGORIES.ACTIVE') 
+      : this.translationService.translate('CATEGORIES.INACTIVE');
   }
 
   getSlaColorClass(porcentaje: number): string {
@@ -92,9 +110,10 @@ export class CategoriaDetail implements OnInit {
   }
 
   formatearFecha(fecha: Date | string | null | undefined): string {
-    if (!fecha) return 'No disponible';
+    if (!fecha) return this.translationService.translate('COMMON.NOT_AVAILABLE');
     const date = new Date(fecha);
-    return date.toLocaleDateString('es-ES', {
+    const locale = this.translate.currentLang === 'en' ? 'en-US' : 'es-ES';
+    return date.toLocaleDateString(locale, {
       year: 'numeric',
       month: 'long', 
       day: 'numeric'
@@ -115,12 +134,15 @@ export class CategoriaDetail implements OnInit {
 
   formatearHoras(minutos: number): string {
     if (minutos < 60) {
-      return `${minutos} minutos`;
+      return `${minutos} ${this.translationService.translate('CATEGORIES.MINUTES')}`;
     }
     const horas = Math.floor(minutos / 60);
     const mins = minutos % 60;
     if (mins === 0) {
-      return `${horas} ${horas === 1 ? 'hora' : 'horas'}`;
+      const hourText = horas === 1 
+        ? this.translationService.translate('CATEGORIES.HOUR') 
+        : this.translationService.translate('CATEGORIES.HOURS');
+      return `${horas} ${hourText}`;
     }
     return `${horas}h ${mins}m`;
   }

@@ -9,6 +9,7 @@ import { MatRippleModule } from '@angular/material/core';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { TranslateModule } from '@ngx-translate/core';
 import { AsignacionesRoutingModule } from './asignaciones-routing-module';
 import { AsignacionSemana } from './asignacion-semana/asignacion-semana';
 
@@ -27,7 +28,8 @@ import { AsignacionSemana } from './asignacion-semana/asignacion-semana';
     MatRippleModule,
     MatChipsModule,
     MatProgressBarModule,
-    MatTooltipModule
+    MatTooltipModule,
+    TranslateModule
   ]
 })
 export class AsignacionesModule { }

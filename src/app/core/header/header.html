@@ -51,10 +51,6 @@
         <mat-icon>person_add</mat-icon>
         <span>{{ 'HEADER.ADD_TECHNICIAN' | translate }}</span>
       </button>
-      <button mat-menu-item>
-        <mat-icon>schedule</mat-icon>
-        <span>{{ 'HEADER.AVAILABILITY' | translate }}</span>
-      </button>
     </mat-menu>
     }
 
@@ -73,38 +69,6 @@
       <button mat-menu-item [routerLink]="['/categorias/nuevo']" [routerLinkActive]="'active-link'">
         <mat-icon>add_circle_outline</mat-icon>
         <span>{{ 'HEADER.NEW_CATEGORY' | translate }}</span>
-      </button>
-      <mat-divider></mat-divider>
-      <button mat-menu-item>
-        <mat-icon>policy</mat-icon>
-        <span>{{ 'HEADER.SLA_POLICIES' | translate }}</span>
-      </button>
-      <button mat-menu-item>
-        <mat-icon>label</mat-icon>
-        <span>{{ 'HEADER.TAGS' | translate }}</span>
-      </button>
-    </mat-menu>
-    }
-
-    <!-- Menú Reportes - Solo para ADMIN -->
-    @if (esAdmin()) {
-    <button mat-button [matMenuTriggerFor]="reportesMenu" class="nav-item">
-      <mat-icon>analytics</mat-icon>
-      <span>{{ 'HEADER.REPORTS' | translate }}</span>
-      <mat-icon class="dropdown-icon">keyboard_arrow_down</mat-icon>
-    </button>
-    <mat-menu #reportesMenu="matMenu" class="modern-menu">
-      <button mat-menu-item>
-        <mat-icon>trending_up</mat-icon>
-        <span>{{ 'HEADER.PERFORMANCE_METRICS' | translate }}</span>
-      </button>
-      <button mat-menu-item>
-        <mat-icon>schedule</mat-icon>
-        <span>{{ 'HEADER.RESOLUTION_TIMES' | translate }}</span>
-      </button>
-      <button mat-menu-item>
-        <mat-icon>star</mat-icon>
-        <span>{{ 'HEADER.CUSTOMER_SATISFACTION' | translate }}</span>
       </button>
     </mat-menu>
     }
