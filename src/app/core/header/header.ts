@@ -47,17 +47,26 @@ export class Header implements OnInit {
     this.currentLanguage.set(savedLanguage);
     this.translate.use(savedLanguage);
 
-    // Si hay token pero no hay usuario, cargar el perfil
-    if (this.authService.authenticated() && !this.usuario()) {
-      this.authService.getUserProfile().subscribe({
-        next: () => {
-          // Recargar notificaciones después de cargar el perfil
+    // Solo cargar notificaciones si el usuario está autenticado
+    // Evitar recargas innecesarias que causen parpadeo
+    if (this.authService.authenticated()) {
+      // Si no hay usuario pero hay token, cargar el perfil primero
+      if (!this.usuario()) {
+        this.authService.getUserProfile().subscribe({
+          next: () => {
+            // Recargar notificaciones después de cargar el perfil
+            // Solo si no se han cargado ya
+            if (this.notificacionService.allNotificaciones().length === 0) {
+              this.notificacionService.cargarNotificaciones();
+            }
+          }
+        });
+      } else {
+        // Si ya hay usuario, cargar notificaciones solo si no se han cargado
+        if (this.notificacionService.allNotificaciones().length === 0) {
           this.notificacionService.cargarNotificaciones();
         }
-      });
-    } else if (this.authService.authenticated()) {
-      // Si ya está autenticado, cargar notificaciones
-      this.notificacionService.cargarNotificaciones();
+      }
     }
   }
 

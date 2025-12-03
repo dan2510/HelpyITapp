@@ -1,5 +1,5 @@
 // src/app/tiquetes/tiquete-form/tiquete-form.ts
-import { Component, OnInit, signal, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, signal, inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { TiqueteService } from '../../share/services/api/tiquete.service';
@@ -20,7 +20,7 @@ import Swal from 'sweetalert2';
   templateUrl: './tiquete-form.html',
   styleUrl: './tiquete-form.css',
 })
-export class TiqueteForm implements OnInit {
+export class TiqueteForm implements OnInit, OnDestroy {
 
   tiqueteForm!: FormGroup;
   
@@ -36,6 +36,7 @@ export class TiqueteForm implements OnInit {
   protected readonly archivosSubidos = signal<string[]>([]);
   protected readonly uploading = signal<boolean>(false);
   private translationService = inject(TranslationService);
+  private previewUrls = new Map<File, string>(); // Cache de URLs de preview
 
   constructor(
     private fb: FormBuilder,
@@ -128,30 +129,97 @@ export class TiqueteForm implements OnInit {
     //  1. CARGAR PRIORIDADES
     this.tiqueteService.getMethod('prioridades').subscribe({
       next: (response: any) => {
-        if (response.success && response.data && response.data.prioridades) {
-          this.prioridades.set(response.data.prioridades);
-        } else if (Array.isArray(response)) {
-          this.prioridades.set(response);
-        } else if (response.data && Array.isArray(response.data)) {
-          this.prioridades.set(response.data);
+        try {
+          let prioridadesData: { id: string; nombre: string }[] = [];
+          
+          // Manejar diferentes formatos de respuesta
+          if (response && response.success && response.data) {
+            if (response.data.prioridades && Array.isArray(response.data.prioridades)) {
+              prioridadesData = response.data.prioridades;
+            } else if (Array.isArray(response.data)) {
+              prioridadesData = response.data;
+            }
+          } else if (Array.isArray(response)) {
+            prioridadesData = response;
+          } else if (response && response.data && Array.isArray(response.data)) {
+            prioridadesData = response.data;
+          }
+          
+          if (prioridadesData.length > 0) {
+            this.prioridades.set(prioridadesData);
+          } else {
+            console.warn('No se encontraron prioridades en la respuesta:', response);
+            // Prioridades por defecto si no hay respuesta
+            this.prioridades.set([
+              { id: 'BAJA', nombre: 'Baja' },
+              { id: 'MEDIA', nombre: 'Media' },
+              { id: 'ALTA', nombre: 'Alta' },
+              { id: 'CRITICA', nombre: 'Crítica' }
+            ]);
+          }
+        } catch (error) {
+          console.error('Error al procesar prioridades:', error);
+          // Prioridades por defecto en caso de error
+          this.prioridades.set([
+            { id: 'BAJA', nombre: 'Baja' },
+            { id: 'MEDIA', nombre: 'Media' },
+            { id: 'ALTA', nombre: 'Alta' },
+            { id: 'CRITICA', nombre: 'Crítica' }
+          ]);
         }
         checkAllLoaded();
       },
       error: (error) => {
         console.error('Error al cargar prioridades:', error);
+        // Prioridades por defecto en caso de error
+        this.prioridades.set([
+          { id: 'BAJA', nombre: 'Baja' },
+          { id: 'MEDIA', nombre: 'Media' },
+          { id: 'ALTA', nombre: 'Alta' },
+          { id: 'CRITICA', nombre: 'Crítica' }
+        ]);
         checkAllLoaded();
       }
     });
 
     //  2. CARGAR ETIQUETAS
     this.etiquetaService.get().subscribe({
-      next: (etiquetas: EtiquetaModel[]) => {
-        this.etiquetas.set(etiquetas);
-        this.etiquetasFiltradas.set(etiquetas);
+      next: (response: any) => {
+        try {
+          let etiquetasData: EtiquetaModel[] = [];
+          
+          // Manejar diferentes formatos de respuesta
+          if (Array.isArray(response)) {
+            etiquetasData = response;
+          } else if (response && response.data && Array.isArray(response.data)) {
+            etiquetasData = response.data;
+          } else if (response && response.success && response.data) {
+            if (Array.isArray(response.data)) {
+              etiquetasData = response.data;
+            } else if (response.data.etiquetas && Array.isArray(response.data.etiquetas)) {
+              etiquetasData = response.data.etiquetas;
+            }
+          }
+          
+          if (etiquetasData.length > 0) {
+            this.etiquetas.set(etiquetasData);
+            this.etiquetasFiltradas.set(etiquetasData);
+          } else {
+            console.warn('No se encontraron etiquetas en la respuesta:', response);
+            this.etiquetas.set([]);
+            this.etiquetasFiltradas.set([]);
+          }
+        } catch (error) {
+          console.error('Error al procesar etiquetas:', error);
+          this.etiquetas.set([]);
+          this.etiquetasFiltradas.set([]);
+        }
         checkAllLoaded();
       },
       error: (error) => {
         console.error('Error al cargar etiquetas:', error);
+        this.etiquetas.set([]);
+        this.etiquetasFiltradas.set([]);
         checkAllLoaded();
       }
     });
@@ -303,7 +371,28 @@ export class TiqueteForm implements OnInit {
   }
 
   onCancel(): void {
+    // Limpiar todas las URLs de preview antes de salir
+    this.previewUrls.forEach((url) => {
+      try {
+        URL.revokeObjectURL(url);
+      } catch (error) {
+        console.error('Error al revocar URL:', error);
+      }
+    });
+    this.previewUrls.clear();
     this.router.navigate(['/tiquetes']);
+  }
+
+  ngOnDestroy(): void {
+    // Limpiar todas las URLs de preview al destruir el componente
+    this.previewUrls.forEach((url) => {
+      try {
+        URL.revokeObjectURL(url);
+      } catch (error) {
+        console.error('Error al revocar URL:', error);
+      }
+    });
+    this.previewUrls.clear();
   }
 
   private markFormGroupTouched(formGroup: FormGroup): void {
@@ -366,6 +455,18 @@ export class TiqueteForm implements OnInit {
         return true;
       });
 
+      // Crear previews para las imágenes
+      archivosValidos.forEach(archivo => {
+        if (this.esImagen(archivo.name) && !this.previewUrls.has(archivo)) {
+          try {
+            const url = URL.createObjectURL(archivo);
+            this.previewUrls.set(archivo, url);
+          } catch (error) {
+            console.error('Error al crear preview para', archivo.name, error);
+          }
+        }
+      });
+
       this.archivosSeleccionados.set([...this.archivosSeleccionados(), ...archivosValidos]);
     }
     // Limpiar el input para permitir seleccionar el mismo archivo nuevamente
@@ -373,6 +474,16 @@ export class TiqueteForm implements OnInit {
   }
 
   removerArchivo(archivo: File): void {
+    // Liberar la URL del objeto si existe
+    if (this.previewUrls.has(archivo)) {
+      try {
+        URL.revokeObjectURL(this.previewUrls.get(archivo)!);
+        this.previewUrls.delete(archivo);
+      } catch (error) {
+        console.error('Error al revocar URL del objeto:', error);
+      }
+    }
+    
     const archivos = this.archivosSeleccionados().filter(f => f !== archivo);
     this.archivosSeleccionados.set(archivos);
   }
@@ -384,14 +495,36 @@ export class TiqueteForm implements OnInit {
 
   getFilePreview(archivo: File): string {
     if (this.esImagen(archivo.name)) {
-      return URL.createObjectURL(archivo);
+      // Usar la URL del cache si existe
+      if (this.previewUrls.has(archivo)) {
+        return this.previewUrls.get(archivo)!;
+      }
+      // Si no existe, crear una nueva
+      try {
+        const url = URL.createObjectURL(archivo);
+        this.previewUrls.set(archivo, url);
+        return url;
+      } catch (error) {
+        console.error('Error al crear preview de imagen:', error);
+        return '';
+      }
     }
     return '';
   }
 
   onPreviewError(event: Event): void {
     const img = event.target as HTMLImageElement;
-    img.style.display = 'none';
+    if (img) {
+      img.style.display = 'none';
+      // Intentar liberar la URL del objeto si existe
+      if (img.src && img.src.startsWith('blob:')) {
+        try {
+          URL.revokeObjectURL(img.src);
+        } catch (error) {
+          console.error('Error al revocar URL del objeto:', error);
+        }
+      }
+    }
   }
 
   formatFileSize(bytes: number): string {
