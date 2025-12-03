@@ -155,8 +155,8 @@ export class TiqueteDetail implements OnInit {
           this.loading.set(false);
           Swal.fire({
             icon: 'success',
-            title: '¡Éxito!',
-            text: 'Técnico asignado correctamente',
+            title: this.translationService.translate('COMMON.SUCCESS'),
+            text: this.translationService.translate('TICKETS.TECHNICIAN_ASSIGNED'),
             showConfirmButton: false,
             timer: 1500
           });
@@ -166,8 +166,8 @@ export class TiqueteDetail implements OnInit {
           this.editandoTecnico.set(false);
           Swal.fire({
             icon: 'success',
-            title: '¡Éxito!',
-            text: 'Técnico asignado correctamente',
+            title: this.translationService.translate('COMMON.SUCCESS'),
+            text: this.translationService.translate('TICKETS.TECHNICIAN_ASSIGNED'),
             showConfirmButton: false,
             timer: 1500
           });
@@ -548,8 +548,8 @@ export class TiqueteDetail implements OnInit {
               this.uploading.set(false);
               Swal.fire({
                 icon: 'success',
-                title: '¡Éxito!',
-                text: 'Observación agregada exitosamente',
+                title: this.translationService.translate('COMMON.SUCCESS'),
+                text: this.translationService.translate('TICKETS.OBSERVATION_ADDED'),
                 showConfirmButton: false,
                 timer: 1500
               }).then(() => {
@@ -590,8 +590,8 @@ export class TiqueteDetail implements OnInit {
             this.uploading.set(false);
             Swal.fire({
               icon: 'success',
-              title: '¡Éxito!',
-              text: 'Estado del ticket actualizado exitosamente',
+              title: this.translationService.translate('COMMON.SUCCESS'),
+              text: this.translationService.translate('TICKETS.STATUS_UPDATED'),
               showConfirmButton: false,
               timer: 1500
             }).then(() => {

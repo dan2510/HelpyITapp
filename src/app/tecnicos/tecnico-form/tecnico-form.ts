@@ -74,7 +74,11 @@ export class TecnicoForm implements OnInit {
       },
       error: (error) => {
         console.error('Error al cargar especialidades:', error);
-        Swal.fire('Error', 'No se pudieron cargar las especialidades', 'error');
+        Swal.fire(
+          this.translationService.translate('COMMON.ERROR'),
+          this.translationService.translate('TECHNICIANS.ERROR_LOADING_SPECIALTIES'),
+          'error'
+        );
       }
     });
   }
@@ -143,7 +147,11 @@ export class TecnicoForm implements OnInit {
         },
         error: (error) => {
           console.error('Error al cargar técnico:', error);
-          Swal.fire('Error', 'No se pudo cargar la información del técnico', 'error');
+          Swal.fire(
+            this.translationService.translate('COMMON.ERROR'),
+            this.translationService.translate('TECHNICIANS.ERROR_LOADING_TECHNICIAN'),
+            'error'
+          );
           this.isLoading = false;
           this.router.navigate(['/tecnicos']);
         }
@@ -198,8 +206,8 @@ export class TecnicoForm implements OnInit {
           this.isLoading = false;
           Swal.fire({
             icon: 'success',
-            title: '¡Éxito!',
-            text: 'Técnico actualizado correctamente',
+            title: this.translationService.translate('COMMON.SUCCESS'),
+            text: this.translationService.translate('TECHNICIANS.TECHNICIAN_UPDATED'),
             showConfirmButton: false,
             timer: 1500
           }).then(() => {
@@ -209,7 +217,11 @@ export class TecnicoForm implements OnInit {
         error: (error) => {
           this.isLoading = false;
           console.error('Error al actualizar técnico:', error);
-          Swal.fire('Error', 'No se pudo actualizar el técnico', 'error');
+          Swal.fire(
+            this.translationService.translate('COMMON.ERROR'),
+            this.translationService.translate('TECHNICIANS.ERROR_UPDATING_TECHNICIAN'),
+            'error'
+          );
         }
       });
     } else {
@@ -219,8 +231,8 @@ export class TecnicoForm implements OnInit {
           this.isLoading = false;
           Swal.fire({
             icon: 'success',
-            title: '¡Éxito!',
-            text: 'Técnico creado correctamente',
+            title: this.translationService.translate('COMMON.SUCCESS'),
+            text: this.translationService.translate('TECHNICIANS.TECHNICIAN_CREATED'),
             showConfirmButton: false,
             timer: 1500
           }).then(() => {
@@ -230,7 +242,12 @@ export class TecnicoForm implements OnInit {
         error: (error) => {
           this.isLoading = false;
           console.error('Error al crear técnico:', error);
-          Swal.fire('Error', error.error.message || 'No se pudo crear el técnico', 'error');
+          const errorMessage = error.error?.message || this.translationService.translate('TECHNICIANS.ERROR_CREATING_TECHNICIAN');
+          Swal.fire(
+            this.translationService.translate('COMMON.ERROR'),
+            errorMessage,
+            'error'
+          );
         }
       });
     }
