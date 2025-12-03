@@ -5,6 +5,7 @@ import { TecnicoService } from '../../share/services/api/tecnico.service';
 import { EspecialidadService } from '../../share/services/especialidad/especialidad.service';
 import { EspecialidadModel } from '../../share/models/EspecialidadModel';
 import { Disponibilidad, NivelExperiencia } from '../../share/models/EnumsModel';
+import { TranslationService } from '../../share/services/app/translation.service';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -19,6 +20,7 @@ export class TecnicoForm implements OnInit {
   private especialidadService = inject(EspecialidadService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
+  private translationService = inject(TranslationService);
 
   tecnicoForm!: FormGroup;
   especialidades: EspecialidadModel[] = [];
@@ -304,5 +306,13 @@ export class TecnicoForm implements OnInit {
   // Obtener nivel de experiencia de una especialidad
   getNivelExperiencia(especialidadId: number): NivelExperiencia {
     return this.nivelesExperienciaMap.get(especialidadId) || NivelExperiencia.JUNIOR;
+  }
+
+  getDisponibilidadText(disponibilidad: Disponibilidad): string {
+    return this.translationService.translateAvailability(disponibilidad);
+  }
+
+  getNivelExperienciaText(nivel: NivelExperiencia): string {
+    return this.translationService.translateExperienceLevel(nivel);
   }
 }

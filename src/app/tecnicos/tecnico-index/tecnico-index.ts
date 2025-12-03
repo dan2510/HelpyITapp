@@ -1,10 +1,11 @@
 // src/app/tecnicos/tecnico-index/tecnico-index.ts
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, signal, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { TecnicoService } from '../../share/services/api/tecnico.service';
 import { UsuarioModel } from '../../share/models/UsuarioModel';
 import { NotificationService } from '../../share/services/app/notification.service';
 import { Disponibilidad } from '../../share/models/EnumsModel';
+import { TranslationService } from '../../share/services/app/translation.service';
 
 @Component({
   selector: 'app-tecnico-index',
@@ -16,6 +17,8 @@ export class TecnicoIndex implements OnInit {
   protected readonly tecnicos = signal<UsuarioModel[]>([]);
   protected readonly loading = signal<boolean>(false);
   protected readonly error = signal<string>('');
+
+  private translationService = inject(TranslationService);
 
   constructor(
     private tecnicoService: TecnicoService,
@@ -83,13 +86,7 @@ export class TecnicoIndex implements OnInit {
   }
 
   getDisponibilidadText(disponibilidad: Disponibilidad): string {
-    switch (disponibilidad) {
-      case Disponibilidad.DISPONIBLE: return 'Disponible';
-      case Disponibilidad.OCUPADO: return 'Ocupado';
-      case Disponibilidad.AUSENTE: return 'Ausente';
-      case Disponibilidad.INACTIVO: return 'Inactivo';
-      default: return 'Desconocido';
-    }
+    return this.translationService.translateAvailability(disponibilidad);
   }
 
   getCargaColor(cargaActual: number): string {

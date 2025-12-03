@@ -8,7 +8,7 @@
       (click)="regresarAlListado()"
       class="back-button">
       <mat-icon>arrow_back</mat-icon>
-      Volver al listado
+      {{ 'TECHNICIANS.BACK_TO_LIST' | translate }}
     </button>
     <button 
       mat-raised-button 
@@ -16,7 +16,7 @@
       (click)="editarTecnico()"
       class="edit-button">
       <mat-icon>edit</mat-icon>
-      Editar Técnico
+      {{ 'TECHNICIANS.EDIT_TECHNICIAN' | translate }}
     </button>
   </div>
 
@@ -24,7 +24,7 @@
   @if (loading()) {
     <div class="loading-container">
       <mat-spinner diameter="60"></mat-spinner>
-      <p>Cargando información del técnico...</p>
+      <p>{{ 'TECHNICIANS.LOADING_DETAIL' | translate }}</p>
     </div>
   }
 
@@ -32,7 +32,7 @@
   @if (error() && !loading()) {
     <div class="error-container">
       <mat-icon color="warn" class="error-icon">error_outline</mat-icon>
-      <h3>Error al cargar los datos</h3>
+      <h3>{{ 'TECHNICIANS.ERROR_LOADING_DETAIL' | translate }}</h3>
       <p>{{ error() }}</p>
       <div class="error-actions">
         <button 
@@ -41,14 +41,14 @@
           (click)="retry()"
           class="retry-button">
           <mat-icon>refresh</mat-icon>
-          Reintentar
+          {{ 'COMMON.RETRY' | translate }}
         </button>
         <button 
           mat-button 
           (click)="regresarAlListado()"
           class="back-button-error">
           <mat-icon>arrow_back</mat-icon>
-          Volver
+          {{ 'TECHNICIANS.BACK' | translate }}
         </button>
       </div>
     </div>
@@ -64,7 +64,7 @@
             <mat-icon class="avatar-icon">person</mat-icon>
           </div>
           <mat-card-title>{{ tecnico()!.nombrecompleto }}</mat-card-title>
-          <mat-card-subtitle>{{ tecnico()!.rol?.descripcion || 'Técnico de soporte' }}</mat-card-subtitle>
+          <mat-card-subtitle>{{ tecnico()!.rol?.descripcion || ('TECHNICIANS.SUBTITLE' | translate) }}</mat-card-subtitle>
         </mat-card-header>
 
         <mat-card-content>
@@ -73,7 +73,7 @@
             <div class="info-item">
               <mat-icon class="info-icon">email</mat-icon>
               <div class="info-content">
-                <span class="info-label">Correo electrónico</span>
+                <span class="info-label">{{ 'TECHNICIANS.EMAIL' | translate }}</span>
                 <span class="info-value">{{ tecnico()!.correo }}</span>
               </div>
             </div>
@@ -82,8 +82,8 @@
             <div class="info-item">
               <mat-icon class="info-icon">phone</mat-icon>
               <div class="info-content">
-                <span class="info-label">Teléfono</span>
-                <span class="info-value">{{ tecnico()!.telefono || 'No disponible' }}</span>
+                <span class="info-label">{{ 'TECHNICIANS.PHONE' | translate }}</span>
+                <span class="info-value">{{ tecnico()!.telefono || ('TECHNICIANS.NOT_AVAILABLE' | translate) }}</span>
               </div>
             </div>
 
@@ -91,11 +91,11 @@
             <div class="info-item">
               <mat-icon class="info-icon">verified</mat-icon>
               <div class="info-content">
-                <span class="info-label">Estado</span>
+                <span class="info-label">{{ 'TECHNICIANS.STATUS' | translate }}</span>
                 <mat-chip 
                   [color]="tecnico()!.activo ? 'primary' : 'warn'"
                   class="status-chip">
-                  {{ tecnico()!.activo ? 'Activo' : 'Inactivo' }}
+                  {{ tecnico()!.activo ? ('TECHNICIANS.ACTIVE' | translate) : ('TECHNICIANS.INACTIVE' | translate) }}
                 </mat-chip>
               </div>
             </div>
@@ -104,7 +104,7 @@
             <div class="info-item">
               <mat-icon class="info-icon">schedule</mat-icon>
               <div class="info-content">
-                <span class="info-label">Último acceso</span>
+                <span class="info-label">{{ 'TECHNICIANS.LAST_ACCESS' | translate }}</span>
                 <span class="info-value">
                   {{ formatearFecha(tecnico()!.ultimoiniciosesion) }}
                 </span>
@@ -120,13 +120,13 @@
           <div mat-card-avatar class="avatar-workload">
             <mat-icon class="avatar-icon">assignment</mat-icon>
           </div>
-          <mat-card-title>Carga de Trabajo y Disponibilidad</mat-card-title>
+          <mat-card-title>{{ 'TECHNICIANS.WORKLOAD_AVAILABILITY' | translate }}</mat-card-title>
         </mat-card-header>
 
         <mat-card-content>
           <!-- Disponibilidad actual -->
           <div class="availability-section">
-            <h4 class="section-title">Estado Actual</h4>
+            <h4 class="section-title">{{ 'TECHNICIANS.CURRENT_STATUS' | translate }}</h4>
             <div class="availability-display">
               <mat-icon 
                 [class]="getDisponibilidadColor(tecnico()!.disponibilidad)"
@@ -136,25 +136,25 @@
               <span 
                 [class]="getDisponibilidadColor(tecnico()!.disponibilidad)"
                 class="availability-text">
-                {{ tecnico()!.disponibilidad }}
+                {{ getDisponibilidadText(tecnico()!.disponibilidad) }}
               </span>
             </div>
           </div>
 
           <!-- Carga de tickets -->
           <div class="workload-section">
-            <h4 class="section-title">Carga de Tickets</h4>
+            <h4 class="section-title">{{ 'TECHNICIANS.TICKET_WORKLOAD' | translate }}</h4>
             <div class="workload-stats">
               <div class="stat-item">
-                <span class="stat-label">Tickets Activos</span>
+                <span class="stat-label">{{ 'TECHNICIANS.ACTIVE_TICKETS_LABEL' | translate }}</span>
                 <span class="stat-value primary">{{ tecnico()!.cargaactual }}</span>
               </div>
               <div class="stat-item">
-                <span class="stat-label">Capacidad Máxima</span>
+                <span class="stat-label">{{ 'TECHNICIANS.MAX_CAPACITY' | translate }}</span>
                 <span class="stat-value">{{ tecnico()!.maxticketsimultaneos }}</span>
               </div>
               <div class="stat-item">
-                <span class="stat-label">Disponibilidad</span>
+                <span class="stat-label">{{ 'TECHNICIANS.AVAILABILITY_LABEL' | translate }}</span>
                 <span class="stat-value">
                   {{ getPorcentajeCarga(tecnico()!.cargaactual, tecnico()!.maxticketsimultaneos) }}%
                 </span>
@@ -178,7 +178,7 @@
           <div mat-card-avatar class="avatar-specialties">
             <mat-icon class="avatar-icon">star</mat-icon>
           </div>
-          <mat-card-title>Especialidades Técnicas</mat-card-title>
+          <mat-card-title>{{ 'TECHNICIANS.TECHNICAL_SPECIALTIES' | translate }}</mat-card-title>
         </mat-card-header>
 
         <mat-card-content>
@@ -191,13 +191,13 @@
                     <mat-chip 
                       [color]="getNivelExperienciaColor(especialidad.nivelexperiencia)"
                       class="experience-chip">
-                      {{ especialidad.nivelexperiencia }}
+                      {{ getNivelExperienciaText(especialidad.nivelexperiencia) }}
                     </mat-chip>
                   </div>
                   <p class="specialty-description">{{ especialidad.descripcion }}</p>
                   <div class="specialty-date">
                     <mat-icon class="date-icon">event</mat-icon>
-                    <span>Desde: {{ formatearFecha(especialidad.asignadoen) }}</span>
+                    <span>{{ 'TECHNICIANS.FROM' | translate }}: {{ formatearFecha(especialidad.asignadoen) }}</span>
                   </div>
                 </div>
               }
@@ -205,7 +205,7 @@
           } @else {
             <div class="no-specialties">
               <mat-icon>info</mat-icon>
-              <span>No hay especialidades asignadas</span>
+              <span>{{ 'TECHNICIANS.NO_SPECIALTIES' | translate }}</span>
             </div>
           }
         </mat-card-content>
@@ -217,7 +217,7 @@
           <div mat-card-avatar class="avatar-tickets">
             <mat-icon class="avatar-icon">confirmation_number</mat-icon>
           </div>
-          <mat-card-title>Tickets Activos</mat-card-title>
+          <mat-card-title>{{ 'TECHNICIANS.ACTIVE_TICKETS_TITLE' | translate }}</mat-card-title>
         </mat-card-header>
 
         <mat-card-content>
@@ -230,11 +230,11 @@
                     <div class="ticket-badges">
                       <mat-chip 
                         [class]="'ticket-chip estado-' + getEstadoTicketColor(ticket.estado)">
-                        {{ ticket.estado }}
+                        {{ getEstadoTicketText(ticket.estado) }}
                       </mat-chip>
                       <mat-chip 
                         [class]="'priority-chip ' + getPrioridadColor(ticket.prioridad)">
-                        {{ ticket.prioridad }}
+                        {{ getPrioridadText(ticket.prioridad) }}
                       </mat-chip>
                     </div>
                   </div>
@@ -245,7 +245,7 @@
           } @else {
             <div class="no-tickets">
               <mat-icon>assignment_turned_in</mat-icon>
-              <span>No hay tickets activos asignados</span>
+              <span>{{ 'TECHNICIANS.NO_ACTIVE_TICKETS' | translate }}</span>
             </div>
           }
         </mat-card-content>
@@ -257,7 +257,7 @@
           <div mat-card-avatar class="avatar-dates">
             <mat-icon class="avatar-icon">history</mat-icon>
           </div>
-          <mat-card-title>Información de Fechas</mat-card-title>
+          <mat-card-title>{{ 'TECHNICIANS.DATE_INFO' | translate }}</mat-card-title>
         </mat-card-header>
 
         <mat-card-content>
@@ -265,14 +265,14 @@
             <div class="date-item">
               <mat-icon class="date-icon">person_add</mat-icon>
               <div class="date-content">
-                <span class="date-label">Registrado</span>
+                <span class="date-label">{{ 'TECHNICIANS.REGISTERED' | translate }}</span>
                 <span class="date-value">{{ formatearFecha(tecnico()!.creadoen) }}</span>
               </div>
             </div>
             <div class="date-item">
               <mat-icon class="date-icon">update</mat-icon>
               <div class="date-content">
-                <span class="date-label">Última actualización</span>
+                <span class="date-label">{{ 'TECHNICIANS.LAST_UPDATE' | translate }}</span>
                 <span class="date-value">{{ formatearFecha(tecnico()!.actualizadoen) }}</span>
               </div>
             </div>

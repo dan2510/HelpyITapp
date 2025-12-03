@@ -2,14 +2,14 @@
 <div class="categoria-form-container">
   <div class="header-navigation">
     <button mat-button color="primary" (click)="onCancel()" class="back-button">
-      <mat-icon>arrow_back</mat-icon> Volver al listado
+      <mat-icon>arrow_back</mat-icon> {{ 'FORMS.BACK_TO_LIST' | translate }}
     </button>
   </div>
 
   @if (loadingData()) {
     <div class="loading-container">
       <mat-spinner diameter="60"></mat-spinner>
-      <p>Cargando datos del formulario...</p>
+      <p>{{ 'FORMS.LOADING_FORM_DATA' | translate }}</p>
     </div>
   }
 
@@ -19,8 +19,8 @@
         <div mat-card-avatar class="header-icon">
           <mat-icon>{{ isEditMode ? 'edit' : 'add' }}</mat-icon>
         </div>
-        <mat-card-title>{{ isEditMode ? 'Editar Categoría' : 'Nueva Categoría' }}</mat-card-title>
-        <mat-card-subtitle>{{ isEditMode ? 'Modifica la información de la categoría' : 'Registre una nueva categoría en el sistema' }}</mat-card-subtitle>
+        <mat-card-title>{{ isEditMode ? ('FORMS.EDIT_CATEGORY' | translate) : ('FORMS.NEW_CATEGORY' | translate) }}</mat-card-title>
+        <mat-card-subtitle>{{ isEditMode ? ('FORMS.MODIFY_CATEGORY_INFO' | translate) : ('FORMS.REGISTER_NEW_CATEGORY' | translate) }}</mat-card-subtitle>
       </mat-card-header>
 
       <mat-card-content>
@@ -32,20 +32,20 @@
               <div mat-card-avatar class="avatar-section">
                 <mat-icon class="avatar-icon">category</mat-icon>
               </div>
-              <mat-card-title>Información Básica</mat-card-title>
+              <mat-card-title>{{ 'FORMS.BASIC_INFO' | translate }}</mat-card-title>
             </mat-card-header>
             <mat-card-content>
               <div class="form-grid">
                 <!-- Nombre -->
                 <mat-form-field appearance="outline" class="full-width">
-                  <mat-label>Nombre de la Categoría *</mat-label>
+                  <mat-label>{{ 'FORMS.CATEGORY_NAME' | translate }}</mat-label>
                   <input 
                     matInput 
                     formControlName="nombre" 
-                    placeholder="Ej: Incidente Crítico"
+                    [placeholder]="'FORMS.CATEGORY_NAME_PLACEHOLDER' | translate"
                     maxlength="100">
                   <mat-icon matPrefix>label</mat-icon>
-                  <mat-hint>{{ categoriaForm.get('nombre')?.value?.length || 0 }}/100 caracteres</mat-hint>
+                  <mat-hint>{{ categoriaForm.get('nombre')?.value?.length || 0 }}/100 {{ 'FORMS.TITLE_HINT' | translate }}</mat-hint>
                   @if (isFieldInvalid('nombre')) {
                     <mat-error>{{ getErrorMessage('nombre') }}</mat-error>
                   }
@@ -53,15 +53,15 @@
 
                 <!-- Descripción -->
                 <mat-form-field appearance="outline" class="full-width">
-                  <mat-label>Descripción</mat-label>
+                  <mat-label>{{ 'FORMS.CATEGORY_DESCRIPTION' | translate }}</mat-label>
                   <textarea 
                     matInput 
                     formControlName="descripcion" 
                     rows="3"
-                    placeholder="Descripción opcional de la categoría..."
+                    [placeholder]="'FORMS.CATEGORY_DESCRIPTION_PLACEHOLDER' | translate"
                     maxlength="500"></textarea>
                   <mat-icon matPrefix>description</mat-icon>
-                  <mat-hint>{{ categoriaForm.get('descripcion')?.value?.length || 0 }}/500 caracteres</mat-hint>
+                  <mat-hint>{{ categoriaForm.get('descripcion')?.value?.length || 0 }}/500 {{ 'FORMS.TITLE_HINT' | translate }}</mat-hint>
                   @if (isFieldInvalid('descripcion')) {
                     <mat-error>{{ getErrorMessage('descripcion') }}</mat-error>
                   }
@@ -76,18 +76,18 @@
               <div mat-card-avatar class="avatar-section">
                 <mat-icon class="avatar-icon">bookmark</mat-icon>
               </div>
-              <mat-card-title>Etiquetas Asociadas</mat-card-title>
+              <mat-card-title>{{ 'FORMS.ASSOCIATED_TAGS' | translate }}</mat-card-title>
             </mat-card-header>
             <mat-card-content>
               <div class="form-grid">
                 <mat-form-field appearance="outline" class="full-width">
-                  <mat-label>Etiquetas *</mat-label>
+                  <mat-label>{{ 'FORMS.TAGS' | translate }}</mat-label>
                   <mat-select 
                     formControlName="etiquetas" 
                     multiple
                     [compareWith]="compareEtiquetas">
                     @if (etiquetas().length === 0) {
-                      <mat-option disabled>Cargando etiquetas...</mat-option>
+                      <mat-option disabled>{{ 'FORMS.LOADING_TAGS' | translate }}</mat-option>
                     } @else {
                       @for (etiqueta of etiquetas(); track etiqueta.id) {
                         <mat-option [value]="etiqueta.id">
@@ -102,7 +102,7 @@
                     }
                   </mat-select>
                   <mat-icon matPrefix>label</mat-icon>
-                  <mat-hint>Seleccione una o más etiquetas (mínimo 1)</mat-hint>
+                  <mat-hint>{{ 'FORMS.SELECT_ONE_OR_MORE_TAGS' | translate }}</mat-hint>
                   @if (isFieldInvalid('etiquetas')) {
                     <mat-error>{{ getErrorMessage('etiquetas') }}</mat-error>
                   }
@@ -117,33 +117,33 @@
               <div mat-card-avatar class="avatar-section">
                 <mat-icon class="avatar-icon">schedule</mat-icon>
               </div>
-              <mat-card-title>Política SLA</mat-card-title>
+              <mat-card-title>{{ 'FORMS.SLA_POLICY' | translate }}</mat-card-title>
             </mat-card-header>
             <mat-card-content>
               <div class="form-grid">
                 <!-- Toggle para usar SLA personalizado -->
                 <div class="full-width">
                   <mat-slide-toggle formControlName="usarSlaPersonalizado">
-                    Establecer tiempos de SLA personalizados
+                    {{ 'FORMS.SET_CUSTOM_SLA' | translate }}
                   </mat-slide-toggle>
                 </div>
 
                 @if (!usarSlaPersonalizado()) {
                   <!-- Seleccionar SLA existente -->
                   <mat-form-field appearance="outline" class="full-width">
-                    <mat-label>SLA *</mat-label>
+                    <mat-label>{{ 'FORMS.SLA' | translate }}</mat-label>
                     <mat-select formControlName="idsla" (selectionChange)="onSlaChange()">
-                      <mat-option value="">Seleccione un SLA</mat-option>
+                      <mat-option value="">{{ 'FORMS.SELECT_SLA' | translate }}</mat-option>
                       @if (slas().length === 0) {
-                        <mat-option disabled>Cargando SLAs...</mat-option>
+                        <mat-option disabled>{{ 'FORMS.LOADING_SLAS' | translate }}</mat-option>
                       } @else {
                         @for (sla of slas(); track sla.id) {
                           <mat-option [value]="sla.id">
                             <div class="sla-option">
                               <span class="sla-nombre">{{ sla.nombre }}</span>
                               <span class="sla-tiempos">
-                                Respuesta: {{ formatearTiempoSLA(sla.maxminutosrespuesta) }} | 
-                                Resolución: {{ formatearTiempoSLA(sla.maxminutosresolucion) }}
+                                {{ 'FORMS.RESPONSE' | translate }}: {{ formatearTiempoSLA(sla.maxminutosrespuesta) }} | 
+                                {{ 'FORMS.RESOLUTION' | translate }}: {{ formatearTiempoSLA(sla.maxminutosresolucion) }}
                               </span>
                             </div>
                           </mat-option>
@@ -151,7 +151,7 @@
                       }
                     </mat-select>
                     <mat-icon matPrefix>schedule</mat-icon>
-                    <mat-hint>Seleccione un SLA de la lista</mat-hint>
+                    <mat-hint>{{ 'FORMS.SELECT_SLA_FROM_LIST' | translate }}</mat-hint>
                     @if (isFieldInvalid('idsla')) {
                       <mat-error>{{ getErrorMessage('idsla') }}</mat-error>
                     }
@@ -162,22 +162,22 @@
                     <div class="sla-info-card full-width">
                       <div class="sla-info-header">
                         <mat-icon>info</mat-icon>
-                        <span>Información del SLA seleccionado</span>
+                        <span>{{ 'FORMS.SELECTED_SLA_INFO' | translate }}</span>
                       </div>
                       <div class="sla-info-content">
                         <div class="sla-info-item">
-                          <strong>Nombre:</strong> {{ slaSeleccionado()!.nombre }}
+                          <strong>{{ 'FORMS.NAME' | translate }}:</strong> {{ slaSeleccionado()!.nombre }}
                         </div>
                         @if (slaSeleccionado()!.descripcion) {
                           <div class="sla-info-item">
-                            <strong>Descripción:</strong> {{ slaSeleccionado()!.descripcion }}
+                            <strong>{{ 'FORMS.CATEGORY_DESCRIPTION' | translate }}:</strong> {{ slaSeleccionado()!.descripcion }}
                           </div>
                         }
                         <div class="sla-info-item">
-                          <strong>Tiempo de Respuesta:</strong> {{ formatearTiempoSLA(slaSeleccionado()!.maxminutosrespuesta) }}
+                          <strong>{{ 'FORMS.RESPONSE_TIME' | translate }}:</strong> {{ formatearTiempoSLA(slaSeleccionado()!.maxminutosrespuesta) }}
                         </div>
                         <div class="sla-info-item">
-                          <strong>Tiempo de Resolución:</strong> {{ formatearTiempoSLA(slaSeleccionado()!.maxminutosresolucion) }}
+                          <strong>{{ 'FORMS.RESOLUTION_TIME' | translate }}:</strong> {{ formatearTiempoSLA(slaSeleccionado()!.maxminutosresolucion) }}
                         </div>
                       </div>
                     </div>
@@ -185,30 +185,30 @@
                 } @else {
                   <!-- Establecer tiempos personalizados -->
                   <mat-form-field appearance="outline">
-                    <mat-label>Tiempo de Respuesta (minutos) *</mat-label>
+                    <mat-label>{{ 'FORMS.RESPONSE_TIME_MINUTES' | translate }}</mat-label>
                     <input 
                       matInput 
                       type="number" 
                       formControlName="maxminutosrespuesta" 
                       min="1"
-                      placeholder="Ej: 60">
+                      [placeholder]="'FORMS.RESPONSE_TIME_PLACEHOLDER' | translate">
                     <mat-icon matPrefix>timer</mat-icon>
-                    <mat-hint>Debe ser mayor a cero</mat-hint>
+                    <mat-hint>{{ 'FORMS.RESPONSE_TIME_HINT' | translate }}</mat-hint>
                     @if (isFieldInvalid('maxminutosrespuesta')) {
                       <mat-error>{{ getErrorMessage('maxminutosrespuesta') }}</mat-error>
                     }
                   </mat-form-field>
 
                   <mat-form-field appearance="outline">
-                    <mat-label>Tiempo de Resolución (minutos) *</mat-label>
+                    <mat-label>{{ 'FORMS.RESOLUTION_TIME_MINUTES' | translate }}</mat-label>
                     <input 
                       matInput 
                       type="number" 
                       formControlName="maxminutosresolucion" 
                       min="1"
-                      placeholder="Ej: 240">
+                      [placeholder]="'FORMS.RESOLUTION_TIME_PLACEHOLDER' | translate">
                     <mat-icon matPrefix>timer</mat-icon>
-                    <mat-hint>Debe ser mayor que el tiempo de respuesta</mat-hint>
+                    <mat-hint>{{ 'FORMS.RESOLUTION_TIME_HINT' | translate }}</mat-hint>
                     @if (isFieldInvalid('maxminutosresolucion')) {
                       <mat-error>{{ getErrorMessage('maxminutosresolucion') }}</mat-error>
                     }
@@ -219,7 +219,7 @@
                     @if (categoriaForm.get('maxminutosresolucion')?.value <= categoriaForm.get('maxminutosrespuesta')?.value) {
                       <div class="validation-warning full-width">
                         <mat-icon color="warn">warning</mat-icon>
-                        <span>El tiempo de resolución debe ser mayor que el tiempo de respuesta</span>
+                        <span>{{ 'FORMS.RESOLUTION_GREATER_THAN_RESPONSE' | translate }}</span>
                       </div>
                     }
                   }
@@ -234,18 +234,18 @@
               <div mat-card-avatar class="avatar-section">
                 <mat-icon class="avatar-icon">psychology</mat-icon>
               </div>
-              <mat-card-title>Especialidades</mat-card-title>
+              <mat-card-title>{{ 'FORMS.CATEGORY_SPECIALTIES' | translate }}</mat-card-title>
             </mat-card-header>
             <mat-card-content>
               <div class="form-grid">
                 <mat-form-field appearance="outline" class="full-width">
-                  <mat-label>Especialidades *</mat-label>
+                  <mat-label>{{ 'FORMS.CATEGORY_SPECIALTIES' | translate }} *</mat-label>
                   <mat-select 
                     formControlName="especialidades" 
                     multiple
                     [compareWith]="compareEspecialidades">
                     @if (especialidades().length === 0) {
-                      <mat-option disabled>Cargando especialidades...</mat-option>
+                      <mat-option disabled>{{ 'FORMS.LOADING_TAGS' | translate }}</mat-option>
                     } @else {
                       @for (especialidad of especialidades(); track especialidad.id) {
                         <mat-option [value]="especialidad.id">
@@ -260,7 +260,7 @@
                     }
                   </mat-select>
                   <mat-icon matPrefix>school</mat-icon>
-                  <mat-hint>Seleccione una o más especialidades (mínimo 1)</mat-hint>
+                  <mat-hint>{{ 'FORMS.SELECT_ONE_OR_MORE_SPECIALTIES' | translate }}</mat-hint>
                   @if (isFieldInvalid('especialidades')) {
                     <mat-error>{{ getErrorMessage('especialidades') }}</mat-error>
                   }
@@ -292,7 +292,7 @@
               type="button" 
               (click)="onCancel()" 
               [disabled]="loading()">
-              <mat-icon>close</mat-icon> Cancelar
+              <mat-icon>close</mat-icon> {{ 'FORMS.CANCEL' | translate }}
             </button>
             <button 
               mat-raised-button 
@@ -304,7 +304,7 @@
               } @else {
                 <mat-icon>{{ isEditMode ? 'save' : 'add' }}</mat-icon>
               }
-              {{ isEditMode ? 'Guardar Cambios' : 'Crear Categoría' }}
+              {{ isEditMode ? ('FORMS.SAVE_CATEGORY' | translate) : ('FORMS.CREATE_CATEGORY' | translate) }}
             </button>
           </div>
         </form>

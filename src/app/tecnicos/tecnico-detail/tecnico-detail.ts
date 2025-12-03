@@ -1,10 +1,12 @@
 // src/app/tecnicos/tecnico-detail/tecnico-detail.ts
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, signal, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TecnicoService } from '../../share/services/api/tecnico.service';
 import { UsuarioModel } from '../../share/models/UsuarioModel';
 import { NotificationService } from '../../share/services/app/notification.service';
 import { Disponibilidad, NivelExperiencia } from '../../share/models/EnumsModel';
+import { TranslationService } from '../../share/services/app/translation.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-tecnico-detail',
@@ -17,6 +19,9 @@ export class TecnicoDetail implements OnInit {
   protected readonly loading = signal<boolean>(false);
   protected readonly error = signal<string>('');
   protected readonly tecnicoId = signal<number>(0);
+
+  private translationService = inject(TranslationService);
+  private translate = inject(TranslateService);
 
   constructor(
     private route: ActivatedRoute,
@@ -135,15 +140,36 @@ export class TecnicoDetail implements OnInit {
   }
 
   formatearFecha(fecha: Date | string | null | undefined): string {
-    if (!fecha) return 'No disponible';
+    if (!fecha) {
+      const currentLang = this.translate.currentLang || 'es';
+      return currentLang === 'en' ? 'Not available' : 'No disponible';
+    }
     const date = new Date(fecha);
-    return date.toLocaleDateString('es-ES', {
+    const currentLang = this.translate.currentLang || 'es';
+    const locale = currentLang === 'en' ? 'en-US' : 'es-ES';
+    return date.toLocaleDateString(locale, {
       year: 'numeric',
       month: 'long', 
       day: 'numeric',
       hour: '2-digit',
       minute: '2-digit'
     });
+  }
+
+  getDisponibilidadText(disponibilidad: Disponibilidad): string {
+    return this.translationService.translateAvailability(disponibilidad);
+  }
+
+  getNivelExperienciaText(nivel: NivelExperiencia): string {
+    return this.translationService.translateExperienceLevel(nivel);
+  }
+
+  getEstadoTicketText(estado: string): string {
+    return this.translationService.translateTicketState(estado);
+  }
+
+  getPrioridadText(prioridad: string): string {
+    return this.translationService.translatePriority(prioridad);
   }
 
   getPorcentajeCarga(cargaActual: number, maxTickets: number): number {

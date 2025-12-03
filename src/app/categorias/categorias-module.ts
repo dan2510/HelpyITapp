@@ -14,6 +14,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { TranslateModule } from '@ngx-translate/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CategoriasRoutingModule } from './categorias-routing-module';
 import { CategoriaIndex } from './categoria-index/categoria-index';
@@ -43,7 +44,8 @@ import { CategoriaForm } from './categoria-form/categoria-form';
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
-    MatSlideToggleModule
+    MatSlideToggleModule,
+    TranslateModule
   ]
 })
 export class CategoriasModule { }

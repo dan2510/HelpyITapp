@@ -4,7 +4,7 @@
     <div class="form-header">
       <div class="header-content">
         <mat-icon class="header-icon">person_add</mat-icon>
-        <h1>{{ isEditMode ? 'Editar Técnico' : 'Nuevo Técnico' }}</h1>
+        <h1>{{ isEditMode ? ('FORMS.EDIT_TECHNICIAN' | translate) : ('FORMS.NEW_TECHNICIAN' | translate) }}</h1>
       </div>
       <button mat-icon-button (click)="onCancel()" class="close-button">
         <mat-icon>close</mat-icon>
@@ -25,14 +25,14 @@
       <div class="form-section">
         <h2 class="section-title">
           <mat-icon>badge</mat-icon>
-          Información Personal
+          {{ 'FORMS.PERSONAL_INFO' | translate }}
         </h2>
         
         <div class="form-grid">
           <!-- Nombre Completo -->
           <mat-form-field appearance="outline" class="full-width">
-            <mat-label>Nombre Completo</mat-label>
-            <input matInput formControlName="nombrecompleto" placeholder="Ej: Juan Pérez García">
+            <mat-label>{{ 'FORMS.FULL_NAME' | translate }}</mat-label>
+            <input matInput formControlName="nombrecompleto" [placeholder]="'FORMS.FULL_NAME_PLACEHOLDER' | translate">
             <mat-icon matPrefix>person</mat-icon>
             @if (isFieldInvalid('nombrecompleto')) {
               <mat-error>{{ getFieldError('nombrecompleto') }}</mat-error>
@@ -41,11 +41,11 @@
 
           <!-- Email -->
           <mat-form-field appearance="outline" class="full-width">
-            <mat-label>Correo Electrónico</mat-label>
-            <input matInput formControlName="correo" type="email" placeholder="correo@ejemplo.com">
+            <mat-label>{{ 'FORMS.EMAIL' | translate }}</mat-label>
+            <input matInput formControlName="correo" type="email" [placeholder]="'FORMS.EMAIL_PLACEHOLDER' | translate">
             <mat-icon matPrefix>email</mat-icon>
             @if (isEditMode) {
-              <mat-hint>El correo no se puede modificar</mat-hint>
+              <mat-hint>{{ 'FORMS.EMAIL_CANNOT_MODIFY' | translate }}</mat-hint>
             }
             @if (isFieldInvalid('correo')) {
               <mat-error>{{ getFieldError('correo') }}</mat-error>
@@ -55,8 +55,8 @@
           <!-- Contraseña -->
           @if (!isEditMode) {
             <mat-form-field appearance="outline" class="full-width">
-              <mat-label>Contraseña</mat-label>
-              <input matInput formControlName="password" type="password" placeholder="Mínimo 6 caracteres">
+              <mat-label>{{ 'FORMS.PASSWORD' | translate }}</mat-label>
+              <input matInput formControlName="password" type="password" [placeholder]="'FORMS.PASSWORD_PLACEHOLDER' | translate">
               <mat-icon matPrefix>lock</mat-icon>
               @if (isFieldInvalid('password')) {
                 <mat-error>{{ getFieldError('password') }}</mat-error>
@@ -66,10 +66,10 @@
 
           <!-- Teléfono -->
           <mat-form-field appearance="outline" class="full-width">
-            <mat-label>Teléfono</mat-label>
-            <input matInput formControlName="telefono" placeholder="88889999">
+            <mat-label>{{ 'FORMS.PHONE' | translate }}</mat-label>
+            <input matInput formControlName="telefono" [placeholder]="'FORMS.PHONE_PLACEHOLDER' | translate">
             <mat-icon matPrefix>phone</mat-icon>
-            <mat-hint>Opcional - Solo números (8-15 dígitos)</mat-hint>
+            <mat-hint>{{ 'FORMS.PHONE_HINT' | translate }}</mat-hint>
             @if (isFieldInvalid('telefono')) {
               <mat-error>{{ getFieldError('telefono') }}</mat-error>
             }
@@ -81,13 +81,13 @@
       <div class="form-section">
         <h2 class="section-title">
           <mat-icon>work</mat-icon>
-          Configuración de Trabajo
+          {{ 'FORMS.WORK_CONFIG' | translate }}
         </h2>
         
         <div class="form-grid">
           <!-- Disponibilidad -->
           <mat-form-field appearance="outline">
-            <mat-label>Disponibilidad</mat-label>
+            <mat-label>{{ 'FORMS.AVAILABILITY' | translate }}</mat-label>
             <mat-select formControlName="disponibilidad">
               @for (disp of disponibilidadOptions; track disp) {
                 <mat-option [value]="disp">
@@ -97,7 +97,7 @@
                          disp === 'OCUPADO' ? 'schedule' : 
                          disp === 'INACTIVO' ? 'block' : 'block' }}
                     </mat-icon>
-                    <span>{{ disp }}</span>
+                    <span>{{ getDisponibilidadText(disp) }}</span>
                   </div>
                 </mat-option>
               }
@@ -107,10 +107,10 @@
 
           <!-- Máximo de Tickets -->
           <mat-form-field appearance="outline">
-            <mat-label>Máximo de Tickets Simultáneos</mat-label>
+            <mat-label>{{ 'FORMS.MAX_SIMULTANEOUS_TICKETS' | translate }}</mat-label>
             <input matInput type="number" formControlName="maxticketsimultaneos" min="1" max="20">
             <mat-icon matPrefix>confirmation_number</mat-icon>
-            <mat-hint>Entre 1 y 20 tickets</mat-hint>
+            <mat-hint>{{ 'FORMS.MAX_TICKETS_HINT' | translate }}</mat-hint>
             @if (isFieldInvalid('maxticketsimultaneos')) {
               <mat-error>{{ getFieldError('maxticketsimultaneos') }}</mat-error>
             }
@@ -118,10 +118,10 @@
 
           <!-- Carga Actual (solo lectura) -->
           <mat-form-field appearance="outline">
-            <mat-label>Carga Actual</mat-label>
+            <mat-label>{{ 'FORMS.CURRENT_WORKLOAD' | translate }}</mat-label>
             <input matInput formControlName="cargaactual" readonly>
             <mat-icon matPrefix>assignment</mat-icon>
-            <mat-hint>No editable - Se calcula automáticamente</mat-hint>
+            <mat-hint>{{ 'FORMS.CURRENT_WORKLOAD_HINT' | translate }}</mat-hint>
           </mat-form-field>
 
           <!-- Estado Activo (solo en edición) -->
@@ -129,7 +129,7 @@
             <mat-slide-toggle formControlName="activo" class="active-toggle">
               <span class="toggle-label">
                 <mat-icon>{{ tecnicoForm.get('activo')?.value ? 'toggle_on' : 'toggle_off' }}</mat-icon>
-                Estado: {{ tecnicoForm.get('activo')?.value ? 'Activo' : 'Inactivo' }}
+                {{ 'FORMS.STATUS' | translate }}: {{ tecnicoForm.get('activo')?.value ? ('FORMS.ACTIVE' | translate) : ('FORMS.INACTIVE' | translate) }}
               </span>
             </mat-slide-toggle>
           }
@@ -140,7 +140,7 @@
       <div class="form-section">
         <h2 class="section-title">
           <mat-icon>psychology</mat-icon>
-          Especialidades
+          {{ 'FORMS.SPECIALTIES' | translate }}
         </h2>
 
         <!-- Nota importante -->
@@ -148,8 +148,7 @@
           <mat-card-content>
             <div class="info-content">
               <mat-icon color="primary">info</mat-icon>
-              <p>La carga de trabajo se calcula automáticamente según los tickets asignados. 
-                 Al crear un técnico nuevo, siempre comienza con carga 0%.</p>
+              <p>{{ 'FORMS.WORKLOAD_INFO' | translate }}</p>
             </div>
           </mat-card-content>
         </mat-card>
@@ -157,7 +156,7 @@
         <!-- Selector de Especialidades -->
         <div class="especialidades-container">
           <mat-form-field appearance="outline" class="full-width">
-            <mat-label>Seleccionar Especialidades</mat-label>
+            <mat-label>{{ 'FORMS.SELECT_SPECIALTIES' | translate }}</mat-label>
             <mat-select 
               formControlName="especialidades" 
               multiple 
@@ -173,7 +172,7 @@
               }
             </mat-select>
             <mat-icon matPrefix>school</mat-icon>
-            <mat-hint>Selecciona al menos una especialidad</mat-hint>
+            <mat-hint>{{ 'FORMS.SELECT_AT_LEAST_ONE' | translate }}</mat-hint>
             @if (isFieldInvalid('especialidades')) {
               <mat-error>{{ getFieldError('especialidades') }}</mat-error>
             }
@@ -182,7 +181,7 @@
           <!-- Niveles de Experiencia por Especialidad -->
           @if (getEspecialidadesIds().length > 0) {
             <div class="niveles-container">
-              <h3>Nivel de Experiencia por Especialidad:</h3>
+              <h3>{{ 'FORMS.EXPERIENCE_LEVEL_BY_SPECIALTY' | translate }}</h3>
               @for (espId of getEspecialidadesIds(); track espId) {
                 <div class="nivel-item">
                   <span class="especialidad-nombre">
@@ -191,10 +190,10 @@
                   <mat-button-toggle-group 
                     [value]="getNivelExperiencia(espId)"
                     (change)="updateNivelExperiencia(espId, $event.value)">
-                    <mat-button-toggle [value]="nivelExperienciaOptions[0]">Junior</mat-button-toggle>
-                    <mat-button-toggle [value]="nivelExperienciaOptions[1]">Intermedio</mat-button-toggle>
-                    <mat-button-toggle [value]="nivelExperienciaOptions[2]">Senior</mat-button-toggle>
-                    <mat-button-toggle [value]="nivelExperienciaOptions[3]">Experto</mat-button-toggle>
+                    <mat-button-toggle [value]="nivelExperienciaOptions[0]">{{ getNivelExperienciaText(nivelExperienciaOptions[0]) }}</mat-button-toggle>
+                    <mat-button-toggle [value]="nivelExperienciaOptions[1]">{{ getNivelExperienciaText(nivelExperienciaOptions[1]) }}</mat-button-toggle>
+                    <mat-button-toggle [value]="nivelExperienciaOptions[2]">{{ getNivelExperienciaText(nivelExperienciaOptions[2]) }}</mat-button-toggle>
+                    <mat-button-toggle [value]="nivelExperienciaOptions[3]">{{ getNivelExperienciaText(nivelExperienciaOptions[3]) }}</mat-button-toggle>
                   </mat-button-toggle-group>
                 </div>
               }
@@ -207,11 +206,11 @@
       <div class="form-actions">
         <button mat-stroked-button type="button" (click)="onCancel()" [disabled]="isLoading">
           <mat-icon>close</mat-icon>
-          Cancelar
+          {{ 'FORMS.CANCEL' | translate }}
         </button>
         <button mat-raised-button color="primary" type="submit" [disabled]="isLoading || tecnicoForm.invalid">
           <mat-icon>{{ isEditMode ? 'save' : 'add' }}</mat-icon>
-          {{ isEditMode ? 'Guardar Cambios' : 'Crear Técnico' }}
+          {{ isEditMode ? ('FORMS.SAVE_CHANGES' | translate) : ('FORMS.CREATE_TECHNICIAN' | translate) }}
         </button>
       </div>
     </form>

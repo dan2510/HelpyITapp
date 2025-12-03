@@ -5,9 +5,9 @@
       <div mat-card-avatar class="header-icon">
         <mat-icon>engineering</mat-icon>
       </div>
-      <mat-card-title>Lista de Técnicos</mat-card-title>
+      <mat-card-title>{{ 'TECHNICIANS.TITLE' | translate }}</mat-card-title>
       <mat-card-subtitle>
-        Personal técnico para soporte IT
+        {{ 'TECHNICIANS.SUBTITLE' | translate }}
       </mat-card-subtitle>
       <div class="header-actions">
         <button 
@@ -16,7 +16,7 @@
           (click)="crearTecnico()"
           class="create-button">
           <mat-icon>person_add</mat-icon>
-          Nuevo Técnico
+          {{ 'TECHNICIANS.NEW_TECHNICIAN' | translate }}
         </button>
       </div>
     </mat-card-header>
@@ -26,7 +26,7 @@
       @if (loading()) {
         <div class="loading-container">
           <mat-spinner diameter="50"></mat-spinner>
-          <p>Cargando técnicos...</p>
+          <p>{{ 'TECHNICIANS.LOADING' | translate }}</p>
         </div>
       }
 
@@ -34,7 +34,7 @@
       @if (error() && !loading()) {
         <div class="error-container">
           <mat-icon color="warn" class="error-icon">error_outline</mat-icon>
-          <h3>Error al cargar los datos</h3>
+          <h3>{{ 'TECHNICIANS.ERROR_LOADING' | translate }}</h3>
           <p>{{ error() }}</p>
           <button 
             mat-raised-button 
@@ -42,7 +42,7 @@
             (click)="retry()"
             class="retry-button">
             <mat-icon>refresh</mat-icon>
-            Reintentar
+            {{ 'COMMON.RETRY' | translate }}
           </button>
         </div>
       }
@@ -90,7 +90,7 @@
                     assignment
                   </mat-icon>
                   <span class="workload-text">
-                    Tickets activos: 
+                    {{ 'TECHNICIANS.ACTIVE_TICKETS' | translate }}: 
                     <strong [ngClass]="'carga-' + getCargaColor(tecnico.cargaactual)">
                       {{ tecnico.cargaactual }}
                     </strong>
@@ -106,7 +106,7 @@
                   (click)="verDetalle(tecnico.id); $event.stopPropagation()"
                   class="detail-button">
                   <mat-icon>visibility</mat-icon>
-                  Ver Detalle
+                  {{ 'TECHNICIANS.VIEW_DETAIL' | translate }}
                 </button>
               </mat-card-actions>
             </mat-card>
@@ -118,15 +118,15 @@
       @if (!loading() && !error() && tecnicos().length === 0) {
         <div class="empty-state">
           <mat-icon class="empty-icon">person_off</mat-icon>
-          <h3>No hay técnicos disponibles</h3>
-          <p>No se encontraron técnicos registrados en el sistema.</p>
+          <h3>{{ 'TECHNICIANS.NO_TECHNICIANS' | translate }}</h3>
+          <p>{{ 'TECHNICIANS.NO_TECHNICIANS_DESC' | translate }}</p>
           <button 
             mat-raised-button 
             color="primary" 
             (click)="retry()"
             class="refresh-button">
             <mat-icon>refresh</mat-icon>
-            Actualizar
+            {{ 'COMMON.REFRESH' | translate }}
           </button>
         </div>
       }

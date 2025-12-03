@@ -2,14 +2,14 @@
 <div class="tiquete-form-container">
   <div class="header-navigation">
     <button mat-button color="primary" (click)="onCancel()" class="back-button">
-      <mat-icon>arrow_back</mat-icon> Volver al listado
+      <mat-icon>arrow_back</mat-icon> {{ 'FORMS.BACK_TO_LIST' | translate }}
     </button>
   </div>
 
   @if (loadingData()) {
     <div class="loading-container">
       <mat-spinner diameter="60"></mat-spinner>
-      <p>Cargando datos del formulario...</p>
+      <p>{{ 'FORMS.LOADING_FORM_DATA' | translate }}</p>
     </div>
   }
 
@@ -19,8 +19,8 @@
         <div mat-card-avatar class="header-icon">
           <mat-icon>add_task</mat-icon>
         </div>
-        <mat-card-title>Nuevo Ticket</mat-card-title>
-        <mat-card-subtitle>Registre una nueva incidencia en el sistema</mat-card-subtitle>
+        <mat-card-title>{{ 'FORMS.NEW_TICKET' | translate }}</mat-card-title>
+        <mat-card-subtitle>{{ 'FORMS.REGISTER_NEW_INCIDENT' | translate }}</mat-card-subtitle>
       </mat-card-header>
 
       <mat-card-content>
@@ -32,31 +32,31 @@
               <div mat-card-avatar class="avatar-section">
                 <mat-icon class="avatar-icon">person</mat-icon>
               </div>
-              <mat-card-title>Información del Solicitante</mat-card-title>
-              <mat-card-subtitle>Usuario actual del sistema</mat-card-subtitle>
+              <mat-card-title>{{ 'FORMS.REQUESTER_INFO' | translate }}</mat-card-title>
+              <mat-card-subtitle>{{ 'FORMS.CURRENT_USER' | translate }}</mat-card-subtitle>
             </mat-card-header>
             <mat-card-content>
               <div class="form-grid">
                 <!-- ✅ CAMPO 1: Nombre del Solicitante (SOLO LECTURA) -->
                 <mat-form-field appearance="outline" class="full-width">
-                  <mat-label>Nombre del Solicitante</mat-label>
+                  <mat-label>{{ 'FORMS.REQUESTER_NAME' | translate }}</mat-label>
                   <input 
                     matInput 
                     formControlName="nombreSolicitante" 
                     readonly>
                   <mat-icon matPrefix>person</mat-icon>
-                  <mat-hint>Usuario autenticado en el sistema</mat-hint>
+                  <mat-hint>{{ 'FORMS.AUTHENTICATED_USER' | translate }}</mat-hint>
                 </mat-form-field>
 
                 <!-- ✅ CAMPO 2: Correo Electrónico (SOLO LECTURA) -->
                 <mat-form-field appearance="outline" class="full-width">
-                  <mat-label>Correo Electrónico</mat-label>
+                  <mat-label>{{ 'FORMS.REQUESTER_EMAIL' | translate }}</mat-label>
                   <input 
                     matInput 
                     formControlName="correoSolicitante" 
                     readonly>
                   <mat-icon matPrefix>email</mat-icon>
-                  <mat-hint>Correo del usuario autenticado</mat-hint>
+                  <mat-hint>{{ 'FORMS.AUTHENTICATED_USER_EMAIL' | translate }}</mat-hint>
                 </mat-form-field>
               </div>
 
@@ -64,7 +64,7 @@
               <div class="info-message" style="display: flex; align-items: center; gap: 8px; padding: 12px; background-color: #e3f2fd; border-left: 4px solid #2196F3; border-radius: 4px; margin-top: 12px;">
                 <mat-icon style="color: #2196F3;">info</mat-icon>
                 <span style="color: #1565C0; font-size: 0.9rem;">
-                  El ticket se asociará automáticamente a tu usuario actual
+                  {{ 'FORMS.TICKET_AUTO_ASSOCIATED' | translate }}
                 </span>
               </div>
             </mat-card-content>
@@ -76,20 +76,20 @@
               <div mat-card-avatar class="avatar-section">
                 <mat-icon class="avatar-icon">confirmation_number</mat-icon>
               </div>
-              <mat-card-title>Información del Ticket</mat-card-title>
+              <mat-card-title>{{ 'FORMS.TICKET_INFO' | translate }}</mat-card-title>
             </mat-card-header>
             <mat-card-content>
               <div class="form-grid">
                 <!-- Título -->
                 <mat-form-field appearance="outline" class="full-width">
-                  <mat-label>Título *</mat-label>
+                  <mat-label>{{ 'FORMS.TITLE' | translate }}</mat-label>
                   <input 
                     matInput 
                     formControlName="titulo" 
-                    placeholder="Ej: Error al iniciar sesión"
+                    [placeholder]="'FORMS.TITLE_PLACEHOLDER' | translate"
                     maxlength="200">
                   <mat-icon matPrefix>title</mat-icon>
-                  <mat-hint>{{ tiqueteForm.get('titulo')?.value?.length || 0 }}/200 caracteres</mat-hint>
+                  <mat-hint>{{ tiqueteForm.get('titulo')?.value?.length || 0 }}/200 {{ 'FORMS.TITLE_HINT' | translate }}</mat-hint>
                   @if (isFieldInvalid('titulo')) {
                     <mat-error>{{ getErrorMessage('titulo') }}</mat-error>
                   }
@@ -97,15 +97,15 @@
 
                 <!-- Descripción -->
                 <mat-form-field appearance="outline" class="full-width">
-                  <mat-label>Descripción *</mat-label>
+                  <mat-label>{{ 'FORMS.DESCRIPTION' | translate }}</mat-label>
                   <textarea 
                     matInput 
                     formControlName="descripcion" 
                     rows="5"
-                    placeholder="Describa detalladamente el problema o incidencia..."
+                    [placeholder]="'FORMS.DESCRIPTION_PLACEHOLDER' | translate"
                     maxlength="2000"></textarea>
                   <mat-icon matPrefix>description</mat-icon>
-                  <mat-hint>{{ tiqueteForm.get('descripcion')?.value?.length || 0 }}/2000 caracteres</mat-hint>
+                  <mat-hint>{{ tiqueteForm.get('descripcion')?.value?.length || 0 }}/2000 {{ 'FORMS.TITLE_HINT' | translate }}</mat-hint>
                   @if (isFieldInvalid('descripcion')) {
                     <mat-error>{{ getErrorMessage('descripcion') }}</mat-error>
                   }
@@ -113,11 +113,11 @@
 
                 <!-- Prioridad -->
                 <mat-form-field appearance="outline" class="full-width">
-                  <mat-label>Prioridad *</mat-label>
+                  <mat-label>{{ 'FORMS.PRIORITY' | translate }}</mat-label>
                   <mat-select formControlName="prioridad">
-                    <mat-option value="">Seleccione una prioridad</mat-option>
+                    <mat-option value="">{{ 'FORMS.SELECT_PRIORITY' | translate }}</mat-option>
                     @if (prioridades().length === 0) {
-                      <mat-option disabled>Cargando prioridades...</mat-option>
+                      <mat-option disabled>{{ 'FORMS.LOADING_PRIORITIES' | translate }}</mat-option>
                     } @else {
                       @for (prioridad of prioridades(); track prioridad.id) {
                         <mat-option [value]="prioridad.id">
@@ -130,7 +130,7 @@
                     }
                   </mat-select>
                   <mat-icon matPrefix>priority_high</mat-icon>
-                  <mat-hint>Seleccione el nivel de prioridad del ticket</mat-hint>
+                  <mat-hint>{{ 'FORMS.SELECT_PRIORITY_LEVEL' | translate }}</mat-hint>
                   @if (isFieldInvalid('prioridad')) {
                     <mat-error>{{ getErrorMessage('prioridad') }}</mat-error>
                   }
@@ -138,12 +138,12 @@
 
                 <!-- Selector de Etiquetas con Autocompletado -->
                 <mat-form-field appearance="outline" class="full-width">
-                  <mat-label>Seleccione una etiqueta *</mat-label>
+                  <mat-label>{{ 'FORMS.SELECT_TAG' | translate }}</mat-label>
                   <input 
                     matInput 
                     formControlName="idetiqueta"
                     [matAutocomplete]="autoEtiqueta"
-                    placeholder="Escriba para buscar y seleccionar una etiqueta..."
+                    [placeholder]="'FORMS.TAG_PLACEHOLDER' | translate"
                     (input)="filtrarEtiquetas($event)">
                   <mat-icon matPrefix>bookmark</mat-icon>
                   <mat-autocomplete 
@@ -151,9 +151,9 @@
                     [displayWith]="displayEtiqueta"
                     (optionSelected)="onEtiquetaSelected($event)">
                     @if (etiquetas().length === 0) {
-                      <mat-option disabled>Cargando etiquetas...</mat-option>
+                      <mat-option disabled>{{ 'FORMS.LOADING_TAGS' | translate }}</mat-option>
                     } @else if (etiquetasFiltradas().length === 0) {
-                      <mat-option disabled>No se encontraron etiquetas con ese filtro</mat-option>
+                      <mat-option disabled>{{ 'FORMS.NO_TAGS_FOUND' | translate }}</mat-option>
                     } @else {
                       @for (etiqueta of etiquetasFiltradas(); track etiqueta.id) {
                         <mat-option [value]="etiqueta">
@@ -172,9 +172,9 @@
                   </mat-autocomplete>
                   <mat-hint>
                     @if (etiquetasFiltradas().length > 0) {
-                      {{ etiquetasFiltradas().length }} etiqueta(s) disponible(s) - Escriba para filtrar
+                      {{ etiquetasFiltradas().length }} {{ 'FORMS.TAGS_AVAILABLE' | translate }}
                     } @else {
-                      Escriba para buscar etiquetas por nombre o descripción
+                      {{ 'FORMS.SEARCH_TAGS' | translate }}
                     }
                   </mat-hint>
                   @if (isFieldInvalid('idetiqueta')) {
@@ -184,14 +184,14 @@
 
                 <!-- Categoría Automática (no editable) -->
                 <mat-form-field appearance="outline" class="full-width">
-                  <mat-label>Categoría Asignada</mat-label>
+                  <mat-label>{{ 'FORMS.ASSIGNED_CATEGORY' | translate }}</mat-label>
                   <input matInput formControlName="categoria" readonly>
                   <mat-icon matPrefix>category</mat-icon>
                   <mat-hint>
                     @if (categoriaSeleccionada()) {
-                      ✓ Categoría asignada automáticamente según la etiqueta
+                      {{ 'FORMS.CATEGORY_AUTO_ASSIGNED' | translate }}
                     } @else {
-                      Seleccione una etiqueta para asignar la categoría
+                      {{ 'FORMS.SELECT_TAG_FOR_CATEGORY' | translate }}
                     }
                   </mat-hint>
                 </mat-form-field>
@@ -205,8 +205,8 @@
               <div mat-card-avatar class="avatar-section">
                 <mat-icon class="avatar-icon">image</mat-icon>
               </div>
-              <mat-card-title>Evidencias</mat-card-title>
-              <mat-card-subtitle>Agregue imágenes o archivos como evidencia del problema</mat-card-subtitle>
+              <mat-card-title>{{ 'FORMS.EVIDENCE' | translate }}</mat-card-title>
+              <mat-card-subtitle>{{ 'FORMS.ADD_EVIDENCE' | translate }}</mat-card-subtitle>
             </mat-card-header>
             <mat-card-content>
               <div class="evidencias-upload-section">
@@ -228,16 +228,16 @@
                       (click)="fileInput.click()"
                       class="upload-button">
                       <mat-icon>cloud_upload</mat-icon>
-                      Seleccionar Archivos
+                      {{ 'FORMS.SELECT_FILES' | translate }}
                     </button>
                   </label>
-                  <span class="upload-hint">Formatos permitidos: Imágenes (JPG, PNG, GIF), PDF, DOC, DOCX. Máximo 2MB por archivo.</span>
+                  <span class="upload-hint">{{ 'FORMS.UPLOAD_HINT' | translate }}</span>
                 </div>
 
                 <!-- Lista de archivos seleccionados -->
                 @if (archivosSeleccionados().length > 0) {
                   <div class="archivos-list">
-                    <h5 class="archivos-title">Archivos seleccionados ({{ archivosSeleccionados().length }})</h5>
+                    <h5 class="archivos-title">{{ 'FORMS.SELECTED_FILES' | translate }} ({{ archivosSeleccionados().length }})</h5>
                     <div class="archivos-grid">
                       @for (archivo of archivosSeleccionados(); track archivo.name) {
                         <div class="archivo-item">
@@ -264,7 +264,7 @@
                             type="button"
                             (click)="removerArchivo(archivo)"
                             class="remove-button"
-                            matTooltip="Eliminar archivo">
+                            [matTooltip]="'FORMS.DELETE_FILE' | translate">
                             <mat-icon>delete</mat-icon>
                           </button>
                         </div>
@@ -277,7 +277,7 @@
                 @if (uploading()) {
                   <div class="upload-progress">
                     <mat-progress-bar mode="indeterminate"></mat-progress-bar>
-                    <p>Subiendo archivos...</p>
+                    <p>{{ 'FORMS.UPLOADING_FILES' | translate }}</p>
                   </div>
                 }
               </div>
@@ -290,24 +290,24 @@
               <div mat-card-avatar class="avatar-section">
                 <mat-icon class="avatar-icon">info</mat-icon>
               </div>
-              <mat-card-title>Información del Sistema</mat-card-title>
+              <mat-card-title>{{ 'FORMS.SYSTEM_INFO' | translate }}</mat-card-title>
             </mat-card-header>
             <mat-card-content>
               <div class="form-grid">
                 <!-- Fecha de Creación -->
                 <mat-form-field appearance="outline" class="full-width">
-                  <mat-label>Fecha de Creación</mat-label>
+                  <mat-label>{{ 'FORMS.CREATION_DATE' | translate }}</mat-label>
                   <input matInput formControlName="fechaCreacion" readonly>
                   <mat-icon matPrefix>event</mat-icon>
-                  <mat-hint>Fecha actual del sistema</mat-hint>
+                  <mat-hint>{{ 'FORMS.CURRENT_SYSTEM_DATE' | translate }}</mat-hint>
                 </mat-form-field>
 
                 <!-- Estado Inicial -->
                 <mat-form-field appearance="outline" class="full-width">
-                  <mat-label>Estado Inicial</mat-label>
+                  <mat-label>{{ 'FORMS.INITIAL_STATE' | translate }}</mat-label>
                   <input matInput formControlName="estado" readonly>
                   <mat-icon matPrefix>schedule</mat-icon>
-                  <mat-hint>Estado inicial del ticket: PENDIENTE</mat-hint>
+                  <mat-hint>{{ 'FORMS.INITIAL_STATE_HINT' | translate }}</mat-hint>
                 </mat-form-field>
               </div>
             </mat-card-content>
@@ -328,7 +328,7 @@
               type="button" 
               (click)="onCancel()" 
               [disabled]="loading()">
-              <mat-icon>close</mat-icon> Cancelar
+              <mat-icon>close</mat-icon> {{ 'FORMS.CANCEL' | translate }}
             </button>
             <button 
               mat-raised-button 
@@ -340,7 +340,7 @@
               } @else {
                 <mat-icon>save</mat-icon>
               }
-              Crear Ticket
+              {{ 'FORMS.CREATE_TICKET' | translate }}
             </button>
           </div>
         </form>

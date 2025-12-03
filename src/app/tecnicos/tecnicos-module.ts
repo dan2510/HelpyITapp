@@ -16,6 +16,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { TranslateModule } from '@ngx-translate/core';
 import { TecnicosRoutingModule } from './tecnicos-routing-module';
 import { TecnicoIndex } from './tecnico-index/tecnico-index';
 import { TecnicoDetail } from './tecnico-detail/tecnico-detail';
@@ -45,7 +46,8 @@ import { TecnicoForm } from './tecnico-form/tecnico-form';
     MatInputModule,
     MatSelectModule,
     MatButtonToggleModule,
-    MatSlideToggleModule
+    MatSlideToggleModule,
+    TranslateModule
   ]
 })
 export class TecnicosModule { }
