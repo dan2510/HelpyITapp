@@ -27,6 +27,7 @@ export class AsignacionSemana implements OnInit {
   protected readonly error = signal<string>('');
   protected readonly semanaActual = signal<{ inicio: Date; fin: Date } | null>(null);
   protected readonly tecnicoNombre = signal<string>('');
+  protected readonly esAdmin = signal<boolean>(false);
   private translationService = inject(TranslationService);
   private translate = inject(TranslateService);
 
@@ -56,8 +57,10 @@ export class AsignacionSemana implements OnInit {
 
     if (usuario) {
       if (usuario.rol?.nombre === 'ADMIN') {
+        this.esAdmin.set(true);
         this.tecnicoNombre.set(this.translationService.translate('ASSIGNMENTS.ALL_ASSIGNMENTS'));
       } else {
+        this.esAdmin.set(false);
         this.tecnicoNombre.set(usuario.nombrecompleto);
       }
     }
@@ -75,8 +78,13 @@ export class AsignacionSemana implements OnInit {
         if (response.success) {
           this.asignaciones.set(response.data.asignaciones);
           this.semanaActual.set(response.data.semana);
-          if (response.data.tecnico) {
+          // Solo actualizar el nombre del técnico si NO es admin
+          // (para admin, ya está traducido y no debe sobrescribirse)
+          if (response.data.tecnico && !this.esAdmin()) {
             this.tecnicoNombre.set(response.data.tecnico.nombrecompleto);
+          } else if (this.esAdmin()) {
+            // Asegurar que el nombre esté traducido cuando es admin
+            this.tecnicoNombre.set(this.translationService.translate('ASSIGNMENTS.ALL_ASSIGNMENTS'));
           }
           this.organizarPorDias(response.data.asignaciones, response.data.semana);
           console.log('Asignaciones cargadas:', response.data.asignaciones);
