@@ -437,6 +437,12 @@ export class TiqueteForm implements OnInit, OnDestroy {
     }
   }
 
+  getPrioridadNombre(prioridadId: string | null): string {
+    if (!prioridadId) return '';
+    const prioridad = this.prioridades().find(p => p.id === prioridadId);
+    return prioridad ? prioridad.nombre : '';
+  }
+
   // Métodos para manejo de archivos
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;

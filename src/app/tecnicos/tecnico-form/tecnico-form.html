@@ -89,6 +89,11 @@
           <mat-form-field appearance="outline">
             <mat-label>{{ 'FORMS.AVAILABILITY' | translate }}</mat-label>
             <mat-select formControlName="disponibilidad">
+              <mat-select-trigger>
+                @if (tecnicoForm.get('disponibilidad')?.value) {
+                  {{ getDisponibilidadText(tecnicoForm.get('disponibilidad')?.value) }}
+                }
+              </mat-select-trigger>
               @for (disp of disponibilidadOptions; track disp) {
                 <mat-option [value]="disp">
                   <div class="option-with-icon">

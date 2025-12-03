@@ -216,22 +216,14 @@
                 <mat-select formControlName="nuevoEstado" required>
                   <mat-select-trigger>
                     @if (estadoForm.get('nuevoEstado')?.value) {
-                      @if (getTodosEstadosDisponibles().retroceso === estadoForm.get('nuevoEstado')?.value) {
-                        {{ getEstadoNombre(estadoForm.get('nuevoEstado')?.value) }} ({{ 'COMMON.ROLLBACK' | translate }})
-                      } @else if (getTodosEstadosDisponibles().actual === estadoForm.get('nuevoEstado')?.value) {
-                        {{ getEstadoNombre(estadoForm.get('nuevoEstado')?.value) }} ({{ 'COMMON.CURRENT' | translate }})
-                      } @else if (getTodosEstadosDisponibles().siguiente === estadoForm.get('nuevoEstado')?.value) {
-                        {{ getEstadoNombre(estadoForm.get('nuevoEstado')?.value) }} ({{ 'COMMON.ADVANCE' | translate }})
-                      } @else {
-                        {{ getEstadoNombre(estadoForm.get('nuevoEstado')?.value) }}
-                      }
+                      {{ getEstadoNombre(estadoForm.get('nuevoEstado')?.value) }}
                     }
                   </mat-select-trigger>
                   @if (getTodosEstadosDisponibles().retroceso) {
                     <mat-option [value]="getTodosEstadosDisponibles().retroceso">
                       <div class="estado-option">
                         <mat-icon>arrow_back</mat-icon>
-                        <span>{{ getEstadoNombre(getTodosEstadosDisponibles().retroceso!) }} ({{ 'COMMON.ROLLBACK' | translate }})</span>
+                        <span>{{ getEstadoNombre(getTodosEstadosDisponibles().retroceso!) }}</span>
                       </div>
                     </mat-option>
                   }
@@ -240,7 +232,7 @@
                   <mat-option [value]="getTodosEstadosDisponibles().actual">
                     <div class="estado-option">
                       <mat-icon>info</mat-icon>
-                      <span>{{ getEstadoNombre(getTodosEstadosDisponibles().actual) }} ({{ 'COMMON.CURRENT' | translate }})</span>
+                      <span>{{ getEstadoNombre(getTodosEstadosDisponibles().actual) }}</span>
                     </div>
                   </mat-option>
                   
@@ -248,7 +240,7 @@
                     <mat-option [value]="getTodosEstadosDisponibles().siguiente">
                       <div class="estado-option">
                         <mat-icon>arrow_forward</mat-icon>
-                        <span>{{ getEstadoNombre(getTodosEstadosDisponibles().siguiente!) }} ({{ 'COMMON.ADVANCE' | translate }})</span>
+                        <span>{{ getEstadoNombre(getTodosEstadosDisponibles().siguiente!) }}</span>
                       </div>
                     </mat-option>
                   }

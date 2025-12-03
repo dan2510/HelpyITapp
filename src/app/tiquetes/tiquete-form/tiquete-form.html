@@ -102,6 +102,13 @@
           <mat-form-field appearance="outline" class="full-width">
             <mat-label>{{ 'FORMS.PRIORITY' | translate }}</mat-label>
             <mat-select formControlName="prioridad">
+              <mat-select-trigger>
+                @if (tiqueteForm.get('prioridad')?.value) {
+                  {{ getPrioridadNombre(tiqueteForm.get('prioridad')?.value) }}
+                } @else {
+                  {{ 'FORMS.SELECT_PRIORITY' | translate }}
+                }
+              </mat-select-trigger>
               <mat-option value="">{{ 'FORMS.SELECT_PRIORITY' | translate }}</mat-option>
               @if (prioridades().length === 0) {
                 <mat-option disabled>{{ 'FORMS.LOADING_PRIORITIES' | translate }}</mat-option>
