@@ -450,15 +450,8 @@ export class TiqueteDetail implements OnInit {
   }
 
   getEstadoRetroceso(estadoActual: EstadoTiquete): EstadoTiquete | null {
-    // Mapeo para retroceder un estado
-    const retroceso: { [key in EstadoTiquete]?: EstadoTiquete } = {
-      [EstadoTiquete.ASIGNADO]: EstadoTiquete.PENDIENTE,
-      [EstadoTiquete.EN_PROGRESO]: EstadoTiquete.ASIGNADO,
-      [EstadoTiquete.RESUELTO]: EstadoTiquete.EN_PROGRESO,
-      [EstadoTiquete.CERRADO]: EstadoTiquete.RESUELTO
-    };
-
-    return retroceso[estadoActual] || null;
+    // No se permite retroceder estados, solo avanzar
+    return null;
   }
 
   getTodosEstadosDisponibles(): { actual: EstadoTiquete; siguiente: EstadoTiquete | null; retroceso: EstadoTiquete | null } {
@@ -500,19 +493,23 @@ export class TiqueteDetail implements OnInit {
 
     const nuevoEstado = this.estadoForm.get('nuevoEstado')?.value;
     const estadoCambia = nuevoEstado !== tiquete.estado;
-    const estadosRetroceso = this.getEstadoRetroceso(tiquete.estado);
-    const esRetroceso = estadosRetroceso === nuevoEstado;
 
-    // Si cambia el estado, validar imágenes y técnico
+    // Validar que solo se puede avanzar al siguiente estado
     if (estadoCambia) {
+      const estadosDisponibles = this.getEstadosDisponibles(tiquete.estado);
+      if (!estadosDisponibles.includes(nuevoEstado)) {
+        this.notification.warning('Validación', 'Solo se puede avanzar al siguiente estado en el flujo');
+        return;
+      }
+
       // Validar que hay al menos una imagen cuando se cambia el estado
       if (this.archivosSeleccionados().length === 0) {
         this.notification.warning('Validación', 'Se requiere al menos una imagen como evidencia al cambiar el estado');
         return;
       }
 
-      // Validar que hay técnico asignado (excepto desde Pendiente o retrocediendo)
-      if (tiquete.estado !== EstadoTiquete.PENDIENTE && !esRetroceso && !tiquete.tecnicoActual) {
+      // Validar que hay técnico asignado (excepto desde Pendiente)
+      if (tiquete.estado !== EstadoTiquete.PENDIENTE && !tiquete.tecnicoActual) {
         this.notification.warning('Validación', 'No se puede avanzar el estado sin un técnico asignado');
         return;
       }

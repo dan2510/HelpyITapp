@@ -219,14 +219,6 @@
                       {{ getEstadoNombre(estadoForm.get('nuevoEstado')?.value) }}
                     }
                   </mat-select-trigger>
-                  @if (getTodosEstadosDisponibles().retroceso) {
-                    <mat-option [value]="getTodosEstadosDisponibles().retroceso">
-                      <div class="estado-option">
-                        <mat-icon>arrow_back</mat-icon>
-                        <span>{{ getEstadoNombre(getTodosEstadosDisponibles().retroceso!) }}</span>
-                      </div>
-                    </mat-option>
-                  }
                   
                   <!-- Estado Actual (por defecto) -->
                   <mat-option [value]="getTodosEstadosDisponibles().actual">
