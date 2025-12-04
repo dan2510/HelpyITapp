@@ -483,7 +483,7 @@ export class TiqueteDetail implements OnInit {
     const tiquete = this.tiquete();
     if (!tiquete) return false;
 
-    // Se puede actualizar estado o agregar observación si no está cerrado o cancelado
+    // Se puede actualizar estado o agregar observación si no está cerrado
     return tiquete.estado !== EstadoTiquete.CERRADO && 
            tiquete.estado !== EstadoTiquete.CANCELADO;
   }
