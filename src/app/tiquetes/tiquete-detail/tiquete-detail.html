@@ -244,27 +244,27 @@
                 }
               </mat-form-field>
 
-              <!-- Observación con opción External/Internal -->
-              <div class="observacion-section">
-                <mat-form-field appearance="outline" class="full-width">
-                  <mat-label>{{ 'TICKETS.OBSERVATION_REQUIRED' | translate }}</mat-label>
-                  <textarea 
-                    matInput 
-                    formControlName="observacion" 
-                    rows="4"
-                    [placeholder]="'TICKETS.OBSERVATION_PLACEHOLDER' | translate"
-                    required></textarea>
-                  <mat-icon matPrefix>note</mat-icon>
-                  <mat-hint>{{ 'COMMON.MIN_CHARS' | translate }}</mat-hint>
-                  @if (estadoForm.get('observacion')?.hasError('required') && estadoForm.get('observacion')?.touched) {
-                    <mat-error>{{ 'TICKETS.OBSERVATION_REQUIRED_ERROR' | translate }}</mat-error>
-                  }
-                  @if (estadoForm.get('observacion')?.hasError('minlength') && estadoForm.get('observacion')?.touched) {
-                    <mat-error>{{ 'TICKETS.OBSERVATION_MINLENGTH_ERROR' | translate }}</mat-error>
-                  }
-                </mat-form-field>
+              <!-- Observación -->
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>{{ 'TICKETS.OBSERVATION_REQUIRED' | translate }}</mat-label>
+                <textarea 
+                  matInput 
+                  formControlName="observacion" 
+                  rows="4"
+                  [placeholder]="'TICKETS.OBSERVATION_PLACEHOLDER' | translate"
+                  required></textarea>
+                <mat-icon matPrefix>note</mat-icon>
+                <mat-hint>{{ 'COMMON.MIN_CHARS' | translate }}</mat-hint>
+                @if (estadoForm.get('observacion')?.hasError('required') && estadoForm.get('observacion')?.touched) {
+                  <mat-error>{{ 'TICKETS.OBSERVATION_REQUIRED_ERROR' | translate }}</mat-error>
+                }
+                @if (estadoForm.get('observacion')?.hasError('minlength') && estadoForm.get('observacion')?.touched) {
+                  <mat-error>{{ 'TICKETS.OBSERVATION_MINLENGTH_ERROR' | translate }}</mat-error>
+                }
+              </mat-form-field>
 
-                <!-- Selector de tipo de observación (External/Internal) -->
+              <!-- Selector de tipo de observación (External/Internal) - Solo para ADMIN y TECNICO -->
+              @if (!esCliente()) {
                 <mat-form-field appearance="outline" class="full-width tipo-observacion-field">
                   <mat-label>{{ 'TICKETS.OBSERVATION_TYPE' | translate }}</mat-label>
                   <mat-select formControlName="tipoObservacion">
@@ -291,7 +291,7 @@
                   <mat-icon matPrefix>visibility</mat-icon>
                   <mat-hint>{{ 'TICKETS.OBSERVATION_TYPE_HINT' | translate }}</mat-hint>
                 </mat-form-field>
-              </div>
+              }
 
               <!-- Carga de Imágenes -->
               <div class="file-upload-section">
@@ -299,7 +299,11 @@
                   <mat-icon>image</mat-icon>
                   {{ 'TICKETS.EVIDENCE' | translate }} 
                   @if (estadoForm.get('nuevoEstado')?.value !== tiquete()!.estado) {
-                    <span class="required-indicator">({{ 'TICKETS.EVIDENCE_REQUIRED_INDICATOR' | translate }})</span>
+                    @if (esCliente()) {
+                      <span class="optional-indicator">({{ 'TICKETS.EVIDENCE_OPTIONAL_INDICATOR' | translate }})</span>
+                    } @else {
+                      <span class="required-indicator">({{ 'TICKETS.EVIDENCE_REQUIRED_INDICATOR' | translate }})</span>
+                    }
                   } @else {
                     <span class="optional-indicator">({{ 'TICKETS.EVIDENCE_OPTIONAL_INDICATOR' | translate }})</span>
                   }
@@ -369,7 +373,7 @@
                   mat-raised-button 
                   color="primary" 
                   type="submit"
-                  [disabled]="estadoForm.invalid || (estadoForm.get('nuevoEstado')?.value !== tiquete()!.estado && archivosSeleccionados().length === 0) || loading() || uploading()">
+                  [disabled]="estadoForm.invalid || (!esCliente() && estadoForm.get('nuevoEstado')?.value !== tiquete()!.estado && archivosSeleccionados().length === 0) || loading() || uploading()">
                   @if (loading() || uploading()) {
                     <mat-spinner diameter="20" class="inline-spinner"></mat-spinner>
                   } @else {

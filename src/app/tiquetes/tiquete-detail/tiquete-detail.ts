@@ -39,7 +39,7 @@ export class TiqueteDetail implements OnInit {
   protected readonly uploading = signal<boolean>(false);
   protected readonly translationService = inject(TranslationService);
   private translate = inject(TranslateService);
-  private authService = inject(AuthenticationService);
+  protected readonly authService = inject(AuthenticationService);
   
   constructor(
     private route: ActivatedRoute,
@@ -451,6 +451,19 @@ export class TiqueteDetail implements OnInit {
   }
 
   getEstadosDisponibles(estadoActual: EstadoTiquete): EstadoTiquete[] {
+    const usuario = this.authService.usuario();
+    const rol = usuario?.rol?.nombre;
+
+    // Si es cliente, solo puede resolver y cerrar
+    if (rol === 'CLIENTE') {
+      const flujoCliente: { [key in EstadoTiquete]?: EstadoTiquete[] } = {
+        [EstadoTiquete.EN_PROGRESO]: [EstadoTiquete.RESUELTO],
+        [EstadoTiquete.RESUELTO]: [EstadoTiquete.CERRADO]
+      };
+      return flujoCliente[estadoActual] || [];
+    }
+
+    // Para ADMIN y TECNICO, flujo normal
     const flujo: { [key in EstadoTiquete]?: EstadoTiquete[] } = {
       [EstadoTiquete.PENDIENTE]: [EstadoTiquete.ASIGNADO],
       [EstadoTiquete.ASIGNADO]: [EstadoTiquete.EN_PROGRESO],
@@ -488,9 +501,22 @@ export class TiqueteDetail implements OnInit {
     const tiquete = this.tiquete();
     if (!tiquete) return false;
 
+    const usuario = this.authService.usuario();
+    const rol = usuario?.rol?.nombre;
+
     // Se puede actualizar estado o agregar observación si no está cerrado
-    return tiquete.estado !== EstadoTiquete.CERRADO && 
-           tiquete.estado !== EstadoTiquete.CANCELADO;
+    if (tiquete.estado === EstadoTiquete.CERRADO || tiquete.estado === EstadoTiquete.CANCELADO) {
+      return false;
+    }
+
+    // Cliente solo puede actualizar si el ticket está en EN_PROGRESO o RESUELTO
+    if (rol === 'CLIENTE') {
+      return tiquete.estado === EstadoTiquete.EN_PROGRESO || 
+             tiquete.estado === EstadoTiquete.RESUELTO;
+    }
+
+    // ADMIN y TECNICO pueden actualizar cualquier estado (excepto cerrado/cancelado)
+    return true;
   }
 
   async actualizarEstado(): Promise<void> {
@@ -508,22 +534,47 @@ export class TiqueteDetail implements OnInit {
 
     // Validar que solo se puede avanzar al siguiente estado
     if (estadoCambia) {
+      const usuario = this.authService.usuario();
+      const rol = usuario?.rol?.nombre;
+      
       const estadosDisponibles = this.getEstadosDisponibles(tiquete.estado);
       if (!estadosDisponibles.includes(nuevoEstado)) {
         this.notification.warning('Validación', 'Solo se puede avanzar al siguiente estado en el flujo');
         return;
       }
 
-      // Validar que hay al menos una imagen cuando se cambia el estado
-      if (this.archivosSeleccionados().length === 0) {
-        this.notification.warning('Validación', 'Se requiere al menos una imagen como evidencia al cambiar el estado');
-        return;
-      }
+      // Validaciones específicas por rol
+      if (rol === 'CLIENTE') {
+        // Cliente solo puede resolver o cerrar
+        if (nuevoEstado !== EstadoTiquete.RESUELTO && nuevoEstado !== EstadoTiquete.CERRADO) {
+          this.notification.warning('Validación', 'Solo puedes resolver o cerrar tickets');
+          return;
+        }
+        
+        // Cliente puede cambiar estado sin imagen (opcional para resolver/cerrar)
+        // Pero validamos que el ticket esté en estado adecuado
+        if (tiquete.estado === EstadoTiquete.EN_PROGRESO && nuevoEstado !== EstadoTiquete.RESUELTO) {
+          this.notification.warning('Validación', 'Solo puedes resolver tickets que están en progreso');
+          return;
+        }
+        
+        if (tiquete.estado === EstadoTiquete.RESUELTO && nuevoEstado !== EstadoTiquete.CERRADO) {
+          this.notification.warning('Validación', 'Solo puedes cerrar tickets resueltos');
+          return;
+        }
+      } else {
+        // Para ADMIN y TECNICO, validaciones normales
+        // Validar que hay al menos una imagen cuando se cambia el estado
+        if (this.archivosSeleccionados().length === 0) {
+          this.notification.warning('Validación', 'Se requiere al menos una imagen como evidencia al cambiar el estado');
+          return;
+        }
 
-      // Validar que hay técnico asignado (excepto desde Pendiente)
-      if (tiquete.estado !== EstadoTiquete.PENDIENTE && !tiquete.tecnicoActual) {
-        this.notification.warning('Validación', 'No se puede avanzar el estado sin un técnico asignado');
-        return;
+        // Validar que hay técnico asignado (excepto desde Pendiente)
+        if (tiquete.estado !== EstadoTiquete.PENDIENTE && !tiquete.tecnicoActual) {
+          this.notification.warning('Validación', 'No se puede avanzar el estado sin un técnico asignado');
+          return;
+        }
       }
     }
 
@@ -539,7 +590,11 @@ export class TiqueteDetail implements OnInit {
 
       // Actualizar estado u observación
       const observacion = this.estadoForm.get('observacion')?.value.trim();
-      const tipoObservacion = this.estadoForm.get('tipoObservacion')?.value || 'INTERNAL';
+      // Para clientes, siempre usar EXTERNAL (observación visible para el cliente)
+      // Para ADMIN/TECNICO, usar el valor del formulario
+      const usuario = this.authService.usuario();
+      const esCliente = usuario?.rol?.nombre === 'CLIENTE';
+      const tipoObservacion = esCliente ? 'EXTERNAL' : (this.estadoForm.get('tipoObservacion')?.value || 'INTERNAL');
 
       // Si no cambia el estado, solo agregar observación
       if (!estadoCambia) {
@@ -761,6 +816,11 @@ export class TiqueteDetail implements OnInit {
   esTecnico(): boolean {
     const usuario = this.authService.usuario();
     return usuario?.rol?.nombre === 'TECNICO';
+  }
+
+  esCliente(): boolean {
+    const usuario = this.authService.usuario();
+    return usuario?.rol?.nombre === 'CLIENTE';
   }
 
 }
