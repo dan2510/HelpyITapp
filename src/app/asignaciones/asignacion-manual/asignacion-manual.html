@@ -1,0 +1,271 @@
+<!-- Asignación Manual de Tickets -->
+<div class="asignacion-manual-container">
+  <div class="header-section">
+    <h1>
+      <mat-icon>person_add</mat-icon>
+      {{ 'ASSIGNMENTS.MANUAL_ASSIGNMENT_TITLE' | translate }}
+    </h1>
+    <p class="subtitle">{{ 'ASSIGNMENTS.MANUAL_ASSIGNMENT_DESCRIPTION' | translate }}</p>
+  </div>
+
+  @if (error()) {
+    <mat-card class="error-card">
+      <mat-card-content>
+        <mat-icon color="warn">error</mat-icon>
+        <span>{{ error() }}</span>
+      </mat-card-content>
+    </mat-card>
+  }
+
+  <div class="content-grid">
+    <!-- Columna 1: Tickets Pendientes -->
+    <mat-card class="tickets-card">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>pending_actions</mat-icon>
+          {{ 'ASSIGNMENTS.PENDING_TICKETS' | translate }} ({{ tickets().length }})
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        @if (loading()) {
+          <div class="loading-container">
+            <mat-spinner diameter="40"></mat-spinner>
+            <p>{{ 'ASSIGNMENTS.LOADING_TICKETS' | translate }}</p>
+          </div>
+        } @else if (tickets().length === 0) {
+          <div class="empty-state">
+            <mat-icon>check_circle</mat-icon>
+            <p>{{ 'ASSIGNMENTS.NO_PENDING_TICKETS' | translate }}</p>
+          </div>
+        } @else {
+          <div class="tickets-list">
+            @for (ticket of tickets(); track ticket.id) {
+              <mat-card 
+                class="ticket-item" 
+                [class.selected]="ticketSeleccionado()?.id === ticket.id"
+                (click)="seleccionarTicket(ticket)">
+                <mat-card-content>
+                  <div class="ticket-header">
+                    <h3>#{{ ticket.id }} - {{ ticket.titulo }}</h3>
+                    <mat-chip [class]="'priority-chip ' + getPrioridadColor(ticket.prioridad)">
+                      {{ getPrioridadNombre(ticket.prioridad) }}
+                    </mat-chip>
+                  </div>
+                  <div class="ticket-info">
+                    <div class="info-item">
+                      <mat-icon>category</mat-icon>
+                      <span>{{ ticket.categoria.nombre }}</span>
+                    </div>
+                    <div class="info-item">
+                      <mat-icon>schedule</mat-icon>
+                      <span>{{ ticket.tiempoRestanteSLA }}h {{ 'ASSIGNMENTS.SLA_REMAINING' | translate }}</span>
+                    </div>
+                    <div class="info-item">
+                      <mat-icon>star</mat-icon>
+                      <span>{{ 'ASSIGNMENTS.SCORE' | translate }}: {{ ticket.puntaje }}</span>
+                    </div>
+                  </div>
+                  @if (ticket.especialidadesRequeridas && ticket.especialidadesRequeridas.length > 0) {
+                    <div class="specialties">
+                      <strong>{{ 'ASSIGNMENTS.REQUIRED_SPECIALTIES' | translate }}:</strong>
+                      <div class="specialty-tags">
+                        @for (esp of ticket.especialidadesRequeridas; track esp.id) {
+                          <mat-chip class="specialty-chip">{{ esp.nombre }}</mat-chip>
+                        }
+                      </div>
+                    </div>
+                  }
+                </mat-card-content>
+              </mat-card>
+            }
+          </div>
+        }
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Columna 2: Información y Asignación -->
+    <div class="assignment-section">
+      @if (ticketSeleccionado()) {
+        <mat-card class="ticket-detail-card">
+          <mat-card-header>
+            <mat-card-title>
+              <mat-icon>info</mat-icon>
+              {{ 'ASSIGNMENTS.TICKET_DETAILS' | translate }}
+            </mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="detail-info">
+              <h3>#{{ ticketSeleccionado()!.id }} - {{ ticketSeleccionado()!.titulo }}</h3>
+              <p class="description">{{ ticketSeleccionado()!.descripcion }}</p>
+              
+              <div class="info-grid">
+                <div class="info-row">
+                  <span class="label">{{ 'TICKETS.CATEGORY' | translate }}:</span>
+                  <span class="value">{{ ticketSeleccionado()!.categoria.nombre }}</span>
+                </div>
+                <div class="info-row">
+                  <span class="label">{{ 'TICKETS.PRIORITY' | translate }}:</span>
+                  <mat-chip [class]="'priority-chip ' + getPrioridadColor(ticketSeleccionado()!.prioridad)">
+                    {{ getPrioridadNombre(ticketSeleccionado()!.prioridad) }}
+                  </mat-chip>
+                </div>
+                <div class="info-row">
+                  <span class="label">{{ 'ASSIGNMENTS.SLA_REMAINING' | translate }}:</span>
+                  <span class="value">{{ ticketSeleccionado()!.tiempoRestanteSLA }}h</span>
+                </div>
+                <div class="info-row">
+                  <span class="label">{{ 'ASSIGNMENTS.SCORE' | translate }}:</span>
+                  <span class="value score-value">{{ ticketSeleccionado()!.puntaje }}</span>
+                </div>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+        <mat-card class="technicians-card">
+          <mat-card-header>
+            <mat-card-title>
+              <mat-icon>engineering</mat-icon>
+              {{ 'ASSIGNMENTS.AVAILABLE_TECHNICIANS' | translate }}
+            </mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            @if (loadingTecnicos()) {
+              <div class="loading-container">
+                <mat-spinner diameter="40"></mat-spinner>
+                <p>{{ 'ASSIGNMENTS.LOADING_TECHNICIANS' | translate }}</p>
+              </div>
+            } @else if (tecnicos().length === 0) {
+              <div class="empty-state">
+                <mat-icon>warning</mat-icon>
+                <p>{{ 'ASSIGNMENTS.NO_TECHNICIANS_AVAILABLE' | translate }}</p>
+              </div>
+            } @else {
+              <div class="technicians-list">
+                @for (tecnico of tecnicos(); track tecnico.id) {
+                  <mat-card 
+                    class="technician-item"
+                    [class.selected]="tecnicoSeleccionado()?.id === tecnico.id"
+                    (click)="seleccionarTecnico(tecnico)">
+                    <mat-card-content>
+                      <div class="technician-header">
+                        <h4>{{ tecnico.nombrecompleto }}</h4>
+                        <mat-chip [class]="'availability-chip ' + getDisponibilidadColor(tecnico.disponibilidad)">
+                          {{ getDisponibilidadNombre(tecnico.disponibilidad) }}
+                        </mat-chip>
+                      </div>
+                      <div class="technician-info">
+                        <div class="info-item">
+                          <mat-icon>email</mat-icon>
+                          <span>{{ tecnico.correo }}</span>
+                        </div>
+                        <div class="info-item">
+                          <mat-icon>work</mat-icon>
+                          <span>{{ tecnico.cargaactual }}/{{ tecnico.maxticketsimultaneos }} {{ 'ASSIGNMENTS.TICKETS' | translate }}</span>
+                        </div>
+                        <div class="info-item">
+                          <mat-icon>percent</mat-icon>
+                          <span>{{ tecnico.cargaPorcentaje }}% {{ 'ASSIGNMENTS.WORKLOAD' | translate }}</span>
+                        </div>
+                      </div>
+                      @if (tecnico.especialidades && tecnico.especialidades.length > 0) {
+                        <div class="specialties">
+                          <strong>{{ 'ASSIGNMENTS.SPECIALTIES' | translate }}:</strong>
+                          <div class="specialty-tags">
+                            @for (esp of tecnico.especialidades; track esp.id) {
+                              <mat-chip class="specialty-chip">{{ esp.nombre }}</mat-chip>
+                            }
+                          </div>
+                        </div>
+                      }
+                    </mat-card-content>
+                  </mat-card>
+                }
+              </div>
+            }
+          </mat-card-content>
+        </mat-card>
+
+        <mat-card class="assignment-form-card">
+          <mat-card-header>
+            <mat-card-title>
+              <mat-icon>assignment</mat-icon>
+              {{ 'ASSIGNMENTS.ASSIGNMENT_FORM' | translate }}
+            </mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <form [formGroup]="asignacionForm" (ngSubmit)="asignarTicket()">
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>{{ 'ASSIGNMENTS.SELECTED_TICKET' | translate }}</mat-label>
+                <input matInput [value]="'#' + ticketSeleccionado()!.id + ' - ' + ticketSeleccionado()!.titulo" readonly>
+                <mat-icon matPrefix>confirmation_number</mat-icon>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>{{ 'ASSIGNMENTS.SELECTED_TECHNICIAN' | translate }}</mat-label>
+                <input 
+                  matInput 
+                  [value]="tecnicoSeleccionado() ? tecnicoSeleccionado()!.nombrecompleto : ''" 
+                  readonly
+                  [required]="true">
+                <mat-icon matPrefix>person</mat-icon>
+                @if (asignacionForm.get('idTecnico')?.hasError('required') && asignacionForm.get('idTecnico')?.touched) {
+                  <mat-error>{{ 'ASSIGNMENTS.TECHNICIAN_REQUIRED' | translate }}</mat-error>
+                }
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>{{ 'ASSIGNMENTS.JUSTIFICATION' | translate }}</mat-label>
+                <textarea 
+                  matInput 
+                  formControlName="justificacion" 
+                  rows="4"
+                  [placeholder]="'ASSIGNMENTS.JUSTIFICATION_PLACEHOLDER' | translate"
+                  required></textarea>
+                <mat-icon matPrefix>note</mat-icon>
+                <mat-hint>{{ 'ASSIGNMENTS.JUSTIFICATION_HINT' | translate }}</mat-hint>
+                @if (asignacionForm.get('justificacion')?.hasError('required') && asignacionForm.get('justificacion')?.touched) {
+                  <mat-error>{{ 'ASSIGNMENTS.JUSTIFICATION_REQUIRED' | translate }}</mat-error>
+                }
+                @if (asignacionForm.get('justificacion')?.hasError('minlength') && asignacionForm.get('justificacion')?.touched) {
+                  <mat-error>{{ 'ASSIGNMENTS.JUSTIFICATION_MINLENGTH' | translate }}</mat-error>
+                }
+              </mat-form-field>
+
+              <div class="form-actions">
+                <button 
+                  mat-raised-button 
+                  color="primary" 
+                  type="submit"
+                  [disabled]="asignacionForm.invalid || loading() || !tecnicoSeleccionado()">
+                  @if (loading()) {
+                    <mat-spinner diameter="20" class="inline-spinner"></mat-spinner>
+                  } @else {
+                    <mat-icon>save</mat-icon>
+                  }
+                  {{ 'ASSIGNMENTS.ASSIGN' | translate }}
+                </button>
+                <button 
+                  mat-button 
+                  type="button"
+                  (click)="cancelar()"
+                  [disabled]="loading()">
+                  <mat-icon>close</mat-icon>
+                  {{ 'COMMON.CANCEL' | translate }}
+                </button>
+              </div>
+            </form>
+          </mat-card-content>
+        </mat-card>
+      } @else {
+        <mat-card class="empty-selection-card">
+          <mat-card-content>
+            <mat-icon>info</mat-icon>
+            <p>{{ 'ASSIGNMENTS.SELECT_TICKET_TO_START' | translate }}</p>
+          </mat-card-content>
+        </mat-card>
+      }
+    </div>
+  </div>
+</div>
+

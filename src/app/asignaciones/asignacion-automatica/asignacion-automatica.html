@@ -1,0 +1,132 @@
+<!-- Asignación Automática de Tickets -->
+<div class="asignacion-automatica-container">
+  <div class="header-section">
+    <h1>
+      <mat-icon>auto_awesome</mat-icon>
+      {{ 'ASSIGNMENTS.AUTO_ASSIGNMENT_TITLE' | translate }}
+    </h1>
+    <p class="subtitle">{{ 'ASSIGNMENTS.AUTO_ASSIGNMENT_DESCRIPTION' | translate }}</p>
+  </div>
+
+  <mat-card class="info-card">
+    <mat-card-header>
+      <mat-card-title>
+        <mat-icon>info</mat-icon>
+        {{ 'ASSIGNMENTS.HOW_IT_WORKS' | translate }}
+      </mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <ul class="info-list">
+        <li>{{ 'ASSIGNMENTS.AUTO_RULE_1' | translate }}</li>
+        <li>{{ 'ASSIGNMENTS.AUTO_RULE_2' | translate }}</li>
+        <li>{{ 'ASSIGNMENTS.AUTO_RULE_3' | translate }}</li>
+        <li>{{ 'ASSIGNMENTS.AUTO_RULE_4' | translate }}</li>
+        <li><strong>{{ 'ASSIGNMENTS.SCORE_FORMULA' | translate }}:</strong> {{ 'ASSIGNMENTS.SCORE_FORMULA_DETAIL' | translate }}</li>
+      </ul>
+    </mat-card-content>
+  </mat-card>
+
+  <div class="action-section">
+    <button 
+      mat-raised-button 
+      color="primary" 
+      (click)="ejecutarAsignacionAutomatica()"
+      [disabled]="ejecutando()"
+      class="execute-button">
+      @if (ejecutando()) {
+        <mat-spinner diameter="20" class="inline-spinner"></mat-spinner>
+      } @else {
+        <mat-icon>play_arrow</mat-icon>
+      }
+      {{ ejecutando() ? ('ASSIGNMENTS.EXECUTING' | translate) : ('ASSIGNMENTS.EXECUTE_AUTO' | translate) }}
+    </button>
+  </div>
+
+  @if (error()) {
+    <mat-card class="error-card">
+      <mat-card-content>
+        <mat-icon color="warn">error</mat-icon>
+        <span>{{ error() }}</span>
+      </mat-card-content>
+    </mat-card>
+  }
+
+  @if (resultado()) {
+    <mat-card class="result-card">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>assessment</mat-icon>
+          {{ 'ASSIGNMENTS.RESULTS' | translate }}
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="summary-stats">
+          <div class="stat-item success">
+            <mat-icon>check_circle</mat-icon>
+            <div>
+              <span class="stat-value">{{ resultado()!.asignados }}</span>
+              <span class="stat-label">{{ 'ASSIGNMENTS.ASSIGNED' | translate }}</span>
+            </div>
+          </div>
+          <div class="stat-item warning">
+            <mat-icon>warning</mat-icon>
+            <div>
+              <span class="stat-value">{{ resultado()!.noAsignados }}</span>
+              <span class="stat-label">{{ 'ASSIGNMENTS.NOT_ASSIGNED' | translate }}</span>
+            </div>
+          </div>
+        </div>
+
+        @if (resultado()!.detalles && resultado()!.detalles.length > 0) {
+          <div class="details-section">
+            <h3>{{ 'ASSIGNMENTS.DETAILS' | translate }}</h3>
+            <div class="details-list">
+              @for (detalle of resultado()!.detalles; track detalle.ticketId) {
+                <mat-card class="detail-card" [class.assigned]="detalle.asignado" [class.not-assigned]="!detalle.asignado">
+                  <mat-card-content>
+                    <div class="detail-header">
+                      <div class="ticket-info">
+                        <h4>#{{ detalle.ticketId }} - {{ detalle.ticketTitulo }}</h4>
+                        @if (detalle.asignado) {
+                          <div class="assigned-info">
+                            <mat-icon>person</mat-icon>
+                            <span>{{ detalle.tecnicoNombre }}</span>
+                          </div>
+                        } @else {
+                          <div class="not-assigned-info">
+                            <mat-icon>cancel</mat-icon>
+                            <span>{{ 'ASSIGNMENTS.NO_TECHNICIAN_FOUND' | translate }}</span>
+                          </div>
+                        }
+                      </div>
+                      <div class="score-info">
+                        <mat-chip [class]="'priority-chip ' + getPrioridadColor(detalle.prioridad || 'MEDIA')">
+                          {{ getPrioridadNombre(detalle.prioridad || 'MEDIA') }}
+                        </mat-chip>
+                        <div class="score-badge">
+                          <mat-icon>star</mat-icon>
+                          <span>{{ detalle.puntaje }}</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="detail-body">
+                      <div class="info-row">
+                        <span class="info-label">{{ 'ASSIGNMENTS.SLA_REMAINING' | translate }}:</span>
+                        <span class="info-value">{{ detalle.tiempoRestanteSLA }}h</span>
+                      </div>
+                      <div class="justification">
+                        <strong>{{ 'ASSIGNMENTS.JUSTIFICATION' | translate }}:</strong>
+                        <p>{{ detalle.justificacion }}</p>
+                      </div>
+                    </div>
+                  </mat-card-content>
+                </mat-card>
+              }
+            </div>
+          </div>
+        }
+      </mat-card-content>
+    </mat-card>
+  }
+</div>
+
