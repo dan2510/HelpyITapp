@@ -20,7 +20,7 @@ export class BaseAPI<T extends BaseEntity> {
   urlAPI: string = environment.apiURL;
 
   constructor(
-    private http: HttpClient,
+    protected http: HttpClient,
     /**
      * Nombre del endpoint o recurso (por ejemplo: 'productos', 'usuarios', 'ordenes')
      * Se inyecta al crear una instancia concreta del servicio.

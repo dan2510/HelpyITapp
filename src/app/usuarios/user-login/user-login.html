@@ -57,6 +57,9 @@
       </div>
 
       <div class="login-footer">
+        <p class="forgot-password-link">
+          <a [routerLink]="['/usuario/forgot-password']" class="link">{{ 'LOGIN.FORGOT_PASSWORD' | translate }}</a>
+        </p>
         <p class="register-link">
           {{ 'LOGIN.NO_ACCOUNT' | translate }}
           <a [routerLink]="['/usuario/registrar']" class="link">{{ 'LOGIN.REGISTER_HERE' | translate }}</a>

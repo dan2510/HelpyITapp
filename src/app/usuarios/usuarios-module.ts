@@ -4,6 +4,8 @@ import { CommonModule } from '@angular/common';
 import { UsuariosRoutingModule } from './usuarios-routing-module';
 import { UserLogin } from './user-login/user-login';
 import { UserCreate } from './user-create/user-create';
+import { ForgotPassword } from './forgot-password/forgot-password';
+import { ResetPassword } from './reset-password/reset-password';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
@@ -12,6 +14,7 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { LayoutModule } from '@angular/cdk/layout';
 import { MatCardModule } from '@angular/material/card';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -21,7 +24,9 @@ import { TranslateModule } from '@ngx-translate/core';
 @NgModule({
   declarations: [
     UserCreate,
-    UserLogin
+    UserLogin,
+    ForgotPassword,
+    ResetPassword
   ],
   imports: [
     CommonModule,
@@ -34,6 +39,7 @@ import { TranslateModule } from '@ngx-translate/core';
     MatDividerModule,
     MatDialogModule,
     MatInputModule,
+    MatFormFieldModule,
     MatSelectModule,
     MatRadioModule,
     MatProgressSpinnerModule,
