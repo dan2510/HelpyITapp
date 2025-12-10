@@ -117,7 +117,7 @@
               <div class="info-content">
                 <div class="tecnico-header">
                   <span class="info-label">{{ 'TICKETS.ASSIGNED_TECHNICIAN' | translate }}</span>
-                  @if (!editandoTecnico()) {
+                  @if (!editandoTecnico() && puedeEditarTecnico()) {
                     <button 
                       mat-icon-button 
                       color="primary" 

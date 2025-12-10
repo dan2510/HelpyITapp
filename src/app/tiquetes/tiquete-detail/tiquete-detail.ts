@@ -14,6 +14,7 @@ import { firstValueFrom } from 'rxjs';
 import Swal from 'sweetalert2';
 import { TranslationService } from '../../share/services/app/translation.service';
 import { TranslateService } from '@ngx-translate/core';
+import { AuthenticationService } from '../../share/services/app/authentication.service';
 
 @Component({
   selector: 'app-tiquete-detail',
@@ -38,6 +39,7 @@ export class TiqueteDetail implements OnInit {
   protected readonly uploading = signal<boolean>(false);
   protected readonly translationService = inject(TranslationService);
   private translate = inject(TranslateService);
+  private authService = inject(AuthenticationService);
   
   constructor(
     private route: ActivatedRoute,
@@ -128,8 +130,14 @@ export class TiqueteDetail implements OnInit {
   guardarTecnico(): void {
     const idTecnico = this.tecnicoSeleccionado();
     const tiquete = this.tiquete();
+    const usuarioActual = this.authService.usuario();
     
     if (!tiquete) return;
+    
+    if (!usuarioActual || !usuarioActual.id) {
+      this.notification.error('Error', 'No se pudo identificar al usuario autenticado');
+      return;
+    }
 
     // Si no hay cambio, no hacer nada
     const tecnicoActualId = tiquete.tecnicoActual?.id || null;
@@ -141,8 +149,10 @@ export class TiqueteDetail implements OnInit {
     this.loading.set(true);
 
     // Actualizar el ticket usando HttpClient directamente para manejar la respuesta del backend
+    // Enviar el ID del usuario que está haciendo el cambio para que se registre correctamente en el historial
     const updateData = {
-      idtecnicoactual: idTecnico
+      idtecnicoactual: idTecnico,
+      idUsuarioCambio: usuarioActual.id
     };
 
     this.http.put<any>(`${environment.apiURL}/${environment.endPointTiquete}/${tiquete.id}`, updateData).subscribe({
@@ -153,6 +163,8 @@ export class TiqueteDetail implements OnInit {
           this.tecnicoSeleccionado.set(response.data.tiquete.tecnicoActual?.id || null);
           this.editandoTecnico.set(false);
           this.loading.set(false);
+          // Recargar el detalle completo para obtener el historial actualizado
+          this.loadTiqueteDetail(tiquete.id);
           Swal.fire({
             icon: 'success',
             title: this.translationService.translate('COMMON.SUCCESS'),
@@ -731,6 +743,24 @@ export class TiqueteDetail implements OnInit {
     return tiquete.historiales.filter((hist: any) => 
       hist.tipo === 'COMENTARIO_EXTERNAL' || hist.tipo === 'COMENTARIO_INTERNAL'
     );
+  }
+
+  // Métodos para verificar roles del usuario
+  puedeEditarTecnico(): boolean {
+    const usuario = this.authService.usuario();
+    if (!usuario || !usuario.rol) return false;
+    const rol = usuario.rol.nombre;
+    return rol === 'ADMIN' || rol === 'TECNICO';
+  }
+
+  esAdmin(): boolean {
+    const usuario = this.authService.usuario();
+    return usuario?.rol?.nombre === 'ADMIN';
+  }
+
+  esTecnico(): boolean {
+    const usuario = this.authService.usuario();
+    return usuario?.rol?.nombre === 'TECNICO';
   }
 
 }
