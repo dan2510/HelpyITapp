@@ -1,0 +1,312 @@
+<div class="pago-container">
+  <mat-card class="pago-card">
+    <mat-card-header>
+      <div mat-card-avatar class="header-icon">
+        <mat-icon>payment</mat-icon>
+      </div>
+      <mat-card-title>Método de Pago</mat-card-title>
+      <mat-card-subtitle>Total a pagar: {{ formatearPrecio(totales().total) }}</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <!-- Resumen del pedido -->
+      <div class="resumen-pedido">
+        <h3>Resumen del Pedido</h3>
+        <div class="resumen-line">
+          <span>Subtotal:</span>
+          <span>{{ formatearPrecio(totales().subtotal) }}</span>
+        </div>
+        <div class="resumen-line">
+          <span>Servicio Express:</span>
+          <span>{{ formatearPrecio(totales().servicioExpress) }}</span>
+        </div>
+        <mat-divider></mat-divider>
+        <div class="resumen-line total">
+          <span>TOTAL:</span>
+          <span>{{ formatearPrecio(totales().total) }}</span>
+        </div>
+      </div>
+
+      <!-- Selección de método de pago -->
+      @if (!metodoPagoSeleccionado()) {
+        <div class="metodos-pago">
+          <h3>¿Cómo desea pagar?</h3>
+          <div class="metodos-grid">
+            <mat-card 
+              class="metodo-card" 
+              (click)="seleccionarMetodoPago('EFECTIVO')"
+              matRipple>
+              <mat-card-content>
+                <mat-icon class="metodo-icon">money</mat-icon>
+                <h4>Efectivo</h4>
+                <p>Pago en efectivo al recibir</p>
+              </mat-card-content>
+            </mat-card>
+
+            <mat-card 
+              class="metodo-card" 
+              (click)="seleccionarMetodoPago('TARJETA')"
+              matRipple>
+              <mat-card-content>
+                <mat-icon class="metodo-icon">credit_card</mat-icon>
+                <h4>Tarjeta</h4>
+                <p>Tarjeta de crédito o débito</p>
+              </mat-card-content>
+            </mat-card>
+
+            <mat-card 
+              class="metodo-card" 
+              (click)="seleccionarMetodoPago('SINPE_MOVIL')"
+              matRipple>
+              <mat-card-content>
+                <mat-icon class="metodo-icon">phone_android</mat-icon>
+                <h4>SINPE Móvil</h4>
+                <p>Transferencia bancaria</p>
+              </mat-card-content>
+            </mat-card>
+          </div>
+        </div>
+      }
+
+      <!-- Formulario de Pago en Efectivo -->
+      @if (metodoPagoSeleccionado() === 'EFECTIVO') {
+        <div class="form-pago">
+          <h3>💵 Pago en Efectivo</h3>
+          <form [formGroup]="efectivoForm">
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Total a pagar</mat-label>
+              <input matInput [value]="formatearPrecio(totales().total)" readonly>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>¿Con cuánto va a pagar?</mat-label>
+              <mat-icon matPrefix>attach_money</mat-icon>
+              <input 
+                matInput 
+                type="number"
+                formControlName="montoRecibido"
+                [min]="totales().total"
+                required>
+              @if (efectivoForm.get('montoRecibido')?.hasError('required') && efectivoForm.get('montoRecibido')?.touched) {
+                <mat-error>El monto es requerido</mat-error>
+              }
+              @if (efectivoForm.get('montoRecibido')?.hasError('min') && efectivoForm.get('montoRecibido')?.touched) {
+                <mat-error>El monto debe ser mayor o igual al total</mat-error>
+              }
+            </mat-form-field>
+
+            @if (cambio() >= 0) {
+              <div class="cambio-info">
+                <mat-icon color="primary">check_circle</mat-icon>
+                <span>Su cambio será de: <strong>{{ formatearPrecio(cambio()) }}</strong></span>
+              </div>
+            } @else {
+              <div class="cambio-info error">
+                <mat-icon color="warn">error</mat-icon>
+                <span>El monto recibido es menor al total</span>
+              </div>
+            }
+
+            <div class="actions">
+              <button mat-stroked-button type="button" (click)="metodoPagoSeleccionado.set(null)">
+                <mat-icon>arrow_back</mat-icon>
+                Atrás
+              </button>
+              <button 
+                mat-raised-button 
+                color="primary" 
+                (click)="procesarPagoEfectivo()"
+                [disabled]="efectivoForm.invalid || cambio() < 0 || loading()">
+                @if (loading()) {
+                  <mat-spinner diameter="20" class="spinner-inline"></mat-spinner>
+                  Procesando...
+                } @else {
+                  <ng-container>
+                    <mat-icon>check</mat-icon>
+                    Confirmar Pedido
+                  </ng-container>
+                }
+              </button>
+            </div>
+          </form>
+        </div>
+      }
+
+      <!-- Formulario de Pago con Tarjeta -->
+      @if (metodoPagoSeleccionado() === 'TARJETA') {
+        <div class="form-pago">
+          <h3>💳 Datos de la Tarjeta</h3>
+          <form [formGroup]="tarjetaForm">
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Número de tarjeta</mat-label>
+              <input 
+                matInput 
+                formControlName="numeroTarjeta"
+                placeholder="0000-0000-0000-0000"
+                maxlength="16"
+                required>
+              @if (tarjetaForm.get('numeroTarjeta')?.hasError('required') && tarjetaForm.get('numeroTarjeta')?.touched) {
+                <mat-error>El número de tarjeta es requerido</mat-error>
+              }
+              @if (tarjetaForm.get('numeroTarjeta')?.hasError('pattern') && tarjetaForm.get('numeroTarjeta')?.touched) {
+                <mat-error>Ingrese 16 dígitos</mat-error>
+              }
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Nombre en la tarjeta</mat-label>
+              <input matInput formControlName="nombreTarjeta" required>
+              @if (tarjetaForm.get('nombreTarjeta')?.hasError('required') && tarjetaForm.get('nombreTarjeta')?.touched) {
+                <mat-error>El nombre es requerido</mat-error>
+              }
+            </mat-form-field>
+
+            <div class="form-row">
+              <mat-form-field appearance="outline">
+                <mat-label>Fecha de vencimiento</mat-label>
+                <input 
+                  matInput 
+                  formControlName="fechaVencimiento"
+                  placeholder="MM/AA"
+                  maxlength="5"
+                  required>
+                @if (tarjetaForm.get('fechaVencimiento')?.hasError('required') && tarjetaForm.get('fechaVencimiento')?.touched) {
+                  <mat-error>Requerido</mat-error>
+                }
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>CVV</mat-label>
+                <input 
+                  matInput 
+                  type="password"
+                  formControlName="cvv"
+                  placeholder="123"
+                  maxlength="4"
+                  required>
+                @if (tarjetaForm.get('cvv')?.hasError('required') && tarjetaForm.get('cvv')?.touched) {
+                  <mat-error>Requerido</mat-error>
+                }
+              </mat-form-field>
+            </div>
+
+            <mat-radio-group formControlName="tipoTarjeta" class="tipo-tarjeta">
+              <mat-radio-button value="credito">Crédito</mat-radio-button>
+              <mat-radio-button value="debito">Débito</mat-radio-button>
+            </mat-radio-group>
+
+            <div class="total-cobrar">
+              <p>Total a cobrar: <strong>{{ formatearPrecio(totales().total) }}</strong></p>
+            </div>
+
+            @if (procesandoPago()) {
+              <div class="procesando">
+                <mat-spinner></mat-spinner>
+                <p>Procesando pago...</p>
+              </div>
+            }
+
+            @if (numeroAutorizacion()) {
+              <div class="autorizacion">
+                <mat-icon color="primary">check_circle</mat-icon>
+                <p>¡Pago aprobado! Autorización: {{ numeroAutorizacion() }}</p>
+              </div>
+            }
+
+            <div class="actions">
+              <button mat-stroked-button type="button" (click)="metodoPagoSeleccionado.set(null)" [disabled]="procesandoPago()">
+                <mat-icon>arrow_back</mat-icon>
+                Cancelar
+              </button>
+              <button 
+                mat-raised-button 
+                color="primary" 
+                (click)="procesarPagoTarjeta()"
+                [disabled]="tarjetaForm.invalid || procesandoPago() || loading()">
+                @if (loading()) {
+                  <mat-spinner diameter="20" class="spinner-inline"></mat-spinner>
+                  Confirmando...
+                } @else {
+                  <ng-container>
+                    <mat-icon>check</mat-icon>
+                    Procesar Pago
+                  </ng-container>
+                }
+              </button>
+            </div>
+          </form>
+        </div>
+      }
+
+      <!-- Formulario de SINPE Móvil -->
+      @if (metodoPagoSeleccionado() === 'SINPE_MOVIL') {
+        <div class="form-pago">
+          <h3>📱 SINPE Móvil</h3>
+          <div class="sinpe-info">
+            <p>Realice la transferencia a:</p>
+            <div class="sinpe-datos">
+              <div class="dato-item">
+                <span class="label">Número:</span>
+                <span class="valor">8888-8888</span>
+                <button mat-icon-button (click)="copiarAlPortapapeles('8888-8888')" matTooltip="Copiar">
+                  <mat-icon>content_copy</mat-icon>
+                </button>
+              </div>
+              <div class="dato-item">
+                <span class="label">Nombre:</span>
+                <span class="valor">La Ventanita Gorroles S.A.</span>
+              </div>
+              <div class="dato-item">
+                <span class="label">Monto:</span>
+                <span class="valor">{{ formatearPrecio(totales().total) }}</span>
+                <button mat-icon-button (click)="copiarAlPortapapeles(totales().total.toString())" matTooltip="Copiar">
+                  <mat-icon>content_copy</mat-icon>
+                </button>
+              </div>
+            </div>
+
+            <div class="sinpe-instrucciones">
+              <p>Una vez realizada la transferencia, presione:</p>
+            </div>
+
+            <form [formGroup]="sinpeForm">
+              <mat-checkbox formControlName="confirmado">
+                Ya transferí el monto
+              </mat-checkbox>
+            </form>
+
+            <div class="actions">
+              <button mat-stroked-button type="button" (click)="metodoPagoSeleccionado.set(null)">
+                <mat-icon>arrow_back</mat-icon>
+                Atrás
+              </button>
+              <button 
+                mat-raised-button 
+                color="primary" 
+                (click)="procesarPagoSinpe()"
+                [disabled]="sinpeForm.invalid || loading()">
+                @if (loading()) {
+                  <mat-spinner diameter="20" class="spinner-inline"></mat-spinner>
+                  Confirmando...
+                } @else {
+                  <ng-container>
+                    <mat-icon>check</mat-icon>
+                    Ya transferí
+                  </ng-container>
+                }
+              </button>
+            </div>
+          </div>
+        </div>
+      }
+
+      @if (error()) {
+        <div class="error-message">
+          <mat-icon color="warn">error_outline</mat-icon>
+          <span>{{ error() }}</span>
+        </div>
+      }
+    </mat-card-content>
+  </mat-card>
+</div>
+

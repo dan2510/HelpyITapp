@@ -1,0 +1,171 @@
+<div class="producto-dialog-container">
+  <div class="dialog-header">
+    <div class="producto-imagen">
+      @if (producto.imagen) {
+        <img [src]="producto.imagen" [alt]="producto.nombre">
+      } @else {
+        <div class="imagen-placeholder">
+          <mat-icon>restaurant</mat-icon>
+        </div>
+      }
+    </div>
+    <button mat-icon-button class="close-button" (click)="cancelar()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <div class="dialog-content">
+    <form [formGroup]="productoForm">
+      <div class="producto-info">
+        <h2>{{ producto.nombre }}</h2>
+        @if (producto.descripcion) {
+          <p class="descripcion">{{ producto.descripcion }}</p>
+        }
+        <div class="precio-container">
+          <span class="precio-final">{{ formatearPrecio(precioFinal()) }}</span>
+          @if (producto.tiempoPreparacion) {
+            <span class="tiempo-preparacion">
+              <mat-icon>schedule</mat-icon>
+              {{ producto.tiempoPreparacion }} min
+            </span>
+          }
+        </div>
+      </div>
+
+      <!-- Variantes del producto -->
+      @if (producto.gruposVariantes && producto.gruposVariantes.length > 0) {
+        <div class="variantes-section">
+          @for (grupo of producto.gruposVariantes; track grupo.id || i; let i = $index) {
+            <div class="variante-grupo">
+              <div class="grupo-header">
+                <h3>{{ grupo.nombre }}</h3>
+                @if (grupo.obligatorio) {
+                  <span class="obligatorio-badge">Obligatorio</span>
+                }
+              </div>
+              @if (grupo.descripcion) {
+                <p class="grupo-descripcion">{{ grupo.descripcion }}</p>
+              }
+
+              <!-- Opciones del grupo -->
+              <div class="opciones-container">
+                @if (grupo.tipoSeleccion === 'unica') {
+                  <!-- Selección única (radio buttons) -->
+                  @for (opcion of grupo.opciones; track opcion.id || $index) {
+                    <div class="opcion-item" [class.selected]="isOpcionSeleccionada(i, opcion.id?.toString() || '')">
+                      <mat-radio-button
+                        [value]="opcion.id?.toString() || ''"
+                        [checked]="isOpcionSeleccionada(i, opcion.id?.toString() || '')"
+                        (change)="onOpcionUnicaChange(i, opcion.id?.toString() || '')"
+                        class="opcion-radio">
+                        <div class="opcion-content">
+                          <div class="opcion-info">
+                            <span class="opcion-nombre">{{ opcion.nombre }}</span>
+                            @if (opcion.descripcion) {
+                              <span class="opcion-desc">{{ opcion.descripcion }}</span>
+                            }
+                          </div>
+                          @if ((opcion.incrementoPrecio || 0) > 0 || opcion.precioBase) {
+                            <span class="opcion-precio">
+                              @if (opcion.precioBase) {
+                                {{ formatearPrecio(Number(opcion.precioBase)) }}
+                              } @else {
+                                +{{ formatearPrecio(Number(opcion.incrementoPrecio || 0)) }}
+                              }
+                            </span>
+                          }
+                        </div>
+                      </mat-radio-button>
+
+                      <!-- Sub-opciones si requiere -->
+                      @if (requiereSubSeleccion(i, opcion.id?.toString() || '') && isOpcionSeleccionada(i, opcion.id?.toString() || '')) {
+                        <div class="sub-opciones">
+                          @for (subOpcion of getSubOpciones(i, opcion.id?.toString() || ''); track subOpcion) {
+                            <mat-radio-button
+                              [value]="subOpcion"
+                              [formControl]="$any(getGrupoForm(i).get('subOpcionSeleccionada'))"
+                              class="sub-opcion-radio">
+                              {{ subOpcion }}
+                            </mat-radio-button>
+                          }
+                        </div>
+                      }
+                    </div>
+                  }
+                } @else {
+                  <!-- Selección múltiple (checkboxes) -->
+                  @for (opcion of grupo.opciones; track opcion.id || $index) {
+                    <div class="opcion-item" [class.selected]="isOpcionSeleccionada(i, opcion.id?.toString() || '')">
+                      <mat-checkbox
+                        [checked]="isOpcionSeleccionada(i, opcion.id?.toString() || '')"
+                        (change)="onOpcionMultipleChange(i, opcion.id?.toString() || '', $event.checked)"
+                        class="opcion-checkbox">
+                        <div class="opcion-content">
+                          <div class="opcion-info">
+                            <span class="opcion-nombre">{{ opcion.nombre }}</span>
+                            @if (opcion.descripcion) {
+                              <span class="opcion-desc">{{ opcion.descripcion }}</span>
+                            }
+                          </div>
+                          @if ((opcion.incrementoPrecio || 0) > 0) {
+                            <span class="opcion-precio">+{{ formatearPrecio(Number(opcion.incrementoPrecio || 0)) }}</span>
+                          }
+                        </div>
+                      </mat-checkbox>
+                    </div>
+                  }
+                }
+              </div>
+            </div>
+          }
+        </div>
+      }
+
+      <!-- Notas especiales -->
+      <div class="notas-section">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Notas especiales (opcional)</mat-label>
+          <textarea 
+            matInput 
+            formControlName="notas"
+            rows="3"
+            placeholder="Ej: Sin cebolla, bien cocido, etc."></textarea>
+        </mat-form-field>
+      </div>
+
+      <!-- Controles de cantidad -->
+      <div class="cantidad-section">
+        <label>Cantidad</label>
+        <div class="cantidad-controls">
+          <button 
+            mat-icon-button 
+            type="button"
+            (click)="disminuirCantidad()"
+            [disabled]="productoForm.get('cantidad')?.value <= 1">
+            <mat-icon>remove</mat-icon>
+          </button>
+          <span class="cantidad-value">{{ productoForm.get('cantidad')?.value }}</span>
+          <button 
+            mat-icon-button 
+            type="button"
+            (click)="aumentarCantidad()">
+            <mat-icon>add</mat-icon>
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <div class="dialog-actions">
+    <button mat-stroked-button (click)="cancelar()">Cancelar</button>
+    <button 
+      mat-raised-button 
+      color="primary"
+      (click)="agregarAlCarrito()"
+      [disabled]="productoForm.invalid"
+      class="agregar-button">
+      Agregar {{ formatearPrecio(precioFinal()) }}
+    </button>
+  </div>
+</div>
+

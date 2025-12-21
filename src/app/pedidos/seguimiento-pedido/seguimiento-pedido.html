@@ -1,0 +1,123 @@
+<div class="seguimiento-container">
+  @if (loading()) {
+    <div class="loading-container">
+      <mat-spinner></mat-spinner>
+      <p>Cargando información del pedido...</p>
+    </div>
+  } @else if (error()) {
+    <mat-card class="error-card">
+      <mat-icon color="warn">error_outline</mat-icon>
+      <h2>Error</h2>
+      <p>{{ error() }}</p>
+            <button mat-raised-button color="primary" (click)="router.navigate(['/inicio'])">
+              <mat-icon>home</mat-icon>
+              Volver al Inicio
+            </button>
+    </mat-card>
+  } @else if (orden()) {
+    <mat-card class="seguimiento-card">
+      <mat-card-header>
+        <mat-card-title>Pedido {{ orden()?.numeropedido }}</mat-card-title>
+        <mat-card-subtitle>{{ formatearFecha(orden()?.creadoen) }}</mat-card-subtitle>
+      </mat-card-header>
+
+      <mat-card-content>
+        <!-- Estado actual -->
+        @if (estadoActual()) {
+          <div class="estado-actual">
+            <div class="estado-icon" [ngClass]="'estado-' + estadoActual()?.color">
+              <mat-icon>{{ estadoActual()?.icono }}</mat-icon>
+            </div>
+            <h2>{{ estadoActual()?.nombre }}</h2>
+            <p>{{ estadoActual()?.descripcion }}</p>
+          </div>
+
+          <!-- Barra de progreso -->
+          <div class="progreso-container">
+            <div class="progreso-bar">
+              <div class="progreso-fill" [style.width.%]="progreso()"></div>
+            </div>
+            <div class="progreso-text">{{ Math.round(progreso()) }}% completado</div>
+          </div>
+
+          <!-- Timeline de estados -->
+          <div class="timeline">
+            @for (estado of estados; track estado.estado) {
+              <div class="timeline-item" [class.activo]="orden()?.estado === estado.estado" [class.completado]="esEstadoCompletado(estado.estado)">
+                <div class="timeline-icon">
+                  <mat-icon>{{ estado.icono }}</mat-icon>
+                </div>
+                <div class="timeline-content">
+                  <h4>{{ estado.nombre }}</h4>
+                  <p>{{ estado.descripcion }}</p>
+                </div>
+              </div>
+            }
+          </div>
+        }
+
+        <!-- Información del pedido -->
+        <mat-divider></mat-divider>
+        
+        <div class="pedido-info">
+          <h3>Detalles del Pedido</h3>
+          
+          @if (orden()?.items && orden().items.length > 0) {
+            <div class="items-list">
+              @for (item of orden().items; track item.id) {
+                <div class="item-row">
+                  <span class="item-nombre">{{ item.menuItem?.nombre || 'Item' }}</span>
+                  <span class="item-cantidad">x{{ item.cantidad }}</span>
+                  <span class="item-precio">{{ formatearPrecio(Number(item.subtotal)) }}</span>
+                </div>
+              }
+            </div>
+          }
+
+          <mat-divider></mat-divider>
+
+          <div class="totales">
+            <div class="total-line">
+              <span>Subtotal:</span>
+              <span>{{ formatearPrecio(Number(orden()?.subtotal || orden()?.total || 0)) }}</span>
+            </div>
+            @if (orden()?.servicioexpress) {
+              <div class="total-line">
+                <span>Servicio Express:</span>
+                <span>{{ formatearPrecio(Number(orden()?.servicioexpress)) }}</span>
+              </div>
+            }
+            <div class="total-line total-final">
+              <span>TOTAL:</span>
+              <span>{{ formatearPrecio(Number(orden()?.total || 0)) }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tiempo estimado -->
+        @if (orden()?.estado !== 'ENTREGADO' && orden()?.estado !== 'CANCELADO') {
+          <div class="tiempo-estimado">
+            <mat-icon>schedule</mat-icon>
+            <div>
+              <p class="tiempo-label">Tiempo restante estimado:</p>
+              <p class="tiempo-valor">~25 minutos</p>
+            </div>
+          </div>
+        }
+
+        <!-- Botón de contacto -->
+        <div class="contacto-section">
+          <button 
+            mat-raised-button 
+            color="primary"
+            (click)="contactarRestaurante()"
+            class="contacto-button">
+            <mat-icon>phone</mat-icon>
+            Contactar Restaurante
+          </button>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  }
+</div>
+

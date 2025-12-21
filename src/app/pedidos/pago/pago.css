@@ -1,0 +1,240 @@
+.pago-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 64px);
+  padding: 2rem;
+  background: linear-gradient(135deg, rgba(var(--gorroles-olive-rgb), 0.05), rgba(var(--gorroles-olive-dark-rgb), 0.05));
+}
+
+.pago-card {
+  max-width: 700px;
+  width: 100%;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.header-icon {
+  background-color: var(--gorroles-primary);
+  color: white;
+}
+
+.resumen-pedido {
+  background: #f5f5f5;
+  padding: 1.5rem;
+  border-radius: 8px;
+  margin-bottom: 2rem;
+}
+
+.resumen-pedido h3 {
+  margin-top: 0;
+  color: var(--gorroles-primary);
+}
+
+.resumen-line {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.resumen-line.total {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: var(--gorroles-primary);
+  margin-top: 0.5rem;
+}
+
+.metodos-pago h3 {
+  margin-bottom: 1.5rem;
+  color: var(--gorroles-primary);
+}
+
+.metodos-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.metodo-card {
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  text-align: center;
+}
+
+.metodo-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.metodo-icon {
+  font-size: 48px;
+  width: 48px;
+  height: 48px;
+  color: var(--gorroles-primary);
+  margin-bottom: 0.5rem;
+}
+
+.metodo-card h4 {
+  margin: 0.5rem 0;
+  color: #333;
+}
+
+.metodo-card p {
+  margin: 0;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.form-pago {
+  margin-top: 2rem;
+}
+
+.form-pago h3 {
+  color: var(--gorroles-primary);
+  margin-bottom: 1.5rem;
+}
+
+.full-width {
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.cambio-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem;
+  background: rgba(var(--gorroles-primary-rgb), 0.1);
+  border-radius: 4px;
+  margin-bottom: 1rem;
+  color: var(--gorroles-primary);
+}
+
+.cambio-info.error {
+  background: rgba(var(--mat-warn-rgb), 0.1);
+  color: var(--mat-warn);
+}
+
+.tipo-tarjeta {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.total-cobrar {
+  text-align: center;
+  padding: 1rem;
+  background: #f5f5f5;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+}
+
+.total-cobrar p {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.procesando {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 2rem;
+  margin: 1rem 0;
+}
+
+.autorizacion {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem;
+  background: rgba(var(--gorroles-primary-rgb), 0.1);
+  border-radius: 4px;
+  margin: 1rem 0;
+  color: var(--gorroles-primary);
+}
+
+.sinpe-info {
+  padding: 1rem 0;
+}
+
+.sinpe-datos {
+  background: #f5f5f5;
+  padding: 1.5rem;
+  border-radius: 8px;
+  margin: 1.5rem 0;
+}
+
+.dato-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  padding: 0.75rem;
+  background: white;
+  border-radius: 4px;
+}
+
+.dato-item .label {
+  font-weight: bold;
+  min-width: 80px;
+}
+
+.dato-item .valor {
+  flex: 1;
+  color: var(--gorroles-primary);
+  font-weight: 500;
+}
+
+.sinpe-instrucciones {
+  margin: 1.5rem 0;
+  padding: 1rem;
+  background: rgba(var(--gorroles-primary-rgb), 0.05);
+  border-radius: 4px;
+}
+
+.error-message {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--mat-warn);
+  margin-top: 1rem;
+  padding: 0.75rem;
+  background-color: rgba(var(--mat-warn-rgb), 0.1);
+  border-radius: 4px;
+}
+
+.actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.actions button {
+  flex: 1;
+  height: 48px;
+}
+
+.spinner-inline {
+  display: inline-block;
+  margin-right: 0.5rem;
+}
+
+@media (max-width: 768px) {
+  .metodos-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+}
+

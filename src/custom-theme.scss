@@ -15,73 +15,84 @@ html {
 
 body {
   color-scheme: light;
-  background-color: #f4f5f7;
-  color: #172b4d;
+  background-color: #E9E4C0; /* Crema/Beige - Fondo principal */
+  color: #0C0707; /* Negro - Texto principal */
   font-family: Roboto, "Helvetica Neue", sans-serif;
   margin: 0;
   line-height: 1.5;
 }
 
-// Variables CSS personalizadas tipo Jira
+// Variables CSS personalizadas - La ventanita de GORROLES
 :root {
-  --jira-primary: #0052cc;
-  --jira-primary-light: #0065ff;
-  --jira-primary-dark: #003d80;
-  --jira-success: #36b37e;
-  --jira-warning: #ffab00;
-  --jira-error: #de350b;
-  --jira-info: #0052cc;
+  // Colores principales
+  --jira-primary: #97BD25; /* Verde Lima */
+  --jira-primary-light: #B4D85A;
+  --jira-primary-dark: #7A9A1D;
+  
+  --jira-accent: #B61520; /* Rojo Burdeos */
+  --jira-accent-light: #D43A47;
+  --jira-accent-dark: #8F0F18;
+  
+  --jira-navigation: #5D6F25; /* Verde Oliva */
+  --jira-navigation-light: #7A8F3A;
+  --jira-navigation-dark: #4A5A1E;
+  
+  --jira-success: #97BD25; /* Verde Lima */
+  --jira-warning: #FF9800;
+  --jira-error: #B61520; /* Rojo Burdeos */
+  --jira-info: #2196F3;
   
   // Backgrounds
-  --jira-bg-primary: #f4f5f7;
-  --jira-bg-secondary: #ffffff;
-  --jira-bg-elevated: #ffffff;
+  --jira-bg-primary: #E9E4C0; /* Crema/Beige */
+  --jira-bg-secondary: #FDFDFC; /* Blanco */
+  --jira-bg-elevated: #FDFDFC; /* Blanco */
+  --jira-bg-soft: #F5F5F5; /* Gris Claro */
   
   // Text colors
-  --jira-text-primary: #172b4d;
-  --jira-text-secondary: #5e6c84;
-  --jira-text-tertiary: #8993a4;
+  --jira-text-primary: #0C0707; /* Negro */
+  --jira-text-secondary: #666666; /* Gris Oscuro */
+  --jira-text-tertiary: #999999;
   
   // Borders
-  --jira-border-light: #ebecf0;
-  --jira-border-medium: #dfe1e6;
+  --jira-border-light: #E0E0E0;
+  --jira-border-medium: #CCCCCC;
   
   // Shadows
-  --jira-shadow-small: 0 1px 3px rgba(0, 0, 0, 0.1);
-  --jira-shadow-medium: 0 4px 12px rgba(0, 0, 0, 0.15);
-  --jira-shadow-large: 0 8px 25px rgba(0, 0, 0, 0.2);
+  --jira-shadow-small: 0 1px 3px rgba(12, 7, 7, 0.1);
+  --jira-shadow-medium: 0 4px 12px rgba(12, 7, 7, 0.15);
+  --jira-shadow-large: 0 8px 25px rgba(12, 7, 7, 0.2);
 
   // Overrides para colores de Material Design
-  --mat-sys-primary: #0052cc;
-  --mat-sys-on-primary: #ffffff;
-  --mat-sys-primary-container: #b3d4ff;
-  --mat-sys-on-primary-container: #001c3a;
+  --mat-sys-primary: #97BD25; /* Verde Lima */
+  --mat-sys-on-primary: #0C0707; /* Negro para contraste */
+  --mat-sys-primary-container: #B4D85A;
+  --mat-sys-on-primary-container: #0C0707;
   
-  --mat-sys-secondary: #36b37e;
-  --mat-sys-on-secondary: #ffffff;
-  --mat-sys-secondary-container: #b3e5cc;
-  --mat-sys-on-secondary-container: #002e19;
+  --mat-sys-secondary: #B61520; /* Rojo Burdeos */
+  --mat-sys-on-secondary: #FDFDFC; /* Blanco */
+  --mat-sys-secondary-container: #D43A47;
+  --mat-sys-on-secondary-container: #FDFDFC;
   
-  --mat-sys-error: #de350b;
-  --mat-sys-on-error: #ffffff;
-  --mat-sys-error-container: #ffebe6;
-  --mat-sys-on-error-container: #410002;
+  --mat-sys-error: #B61520; /* Rojo Burdeos */
+  --mat-sys-on-error: #FDFDFC; /* Blanco */
+  --mat-sys-error-container: #FFEBEE;
+  --mat-sys-on-error-container: #0C0707;
   
-  --mat-sys-surface: #ffffff;
-  --mat-sys-on-surface: #172b4d;
-  --mat-sys-surface-variant: #f4f5f7;
-  --mat-sys-on-surface-variant: #5e6c84;
+  --mat-sys-surface: #FDFDFC; /* Blanco */
+  --mat-sys-on-surface: #0C0707; /* Negro */
+  --mat-sys-surface-variant: #E9E4C0; /* Crema */
+  --mat-sys-on-surface-variant: #0C0707;
   
-  --mat-sys-background: #f4f5f7;
-  --mat-sys-on-background: #172b4d;
+  --mat-sys-background: #E9E4C0; /* Crema/Beige */
+  --mat-sys-on-background: #0C0707; /* Negro */
   
-  --mat-sys-outline: #dfe1e6;
-  --mat-sys-outline-variant: #ebecf0;
+  --mat-sys-outline: #CCCCCC;
+  --mat-sys-outline-variant: #E0E0E0;
 }
 
-// Clases de utilidad para colores Jira
+// Clases de utilidad para colores GORROLES
 .primary-gradient {
-  background: linear-gradient(90deg, var(--jira-primary) 0%, var(--jira-primary-light) 100%) !important;
+  background: linear-gradient(135deg, var(--jira-primary) 0%, var(--jira-primary-dark) 100%) !important;
 }
 
 .secondary-title {

@@ -1,0 +1,249 @@
+<!-- Formulario de Creación de Orden -->
+<div class="form-container">
+  <div class="form-card">
+    <!-- Header -->
+    <div class="form-header">
+      <div class="header-content">
+        <mat-icon class="header-icon">restaurant_menu</mat-icon>
+        <h1>Nueva Orden</h1>
+      </div>
+      <button mat-icon-button (click)="cancelar()" class="close-button">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+
+    <!-- Loading -->
+    @if (loadingData()) {
+      <div class="loading-overlay">
+        <mat-spinner diameter="50"></mat-spinner>
+        <p>Cargando menú...</p>
+      </div>
+    }
+
+    <!-- Formulario -->
+    <form [formGroup]="ordenForm" (ngSubmit)="onSubmit()" class="orden-form">
+      
+      <!-- Sección: Tipo de Pedido -->
+      <div class="form-section">
+        <h2 class="section-title">
+          <mat-icon>restaurant</mat-icon>
+          Tipo de Pedido
+        </h2>
+        
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Seleccionar Tipo de Pedido</mat-label>
+          <mat-select formControlName="tipopedido">
+            <mat-option [value]="'COMER_AQUI'">
+              <div class="tipo-option">
+                <mat-icon>restaurant</mat-icon>
+                <span>{{ getTipoPedidoNombre('COMER_AQUI') }}</span>
+              </div>
+            </mat-option>
+            <mat-option [value]="'PARA_LLEVAR'">
+              <div class="tipo-option">
+                <mat-icon>shopping_bag</mat-icon>
+                <span>{{ getTipoPedidoNombre('PARA_LLEVAR') }}</span>
+              </div>
+            </mat-option>
+            <mat-option [value]="'DELIVERY'">
+              <div class="tipo-option">
+                <mat-icon>delivery_dining</mat-icon>
+                <span>{{ getTipoPedidoNombre('DELIVERY') }}</span>
+              </div>
+            </mat-option>
+          </mat-select>
+          <mat-icon matPrefix>restaurant</mat-icon>
+        </mat-form-field>
+
+      </div>
+
+      <!-- Sección: Menú -->
+      <div class="form-section">
+        <h2 class="section-title">
+          <mat-icon>menu_book</mat-icon>
+          Menú
+        </h2>
+
+        @if (loadingData()) {
+          <div class="loading-menu">
+            <mat-spinner diameter="40"></mat-spinner>
+            <p>Cargando menú...</p>
+          </div>
+        } @else {
+          <!-- Menú agrupado por categorías -->
+          @for (categoriaNombre of getCategoriasKeys(); track categoriaNombre) {
+            <mat-expansion-panel class="categoria-panel">
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                  <mat-icon>category</mat-icon>
+                  <span>{{ categoriaNombre }}</span>
+                </mat-panel-title>
+                <mat-panel-description>
+                  {{ menuPorCategoria()[categoriaNombre].items.length }} items
+                </mat-panel-description>
+              </mat-expansion-panel-header>
+
+              <div class="menu-items-grid">
+                @for (item of menuPorCategoria()[categoriaNombre].items; track item.id) {
+                  <mat-card class="menu-item-card" [class.disabled]="!item.disponible || !item.activo">
+                    <mat-card-content>
+                      <div class="item-header">
+                        <div class="item-info">
+                          <h3 class="item-name">{{ item.nombre }}</h3>
+                          @if (item.descripcion) {
+                            <p class="item-description">{{ item.descripcion }}</p>
+                          }
+                        </div>
+                        <div class="item-price">
+                          <span class="price-value">{{ item.precio | number:'1.2-2' }}</span>
+                        </div>
+                      </div>
+                      @if (item.tiempoPreparacion) {
+                        <div class="item-time">
+                          <mat-icon>schedule</mat-icon>
+                          <span>{{ item.tiempoPreparacion }} minutos</span>
+                        </div>
+                      }
+                      <div class="item-actions">
+                        @if (!item.disponible || !item.activo) {
+                          <mat-chip class="unavailable-chip">
+                            <mat-icon>block</mat-icon>
+                            No Disponible
+                          </mat-chip>
+                        } @else {
+                          <button 
+                            mat-raised-button 
+                            color="primary" 
+                            type="button"
+                            (click)="agregarItem(item)"
+                            class="add-item-button">
+                            <mat-icon>add</mat-icon>
+                            Agregar
+                          </button>
+                        }
+                      </div>
+                    </mat-card-content>
+                  </mat-card>
+                }
+              </div>
+            </mat-expansion-panel>
+          }
+        }
+      </div>
+
+      <!-- Sección: Items Seleccionados -->
+      @if (itemsSeleccionados().length > 0) {
+        <div class="form-section selected-items-section">
+          <h2 class="section-title">
+            <mat-icon>shopping_cart</mat-icon>
+            Items Seleccionados ({{ itemsSeleccionados().length }})
+          </h2>
+
+          <div class="selected-items-list">
+            @for (item of itemsSeleccionados(); track item.idmenuitem) {
+              <mat-card class="selected-item-card">
+                <mat-card-content>
+                  <div class="selected-item-content">
+                    <div class="item-details">
+                      <h4 class="item-name">{{ item.menuItem?.nombre }}</h4>
+                      <div class="item-controls">
+                        <button 
+                          mat-icon-button 
+                          color="warn" 
+                          type="button"
+                          (click)="removerItem(item.idmenuitem)"
+                          class="remove-button">
+                          <mat-icon>remove_circle</mat-icon>
+                        </button>
+                        <mat-form-field appearance="outline" class="quantity-field">
+                          <mat-label>Cantidad</mat-label>
+                          <input 
+                            matInput 
+                            type="number" 
+                            [value]="item.cantidad"
+                            (change)="actualizarCantidad(item.idmenuitem, +$any($event.target).value)"
+                            min="1"
+                            class="quantity-input">
+                        </mat-form-field>
+                        <button 
+                          mat-icon-button 
+                          color="primary" 
+                          type="button"
+                          (click)="actualizarCantidad(item.idmenuitem, item.cantidad + 1)"
+                          class="add-button">
+                          <mat-icon>add_circle</mat-icon>
+                        </button>
+                      </div>
+                      <mat-form-field appearance="outline" class="item-notes-field">
+                        <mat-label>Notas del Item (Opcional)</mat-label>
+                        <input 
+                          matInput 
+                          [value]="item.notas || ''"
+                          (change)="actualizarNotasItem(item.idmenuitem, $any($event.target).value)"
+                          placeholder="Notas especiales para este item (ej: sin cebolla, bien cocido)"
+                          maxlength="200">
+                        <mat-icon matPrefix>note</mat-icon>
+                      </mat-form-field>
+                    </div>
+                    <div class="item-subtotal">
+                      <span class="subtotal-label">Subtotal</span>
+                      <span class="subtotal-value">{{ item.subtotal | number:'1.2-2' }}</span>
+                    </div>
+                  </div>
+                </mat-card-content>
+              </mat-card>
+            }
+          </div>
+
+          <div class="total-section">
+            <div class="total-label">Total:</div>
+            <div class="total-value">{{ calcularTotal() | number:'1.2-2' }}</div>
+          </div>
+        </div>
+      }
+
+      <!-- Sección: Notas Generales -->
+      <div class="form-section">
+        <h2 class="section-title">
+          <mat-icon>note</mat-icon>
+          Notas Generales (Opcional)
+        </h2>
+        
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Notas de la Orden</mat-label>
+          <textarea 
+            matInput 
+            formControlName="notas" 
+            rows="4"
+            placeholder="Notas adicionales sobre la orden (ej: entrega urgente, instrucciones especiales)"
+            maxlength="500"></textarea>
+          <mat-icon matPrefix>note</mat-icon>
+          <mat-hint>{{ ordenForm.get('notas')?.value?.length || 0 }}/500</mat-hint>
+        </mat-form-field>
+      </div>
+
+      <!-- Botones de Acción -->
+      <div class="form-actions">
+        <button 
+          mat-raised-button 
+          color="primary" 
+          type="submit"
+          [disabled]="ordenForm.invalid || itemsSeleccionados().length === 0 || loading()"
+          class="submit-button">
+          <mat-icon>check</mat-icon>
+          Crear Orden
+        </button>
+        <button 
+          mat-button 
+          type="button"
+          (click)="cancelar()"
+          [disabled]="loading()"
+          class="cancel-button">
+          <mat-icon>close</mat-icon>
+          Cancelar
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+

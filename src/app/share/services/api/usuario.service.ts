@@ -24,5 +24,15 @@ export class UsuarioService extends BaseAPI<UsuarioModel> {
     return this.http.post<any>(`${environment.apiURL}/${environment.endPointUsuario}/reset-password`, { token, correo, password });
   }
 
+  // Buscar usuario por teléfono (para flujo de pedidos)
+  buscarPorTelefono(telefono: string): Observable<any> {
+    return this.http.get<any>(`${environment.apiURL}/${environment.endPointUsuario}/buscar-telefono/${telefono}`);
+  }
+
+  // Crear cliente temporal (sin contraseña, solo para pedidos)
+  crearClienteTemporal(datos: any): Observable<any> {
+    return this.http.post<any>(`${environment.apiURL}/${environment.endPointUsuario}/cliente-temporal`, datos);
+  }
+
 }
 

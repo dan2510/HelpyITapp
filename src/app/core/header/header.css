@@ -4,7 +4,7 @@
   top: 0;
   width: 100%;
   z-index: 1000;
-  background: linear-gradient(90deg, #0052cc 0%, #0065ff 100%) !important;
+  background: linear-gradient(135deg, var(--gorroles-olive) 0%, var(--gorroles-olive-dark) 100%) !important;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
   padding: 0 24px;
   min-height: 64px;
@@ -139,7 +139,7 @@
 
 .check-icon {
   margin-left: auto;
-  color: #0052cc;
+  color: var(--gorroles-primary);
   font-size: 18px;
   width: 18px;
   height: 18px;

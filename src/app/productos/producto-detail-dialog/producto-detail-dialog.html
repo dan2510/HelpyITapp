@@ -1,0 +1,252 @@
+<div class="producto-detail-dialog">
+  <div class="dialog-header">
+    <h2 mat-dialog-title>
+      <mat-icon>restaurant_menu</mat-icon>
+      Detalle del Producto
+    </h2>
+    <button mat-icon-button class="close-button" (click)="cerrar()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <mat-dialog-content class="dialog-content">
+    <div class="producto-info-container">
+      <!-- Imagen del producto -->
+      <div class="imagen-section">
+        @if (producto.imagen) {
+          <img [src]="producto.imagen" [alt]="producto.nombre" class="producto-imagen">
+        } @else {
+          <div class="imagen-placeholder">
+            <mat-icon>restaurant</mat-icon>
+            <p>Sin imagen</p>
+          </div>
+        }
+      </div>
+
+      <!-- Información básica -->
+      <div class="info-section">
+        <h3 class="section-title">
+          <mat-icon>info</mat-icon>
+          Información Básica
+        </h3>
+        <div class="info-grid">
+          <div class="info-item">
+            <span class="info-label">Nombre:</span>
+            <span class="info-value">{{ producto.nombre }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Descripción:</span>
+            <span class="info-value">{{ producto.descripcion || 'Sin descripción' }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Precio Base:</span>
+            <span class="info-value precio">{{ formatearPrecio(Number(producto.precio)) }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Categoría:</span>
+            <span class="info-value">{{ producto.categoria?.nombre || 'Sin categoría' }}</span>
+          </div>
+          @if (producto.tiempoPreparacion) {
+            <div class="info-item">
+              <span class="info-label">Tiempo de Preparación:</span>
+              <span class="info-value">{{ producto.tiempoPreparacion }} minutos</span>
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- Estado y disponibilidad -->
+      <div class="info-section">
+        <h3 class="section-title">
+          <mat-icon>settings</mat-icon>
+          Estado y Configuración
+        </h3>
+        <div class="chips-container">
+          <mat-chip [color]="producto.disponible ? 'primary' : 'warn'">
+            <mat-icon>{{ producto.disponible ? 'check_circle' : 'cancel' }}</mat-icon>
+            {{ producto.disponible ? 'Disponible' : 'No Disponible' }}
+          </mat-chip>
+          <mat-chip [color]="producto.activo ? 'primary' : 'warn'">
+            <mat-icon>{{ producto.activo ? 'check_circle' : 'cancel' }}</mat-icon>
+            {{ producto.activo ? 'Activo' : 'Inactivo' }}
+          </mat-chip>
+          @if (producto.tieneVariantes) {
+            <mat-chip color="accent">
+              <mat-icon>tune</mat-icon>
+              Tiene Variantes
+            </mat-chip>
+          }
+          @if (producto.precioVariable) {
+            <mat-chip color="accent">
+              <mat-icon>price_change</mat-icon>
+              Precio Variable
+            </mat-chip>
+          }
+        </div>
+      </div>
+
+      <!-- Variantes del producto -->
+      <div class="info-section">
+        <h3 class="section-title">
+          <mat-icon>tune</mat-icon>
+          Variantes del Producto
+          @if (tieneVariantesConfiguradas) {
+            <mat-chip class="count-chip">{{ producto.gruposVariantes?.length || 0 }} grupo(s)</mat-chip>
+          }
+        </h3>
+        
+        @if (tieneVariantesConfiguradas) {
+          <div class="variantes-container">
+            @for (grupo of producto.gruposVariantes; track grupo.id || $index) {
+              <mat-card class="grupo-variante-card">
+                <mat-card-header>
+                  <div class="grupo-header">
+                    <div class="grupo-title-section">
+                      <mat-card-title>
+                        <mat-icon class="grupo-icon">category</mat-icon>
+                        {{ grupo.nombre }}
+                      </mat-card-title>
+                      <div class="grupo-badges">
+                        @if (grupo.obligatorio) {
+                          <mat-chip class="obligatorio-chip" matTooltip="El cliente debe seleccionar una opción de este grupo">
+                            <mat-icon>priority_high</mat-icon>
+                            Obligatorio
+                          </mat-chip>
+                        }
+                        @if (grupo.definePrecioBase) {
+                          <mat-chip class="precio-base-chip" matTooltip="Este grupo define el precio base del producto">
+                            <mat-icon>price_change</mat-icon>
+                            Define Precio Base
+                          </mat-chip>
+                        }
+                        <mat-chip [color]="(grupo.tipoSeleccion || grupo.tipo_seleccion) === 'unica' ? 'primary' : 'accent'" 
+                          [matTooltip]="(grupo.tipoSeleccion || grupo.tipo_seleccion) === 'unica' ? 'El cliente solo puede elegir una opción' : 'El cliente puede elegir múltiples opciones'">
+                          <mat-icon>{{ (grupo.tipoSeleccion || grupo.tipo_seleccion) === 'unica' ? 'radio_button_checked' : 'check_box' }}</mat-icon>
+                          {{ (grupo.tipoSeleccion || grupo.tipo_seleccion) === 'unica' ? 'Selección Única' : 'Selección Múltiple' }}
+                        </mat-chip>
+                      </div>
+                    </div>
+                    <div class="opciones-count">
+                      <mat-chip>{{ grupo.opciones?.length || 0 }} opción(es)</mat-chip>
+                    </div>
+                  </div>
+                </mat-card-header>
+                
+                <mat-card-content>
+                  @if (grupo.descripcion) {
+                    <p class="grupo-descripcion">
+                      <mat-icon>description</mat-icon>
+                      {{ grupo.descripcion }}
+                    </p>
+                  }
+                  
+                  @if (grupo.opciones && grupo.opciones.length > 0) {
+                    <div class="opciones-grid">
+                      @for (opcion of grupo.opciones; track opcion.id || $index) {
+                        <mat-card class="opcion-card">
+                          <div class="opcion-header">
+                            <div class="opcion-info">
+                              <h4 class="opcion-nombre">
+                                <mat-icon>check_circle_outline</mat-icon>
+                                {{ opcion.nombre }}
+                              </h4>
+                              @if (opcion.descripcion) {
+                                <p class="opcion-descripcion">{{ opcion.descripcion }}</p>
+                              }
+                            </div>
+                            <div class="opcion-precio-section">
+                              @if (opcion.precioBase || opcion.precio_base) {
+                                <div class="precio-badge precio-base-badge" matTooltip="Este es el precio base cuando se selecciona esta opción">
+                                  <mat-icon>attach_money</mat-icon>
+                                  <span>{{ formatearPrecio(Number(opcion.precioBase || opcion.precio_base)) }}</span>
+                                </div>
+                              } @else if ((opcion.incrementoPrecio || opcion.incremento_precio || 0) > 0) {
+                                <div class="precio-badge incremento-badge" matTooltip="Costo adicional que se suma al precio base">
+                                  <mat-icon>add</mat-icon>
+                                  <span>+{{ formatearPrecio(Number(opcion.incrementoPrecio || opcion.incremento_precio || 0)) }}</span>
+                                </div>
+                              } @else {
+                                <div class="precio-badge sin-costo-badge" matTooltip="No hay costo adicional">
+                                  <mat-icon>check</mat-icon>
+                                  <span>Sin costo</span>
+                                </div>
+                              }
+                            </div>
+                          </div>
+                          
+                          @if (opcion.requiereSubSeleccion || opcion.requiere_sub_seleccion) {
+                            <div class="sub-seleccion-section">
+                              <mat-chip class="sub-seleccion-chip" matTooltip="Esta opción requiere que el cliente elija una sub-opción adicional">
+                                <mat-icon>arrow_forward</mat-icon>
+                                Requiere Sub-selección
+                              </mat-chip>
+                              @if (opcion.subOpciones || opcion.sub_opciones_json) {
+                                <div class="sub-opciones-list">
+                                  <strong>Sub-opciones disponibles:</strong>
+                                  <div class="sub-opciones-chips">
+                                    @for (subOpcion of getSubOpcionesList(opcion); track $index) {
+                                      <mat-chip class="sub-opcion-chip">{{ subOpcion }}</mat-chip>
+                                    }
+                                  </div>
+                                </div>
+                              }
+                            </div>
+                          }
+                        </mat-card>
+                      }
+                    </div>
+                  } @else {
+                    <p class="sin-opciones">No hay opciones configuradas para este grupo</p>
+                  }
+                </mat-card-content>
+              </mat-card>
+            }
+          </div>
+        } @else if (producto.tieneVariantes) {
+          <mat-card class="warning-card">
+            <mat-icon color="warn">warning</mat-icon>
+            <div>
+              <h4>Variantes no configuradas</h4>
+              <p>Este producto está marcado como que tiene variantes, pero no se encontraron grupos de variantes configurados. Por favor, edite el producto para agregar las variantes.</p>
+            </div>
+          </mat-card>
+        } @else {
+          <mat-card class="info-card">
+            <mat-icon>info</mat-icon>
+            <div>
+              <h4>Sin variantes</h4>
+              <p>Este producto no tiene variantes configuradas. Si desea agregar opciones personalizables (tamaños, acompañamientos, extras, etc.), active "Tiene Variantes" y configure los grupos en la edición del producto.</p>
+            </div>
+          </mat-card>
+        }
+      </div>
+
+      <!-- Fechas -->
+      <div class="info-section">
+        <h3 class="section-title">
+          <mat-icon>schedule</mat-icon>
+          Información de Auditoría
+        </h3>
+        <div class="info-grid">
+          <div class="info-item">
+            <span class="info-label">Creado en:</span>
+            <span class="info-value">{{ formatearFecha(producto.creadoen) }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Actualizado en:</span>
+            <span class="info-value">{{ formatearFecha(producto.actualizadoen) }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end" class="dialog-actions">
+    <button mat-button (click)="cerrar()">Cerrar</button>
+    <button mat-raised-button color="primary" (click)="editarProducto()">
+      <mat-icon>edit</mat-icon>
+      Editar Producto
+    </button>
+  </mat-dialog-actions>
+</div>
+

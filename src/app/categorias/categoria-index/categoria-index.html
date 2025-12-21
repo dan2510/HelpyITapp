@@ -5,9 +5,9 @@
       <div mat-card-avatar class="header-icon">
         <mat-icon>category</mat-icon>
       </div>
-      <mat-card-title>{{ 'CATEGORIES.TITLE' | translate }}</mat-card-title>
+      <mat-card-title>Categorías de Menú</mat-card-title>
       <mat-card-subtitle>
-        {{ 'CATEGORIES.SUBTITLE' | translate }}
+        Gestiona las categorías del menú del restaurante
       </mat-card-subtitle>
       <div class="header-actions">
         <button 
@@ -16,7 +16,7 @@
           (click)="crearNuevaCategoria()"
           class="create-button">
           <mat-icon>add</mat-icon>
-          {{ 'CATEGORIES.NEW_CATEGORY' | translate }}
+          Nueva Categoría
         </button>
       </div>
     </mat-card-header>
@@ -26,7 +26,7 @@
       @if (loading()) {
         <div class="loading-container">
           <mat-spinner diameter="50"></mat-spinner>
-          <p>{{ 'CATEGORIES.LOADING' | translate }}</p>
+          <p>Cargando...</p>
         </div>
       }
 
@@ -34,7 +34,7 @@
       @if (error() && !loading()) {
         <div class="error-container">
           <mat-icon color="warn" class="error-icon">error_outline</mat-icon>
-          <h3>{{ 'CATEGORIES.ERROR_LOADING' | translate }}</h3>
+          <h3>Error al Cargar</h3>
           <p>{{ error() }}</p>
           <button 
             mat-raised-button 
@@ -42,7 +42,7 @@
             (click)="retry()"
             class="retry-button">
             <mat-icon>refresh</mat-icon>
-            {{ 'COMMON.RETRY' | translate }}
+            Reintentar
           </button>
         </div>
       }
@@ -68,7 +68,14 @@
               </mat-card-header>
 
               <mat-card-content>
-                <!-- Campo 2: Estado (activo/inactivo) -->
+                <!-- Campo 2: Descripción -->
+                @if (categoria.descripcion) {
+                  <div class="info-row descripcion-section">
+                    <p class="descripcion-text">{{ categoria.descripcion }}</p>
+                  </div>
+                }
+
+                <!-- Campo 3: Estado (activo/inactivo) -->
                 <div class="info-row estado-section">
                   <mat-icon 
                     [color]="getEstadoColor(categoria.activo)"
@@ -82,23 +89,20 @@
                   </span>
                 </div>
 
-                <!-- Campo 3: Política SLA -->
-                <div class="info-row sla-section">
-                  <mat-icon 
-                    [color]="getTiempoRespuestaColor(categoria.politicaSla.maxminutosrespuesta)"
-                    class="sla-icon">
-                    schedule
-                  </mat-icon>
-                  <div class="sla-info">
-                    <span class="sla-name">{{ categoria.politicaSla.nombre }}</span>
-                    <span class="sla-time">
-                      {{ 'CATEGORIES.RESPONSE' | translate }}: 
-                      <strong [ngClass]="'tiempo-' + getTiempoRespuestaColor(categoria.politicaSla.maxminutosrespuesta)">
-                        {{ formatearTiempoRespuesta(categoria.politicaSla.maxminutosrespuesta) }}
-                      </strong>
+                <!-- Campo 4: Items del menú -->
+                @if (categoria.itemsMenu && categoria.itemsMenu.length > 0) {
+                  <div class="info-row items-section">
+                    <mat-icon class="items-icon">restaurant_menu</mat-icon>
+                    <span class="items-text">
+                      {{ categoria.itemsMenu.length }} {{ categoria.itemsMenu.length === 1 ? 'item' : 'items' }} en el menú
                     </span>
                   </div>
-                </div>
+                } @else {
+                  <div class="info-row items-section">
+                    <mat-icon class="items-icon" color="warn">restaurant_menu</mat-icon>
+                    <span class="items-text">Sin items en el menú</span>
+                  </div>
+                }
               </mat-card-content>
 
               <!-- Acciones - Enlace al detalle -->
@@ -109,7 +113,7 @@
                   (click)="verDetalle(categoria.id); $event.stopPropagation()"
                   class="detail-button">
                   <mat-icon>visibility</mat-icon>
-                  {{ 'CATEGORIES.VIEW_DETAIL' | translate }}
+                  Ver Detalle
                 </button>
               </mat-card-actions>
             </mat-card>
@@ -121,15 +125,15 @@
       @if (!loading() && !error() && categorias().length === 0) {
         <div class="empty-state">
           <mat-icon class="empty-icon">folder_off</mat-icon>
-          <h3>{{ 'CATEGORIES.NO_CATEGORIES' | translate }}</h3>
-          <p>{{ 'CATEGORIES.NO_CATEGORIES_DESC' | translate }}</p>
+          <h3>No hay Categorías</h3>
+          <p>No se encontraron categorías. Crea una nueva categoría para comenzar.</p>
           <button 
             mat-raised-button 
             color="primary" 
             (click)="retry()"
             class="refresh-button">
             <mat-icon>refresh</mat-icon>
-            {{ 'COMMON.REFRESH' | translate }}
+            Actualizar
           </button>
         </div>
       }

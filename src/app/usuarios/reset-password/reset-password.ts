@@ -4,7 +4,6 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UsuarioService } from '../../share/services/api/usuario.service';
 import { NotificationService } from '../../share/services/app/notification.service';
-import { TranslationService } from '../../share/services/app/translation.service';
 import { passwordsMatchValidator } from '../../share/validators/password-match-validator';
 import Swal from 'sweetalert2';
 
@@ -26,8 +25,7 @@ export class ResetPassword implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private usuarioService: UsuarioService,
-    private notification: NotificationService,
-    protected readonly translationService: TranslationService
+    private notification: NotificationService
   ) {
     this.initForm();
   }
@@ -64,10 +62,10 @@ export class ResetPassword implements OnInit {
         if (response.success) {
           Swal.fire({
             icon: 'success',
-            title: this.translationService.translate('PASSWORD_RESET.SUCCESS_TITLE'),
-            text: this.translationService.translate('PASSWORD_RESET.SUCCESS_MESSAGE'),
+            title: 'Contraseña Restablecida',
+            text: 'Su contraseña ha sido restablecida exitosamente. Por favor, inicie sesión con su nueva contraseña.',
             showConfirmButton: true,
-            confirmButtonText: this.translationService.translate('COMMON.OK')
+            confirmButtonText: 'Aceptar'
           }).then(() => {
             this.router.navigate(['/usuario/login']);
           });

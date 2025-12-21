@@ -1,28 +1,18 @@
 export const environment = {
 apiURL:"http://localhost:3000",
   endPointUsuario: 'usuario',
-  endPointCategoria: 'categorias',
-  endPointEspecialidad: 'especialidad',
-  endPointEtiqueta: 'etiqueta',
-  endPointPoliticaSla: 'politica-sla',
-  endPointReglaAsignacion: 'regla-asignacion',
-  endPointTiquete: 'tiquetes',
+  endPointCategoriaMenu: 'categorias-menu',
+  endPointMenu: 'menu',
+  endPointOrden: 'ordenes',
+  endPointCliente: 'cliente',
+  endPointConfiguracion: 'configuracion', 
+  endPointAdmin: 'admin',
 
-
-  //getion y seguimiento
-  endPointAsignacion: 'asignaciones',
+  //gestión y seguimiento
   endPointHistorial: 'historial',
   endPointImagen: 'imagen',
-  endPointNotificacion: 'notificacion',
+  endPointNotificacion: 'notificaciones',
   endPointValoracion: 'valoracion',
-
-  endPointCategoriaEspecialidad: 'categoria-especialidad',
-  endPointCategoriaEtiqueta: 'categoria-etiqueta',
-  endPointUsuarioEspecialidad: 'usuario-especialidad',
-
-  endPointTecnico: 'tecnicos',
-  endPointCliente: 'cliente', 
-  endPointAdmin: 'admin',
 
   //para uso futuro si se requiere
   // Endpoints para dashboard y reportes
@@ -31,8 +21,6 @@ apiURL:"http://localhost:3000",
   endPointEstadistica: 'estadistica',
   
   // Endpoints para funcionalidades específicas
-  endPointAsignacionAutomatica: 'asignacion-automatica',
-  endPointSlaMonitor: 'sla-monitor',
   endPointNotificacionPush: 'notificacion-push',
   
   // Endpoints para búsquedas y filtros

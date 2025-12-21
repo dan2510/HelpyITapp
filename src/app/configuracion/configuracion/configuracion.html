@@ -1,0 +1,135 @@
+<div class="configuracion-wrapper">
+  <div class="configuracion-container">
+    <mat-card class="config-card">
+      <mat-card-header>
+        <div class="header-content">
+          <div class="header-title">
+            <mat-icon class="title-icon">settings</mat-icon>
+            <h1>Configuración del Sistema</h1>
+          </div>
+        </div>
+      </mat-card-header>
+
+      <mat-card-content>
+        @if (loadingData()) {
+          <div class="loading-container">
+            <mat-spinner diameter="50"></mat-spinner>
+            <p>Cargando configuración...</p>
+          </div>
+        } @else {
+          <form [formGroup]="configForm" (ngSubmit)="onSubmit()">
+            <!-- Configuración del Servicio Express -->
+            <div class="config-section">
+              <h3 class="section-title">
+                <mat-icon>local_shipping</mat-icon>
+                Servicio Express por Kilómetro
+                <mat-icon matTooltip="Configure el precio por kilómetro que se cobrará por el servicio de entrega express. El sistema calculará automáticamente el costo total basado en la distancia entre el restaurante y la dirección del cliente usando las coordenadas GPS." matTooltipPosition="above" class="info-icon">info</mat-icon>
+              </h3>
+              
+              <div class="config-description">
+                <p>
+                  El servicio express se calcula multiplicando la distancia (en kilómetros) entre el restaurante y la dirección de entrega del cliente por el precio por kilómetro configurado aquí.
+                </p>
+                <p class="formula">
+                  <strong>Fórmula:</strong> Costo Express = Distancia (km) × Precio por Kilómetro
+                </p>
+              </div>
+
+              <div class="field-with-tooltip">
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>Precio por Kilómetro *</mat-label>
+                  <input matInput type="number" formControlName="precioPorKilometro" placeholder="800" min="0" step="0.01">
+                  <span matPrefix>₡&nbsp;</span>
+                  <mat-icon matSuffix matTooltip="Ingrese el precio que se cobrará por cada kilómetro de distancia. Ejemplo: Si configura ₡500/km y la distancia es 2.5 km, el costo será ₡1,250" matTooltipPosition="above">info</mat-icon>
+                  @if (configForm.get('precioPorKilometro')?.hasError('required') && configForm.get('precioPorKilometro')?.touched) {
+                    <mat-error>El precio por kilómetro es requerido</mat-error>
+                  }
+                  @if (configForm.get('precioPorKilometro')?.hasError('min') && configForm.get('precioPorKilometro')?.touched) {
+                    <mat-error>El precio debe ser mayor o igual a 0</mat-error>
+                  }
+                  @if (configForm.get('precioPorKilometro')?.hasError('max') && configForm.get('precioPorKilometro')?.touched) {
+                    <mat-error>El precio no puede ser mayor a ₡10,000</mat-error>
+                  }
+                </mat-form-field>
+              </div>
+
+              <!-- Ejemplo de cálculo -->
+              <div class="ejemplo-calculo">
+                <h4>
+                  <mat-icon>calculate</mat-icon>
+                  Ejemplo de Cálculo
+                </h4>
+                <div class="ejemplo-content">
+                  <p>Con el precio actual de <strong>{{ formatearPrecio(precioPorKm()) }}</strong> por kilómetro:</p>
+                  <ul>
+                    <li>Distancia de <strong>1 km</strong> = {{ formatearPrecio(precioPorKm() * 1) }}</li>
+                    <li>Distancia de <strong>2.5 km</strong> = {{ formatearPrecio(precioPorKm() * 2.5) }}</li>
+                    <li>Distancia de <strong>5 km</strong> = {{ formatearPrecio(precioPorKm() * 5) }}</li>
+                    <li>Distancia de <strong>10 km</strong> = {{ formatearPrecio(precioPorKm() * 10) }}</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <!-- Configuración de Coordenadas del Restaurante -->
+            <mat-divider style="margin: 30px 0;"></mat-divider>
+            
+            <div class="config-section">
+              <h3 class="section-title">
+                <mat-icon>place</mat-icon>
+                Coordenadas del Restaurante
+                <mat-icon matTooltip="Configure las coordenadas GPS del restaurante. Estas se utilizan para calcular la distancia hasta la dirección del cliente." matTooltipPosition="above" class="info-icon">info</mat-icon>
+              </h3>
+              
+              <div class="config-description">
+                <p>
+                  Las coordenadas GPS del restaurante se utilizan para calcular la distancia hasta la dirección de entrega del cliente. 
+                  Puede obtener estas coordenadas desde Google Maps haciendo clic derecho en la ubicación del restaurante y seleccionando las coordenadas.
+                </p>
+              </div>
+
+              <div class="form-row-coords">
+                <div class="field-with-tooltip half-width">
+                  <mat-form-field appearance="outline" class="full-width">
+                    <mat-label>Latitud</mat-label>
+                    <input matInput type="number" formControlName="restauranteLatitud" placeholder="9.9281" step="0.00000001">
+                    <mat-icon matSuffix matTooltip="Latitud GPS del restaurante (ejemplo: 9.9281 para San José, Costa Rica)" matTooltipPosition="above">info</mat-icon>
+                    @if (configForm.get('restauranteLatitud')?.hasError('required') && configForm.get('restauranteLatitud')?.touched) {
+                      <mat-error>La latitud es requerida</mat-error>
+                    }
+                  </mat-form-field>
+                </div>
+
+                <div class="field-with-tooltip half-width">
+                  <mat-form-field appearance="outline" class="full-width">
+                    <mat-label>Longitud</mat-label>
+                    <input matInput type="number" formControlName="restauranteLongitud" placeholder="-84.0907" step="0.00000001">
+                    <mat-icon matSuffix matTooltip="Longitud GPS del restaurante (ejemplo: -84.0907 para San José, Costa Rica)" matTooltipPosition="above">info</mat-icon>
+                    @if (configForm.get('restauranteLongitud')?.hasError('required') && configForm.get('restauranteLongitud')?.touched) {
+                      <mat-error>La longitud es requerida</mat-error>
+                    }
+                  </mat-form-field>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-actions">
+              <button mat-raised-button color="primary" type="submit" [disabled]="configForm.invalid || loading()">
+                @if (loading()) {
+                  <mat-spinner diameter="20"></mat-spinner>
+                  Guardando...
+                } @else {
+                  <ng-container>
+                    <mat-icon>save</mat-icon>
+                    Guardar Configuración
+                  </ng-container>
+                }
+              </button>
+            </div>
+          </form>
+        }
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>
+

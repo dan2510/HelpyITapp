@@ -1,33 +1,86 @@
-/* === ESTILOS JIRA - AGREGAR AL FINAL DE TU STYLES.CSS === */
+/* === ESTILOS LA VENTANITA DE GORROLES === */
 
-/* Variables CSS tipo Jira */
+/* Variables CSS basadas en la paleta oficial del restaurante */
 :root {
-  --jira-primary: #0052cc;
-  --jira-primary-light: #0065ff;
-  --jira-primary-dark: #003d80;
-  --jira-success: #36b37e;
-  --jira-warning: #ffab00;
-  --jira-error: #de350b;
-  --jira-info: #0052cc;
+  /* 🎨 COLORES PRINCIPALES */
+  /* Verde Lima (Principal) */
+  --gorroles-lime: #97BD25;        /* Logo, títulos, botones principales, CTAs */
+  --gorroles-lime-light: #B4D85A;  /* Variante clara */
+  --gorroles-lime-dark: #7A9A1D;   /* Variante oscura */
+  
+  /* Rojo Burdeos */
+  --gorroles-burgundy: #B61520;    /* Ventana logo, acentos, ofertas especiales */
+  --gorroles-burgundy-light: #D43A47; /* Variante clara */
+  --gorroles-burgundy-dark: #8F0F18;  /* Variante oscura */
+  
+  /* Verde Oliva */
+  --gorroles-olive: #5D6F25;       /* Headers de menú, secciones, navegación */
+  --gorroles-olive-light: #7A8F3A; /* Variante clara */
+  --gorroles-olive-dark: #4A5A1E;  /* Variante oscura */
+  
+  /* 🎨 COLORES COMPLEMENTARIOS */
+  /* Crema/Beige */
+  --gorroles-cream: #E9E4C0;       /* Fondo principal, áreas de contenido */
+  --gorroles-cream-light: #F5F2E0;  /* Variante clara */
+  --gorroles-cream-dark: #DDD7A0;   /* Variante oscura */
+  
+  /* Blanco */
+  --gorroles-white: #FDFDFC;       /* Tarjetas, fondos de contenido, contraste */
+  
+  /* Negro */
+  --gorroles-black: #0C0707;       /* Texto principal, elementos oscuros */
+  --gorroles-black-light: #2A1F1F;  /* Negro claro */
+  
+  /* Gris Claro */
+  --gorroles-gray-light: #F5F5F5;  /* Fondos suaves, separadores */
+  
+  /* Gris Oscuro */
+  --gorroles-gray-dark: #666666;    /* Texto secundario */
+  
+  /* Colores funcionales */
+  --gorroles-primary: var(--gorroles-lime);      /* Color principal: Verde Lima */
+  --gorroles-primary-light: var(--gorroles-lime-light);
+  --gorroles-primary-dark: var(--gorroles-lime-dark);
+  
+  --gorroles-accent: var(--gorroles-burgundy);    /* Acento: Rojo Burdeos */
+  --gorroles-accent-light: var(--gorroles-burgundy-light);
+  --gorroles-accent-dark: var(--gorroles-burgundy-dark);
+  
+  --gorroles-navigation: var(--gorroles-olive);   /* Navegación: Verde Oliva */
+  --gorroles-navigation-light: var(--gorroles-olive-light);
+  --gorroles-navigation-dark: var(--gorroles-olive-dark);
+  
+  --gorroles-success: var(--gorroles-lime);       /* Éxito: Verde Lima */
+  --gorroles-warning: #FF9800;                    /* Advertencia: Naranja */
+  --gorroles-error: var(--gorroles-burgundy);     /* Error: Rojo Burdeos */
+  --gorroles-info: #2196F3;                      /* Info: Azul */
   
   /* Backgrounds */
-  --jira-bg-primary: #f4f5f7;
-  --jira-bg-secondary: #ffffff;
-  --jira-bg-elevated: #ffffff;
+  --gorroles-bg-primary: var(--gorroles-cream);      /* Fondo principal: Crema */
+  --gorroles-bg-secondary: var(--gorroles-white);     /* Fondo secundario: Blanco */
+  --gorroles-bg-elevated: var(--gorroles-white);      /* Fondos elevados: Blanco */
+  --gorroles-bg-soft: var(--gorroles-gray-light);     /* Fondos suaves: Gris claro */
   
   /* Text colors */
-  --jira-text-primary: #172b4d;
-  --jira-text-secondary: #5e6c84;
-  --jira-text-tertiary: #8993a4;
+  --gorroles-text-primary: var(--gorroles-black);     /* Texto principal: Negro */
+  --gorroles-text-secondary: var(--gorroles-gray-dark); /* Texto secundario: Gris oscuro */
+  --gorroles-text-tertiary: #999999;                  /* Texto terciario */
+  --gorroles-text-inverse: var(--gorroles-white);      /* Texto inverso: Blanco */
   
   /* Borders */
-  --jira-border-light: #ebecf0;
-  --jira-border-medium: #dfe1e6;
+  --gorroles-border-light: #E0E0E0;
+  --gorroles-border-medium: #CCCCCC;
+  --gorroles-border-dark: var(--gorroles-gray-dark);
   
   /* Shadows */
-  --jira-shadow-small: 0 1px 3px rgba(0, 0, 0, 0.1);
-  --jira-shadow-medium: 0 4px 12px rgba(0, 0, 0, 0.15);
-  --jira-shadow-large: 0 8px 25px rgba(0, 0, 0, 0.2);
+  --gorroles-shadow-small: 0 2px 4px rgba(12, 7, 7, 0.1);
+  --gorroles-shadow-medium: 0 4px 12px rgba(12, 7, 7, 0.15);
+  --gorroles-shadow-large: 0 8px 25px rgba(12, 7, 7, 0.2);
+  
+  /* Gradientes */
+  --gorroles-gradient-primary: linear-gradient(135deg, var(--gorroles-lime) 0%, var(--gorroles-lime-dark) 100%);
+  --gorroles-gradient-accent: linear-gradient(135deg, var(--gorroles-burgundy) 0%, var(--gorroles-burgundy-dark) 100%);
+  --gorroles-gradient-navigation: linear-gradient(135deg, var(--gorroles-olive) 0%, var(--gorroles-olive-dark) 100%);
 }
 
 /* Scrollbar personalizado */
@@ -37,54 +90,65 @@
 }
 
 ::-webkit-scrollbar-track {
-  background: #f4f5f7;
+  background: var(--gorroles-bg-primary);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #c1c7d0;
+  background: var(--gorroles-border-medium);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #9ca6b7;
+  background: var(--gorroles-text-secondary);
 }
 
-/* Clases de utilidad tipo Jira */
+/* Clases de utilidad */
 .primary-gradient {
-  background: linear-gradient(90deg, var(--jira-primary) 0%, var(--jira-primary-light) 100%) !important;
+  background: var(--gorroles-gradient-primary) !important;
+  color: var(--gorroles-white) !important;
+}
+
+.success-gradient {
+  background: var(--gorroles-gradient-success) !important;
+  color: var(--gorroles-white) !important;
 }
 
 .secondary-title {
-  background: var(--jira-bg-secondary) !important;
+  background: var(--gorroles-bg-secondary) !important;
 }
 
 .primary-title {
-  background: var(--jira-primary) !important;
-  color: white !important;
+  background: var(--gorroles-primary) !important;
+  color: var(--gorroles-white) !important;
 }
 
 .text-success {
-  color: var(--jira-success) !important;
+  color: var(--gorroles-success) !important;
 }
 
 .text-warning {
-  color: var(--jira-warning) !important;
+  color: var(--gorroles-warning) !important;
 }
 
 .text-error {
-  color: var(--jira-error) !important;
+  color: var(--gorroles-error) !important;
+}
+
+.text-primary {
+  color: var(--gorroles-primary) !important;
 }
 
 /* Mejoras en componentes Material */
 .mat-mdc-card {
   border-radius: 8px !important;
-  border: 1px solid var(--jira-border-light) !important;
+  border: 1px solid var(--gorroles-border-light) !important;
   transition: all 0.3s ease !important;
+  background: var(--gorroles-bg-secondary) !important;
 }
 
 .mat-mdc-card:hover {
-  border-color: #c1c7d0 !important;
-  box-shadow: var(--jira-shadow-medium) !important;
+  border-color: var(--gorroles-primary) !important;
+  box-shadow: var(--gorroles-shadow-medium) !important;
 }
 
 .mat-mdc-button,
@@ -96,31 +160,129 @@
   transition: all 0.2s ease !important;
 }
 
-.mat-mdc-raised-button:hover {
+.mat-mdc-raised-button.mat-primary {
+  background-color: var(--gorroles-primary) !important;
+  color: var(--gorroles-text-primary) !important;
+}
+
+.mat-mdc-raised-button.mat-primary:hover {
+  background-color: var(--gorroles-primary-dark) !important;
+  color: var(--gorroles-white) !important;
+  transform: translateY(-1px);
+  box-shadow: var(--gorroles-shadow-medium) !important;
+}
+
+.mat-mdc-raised-button.mat-accent {
+  background-color: var(--gorroles-accent) !important;
+  color: var(--gorroles-white) !important;
+}
+
+.mat-mdc-raised-button.mat-accent:hover {
+  background-color: var(--gorroles-accent-dark) !important;
   transform: translateY(-1px);
 }
 
 /* Estados de disponibilidad */
 .status-disponible {
-  color: var(--jira-success) !important;
+  color: var(--gorroles-success) !important;
   font-weight: 500;
 }
 
 .status-ocupado {
-  color: var(--jira-warning) !important;
+  color: var(--gorroles-warning) !important;
   font-weight: 500;
 }
 
 .status-ausente {
-  color: var(--jira-error) !important;
+  color: var(--gorroles-error) !important;
   font-weight: 500;
+}
+
+/* Estados de orden */
+.status-pendiente {
+  color: var(--gorroles-warning) !important;
+  font-weight: 500;
+  background-color: rgba(255, 152, 0, 0.1) !important;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.status-en_preparacion {
+  color: var(--gorroles-navigation) !important;
+  font-weight: 500;
+  background-color: rgba(93, 111, 37, 0.1) !important;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.status-listo {
+  color: var(--gorroles-primary) !important;
+  font-weight: 500;
+  background-color: rgba(151, 189, 37, 0.1) !important;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.status-entregado {
+  color: var(--gorroles-primary-dark) !important;
+  font-weight: 500;
+  background-color: rgba(122, 154, 29, 0.1) !important;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.status-cancelado {
+  color: var(--gorroles-error) !important;
+  font-weight: 500;
+  background-color: rgba(182, 21, 32, 0.1) !important;
+  padding: 4px 8px;
+  border-radius: 4px;
 }
 
 /* Enlaces activos */
 .active-link,
 .active-nav-item {
-  color: var(--jira-primary) !important;
+  color: var(--gorroles-primary) !important;
   font-weight: 600 !important;
+  background-color: rgba(151, 189, 37, 0.1) !important;
+}
+
+/* Badges y chips */
+.mat-mdc-chip.mat-primary {
+  background-color: var(--gorroles-primary) !important;
+  color: var(--gorroles-white) !important;
+}
+
+.mat-mdc-chip.mat-accent {
+  background-color: var(--gorroles-success) !important;
+  color: var(--gorroles-white) !important;
+}
+
+/* Formularios */
+.mat-mdc-form-field {
+  width: 100%;
+}
+
+.mat-mdc-form-field .mat-mdc-text-field-wrapper {
+  background-color: var(--gorroles-bg-secondary) !important;
+}
+
+.mat-mdc-form-field.mat-focused .mat-mdc-text-field-wrapper {
+  border-color: var(--gorroles-primary) !important;
+}
+
+/* Tablas */
+.mat-mdc-table {
+  background: var(--gorroles-bg-secondary) !important;
+}
+
+.mat-mdc-header-row {
+  background-color: var(--gorroles-navigation) !important;
+  color: var(--gorroles-white) !important;
+}
+
+.mat-mdc-row:hover {
+  background-color: var(--gorroles-bg-primary) !important;
 }
 
 /* Animaciones */
@@ -140,10 +302,51 @@
   }
 }
 
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
 .fade-in {
   animation: fadeIn 0.3s ease-out;
 }
 
 .slide-up {
   animation: slideUp 0.4s ease-out;
+}
+
+.pulse {
+  animation: pulse 2s ease-in-out infinite;
+}
+
+/* Utilidades de color de fondo */
+.bg-primary {
+  background-color: var(--gorroles-primary) !important;
+  color: var(--gorroles-white) !important;
+}
+
+.bg-success {
+  background-color: var(--gorroles-success) !important;
+  color: var(--gorroles-white) !important;
+}
+
+.bg-white {
+  background-color: var(--gorroles-white) !important;
+}
+
+.bg-off-white {
+  background-color: var(--gorroles-white-off) !important;
+}
+
+/* Override Material Design primary color */
+.mat-primary {
+  --mdc-theme-primary: var(--gorroles-primary) !important;
+}
+
+.mat-accent {
+  --mdc-theme-secondary: var(--gorroles-success) !important;
 }

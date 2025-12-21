@@ -1,83 +1,84 @@
 <mat-toolbar class="header modern-header">
   <!-- Logo y título -->
   <div class="logo-section">
-    <button mat-icon-button class="logo-button" matTooltip="HelpyIT - Inicio" [routerLink]="['/inicio']">
-      <img [src]="logoUrl" alt="HelpyIT Logo" class="logo-image" (error)="onLogoError($event)" />
+    <button mat-icon-button class="logo-button" matTooltip="La ventanita de GORROLES - Inicio" [routerLink]="['/inicio']">
+      <img [src]="logoUrl" alt="La ventanita de GORROLES Logo" class="logo-image" (error)="onLogoError($event)" />
     </button>
-    <span class="app-title">HelpyIT</span>
+    <span class="app-title">La ventanita de GORROLES</span>
   </div>
 
   <!-- Navegación principal -->
   <nav class="main-navigation">
     <button mat-button [routerLink]="['/inicio']" [routerLinkActive]="'active-nav-item'" class="nav-item">
       <mat-icon>home</mat-icon>
-      <span>{{ 'HEADER.HOME' | translate }}</span>
+      <span>Inicio</span>
     </button>
 
-<!-- Menú Tickets -->
+<!-- Menú Órdenes -->
 @if (authenticated()) {
-<button mat-button [matMenuTriggerFor]="ticketsMenu" class="nav-item">
-  <mat-icon>confirmation_number</mat-icon>
-  <span>{{ 'HEADER.TICKETS' | translate }}</span>
+<button mat-button [matMenuTriggerFor]="ordenesMenu" class="nav-item">
+  <mat-icon>restaurant_menu</mat-icon>
+  <span>Órdenes</span>
   <mat-icon class="dropdown-icon">keyboard_arrow_down</mat-icon>
 </button>
-<mat-menu #ticketsMenu="matMenu" class="modern-menu">
-  <button mat-menu-item [routerLink]="['/tiquetes']" [routerLinkActive]="'active-link'">
+<mat-menu #ordenesMenu="matMenu" class="modern-menu">
+  <button mat-menu-item [routerLink]="['/ordenes']" [routerLinkActive]="'active-link'">
     <mat-icon>list</mat-icon>
-    <span>@if (esAdmin()) { {{ 'HEADER.ALL_TICKETS' | translate }} } @else if (esTecnico()) { {{ 'HEADER.MY_ASSIGNED_TICKETS' | translate }} } @else { {{ 'HEADER.MY_TICKETS' | translate }} }</span>
+    <span>@if (esAdmin()) { Todas las Órdenes } @else { Mis Órdenes }</span>
   </button>
   @if (esCliente() || esAdmin()) {
-  <button mat-menu-item [routerLink]="['/tiquetes/nuevo']" [routerLinkActive]="'active-link'">
+  <button mat-menu-item [routerLink]="['/ordenes/nuevo']" [routerLinkActive]="'active-link'">
     <mat-icon>add_circle_outline</mat-icon>
-    <span>{{ 'HEADER.CREATE_TICKET' | translate }}</span>
+    <span>Crear Orden</span>
   </button>
   }
 </mat-menu>
 }
 
-    <!-- Menú Técnicos - Solo para ADMIN -->
-    @if (esAdmin()) {
-    <button mat-button [matMenuTriggerFor]="tecnicosMenu" class="nav-item">
-      <mat-icon>engineering</mat-icon>
-      <span>{{ 'HEADER.TECHNICIANS' | translate }}</span>
-      <mat-icon class="dropdown-icon">keyboard_arrow_down</mat-icon>
-    </button>
-    <mat-menu #tecnicosMenu="matMenu" class="modern-menu">
-      <button mat-menu-item [routerLink]="['/tecnicos']" [routerLinkActive]="'active-link'">
-        <mat-icon>list</mat-icon>
-        <span>{{ 'HEADER.TECHNICIAN_LIST' | translate }}</span>
-      </button>
-      <button mat-menu-item [routerLink]="['/tecnicos/nuevo']" [routerLinkActive]="'active-link'">
-        <mat-icon>person_add</mat-icon>
-        <span>{{ 'HEADER.ADD_TECHNICIAN' | translate }}</span>
-      </button>
-    </mat-menu>
-    }
 
     <!-- Menú Categorías - Solo para ADMIN -->
     @if (esAdmin()) {
     <button mat-button [matMenuTriggerFor]="categoriasMenu" class="nav-item">
       <mat-icon>category</mat-icon>
-      <span>{{ 'HEADER.CATEGORIES' | translate }}</span>
+      <span>Categorías</span>
       <mat-icon class="dropdown-icon">keyboard_arrow_down</mat-icon>
     </button>
     <mat-menu #categoriasMenu="matMenu" class="modern-menu">
-      <button mat-menu-item [routerLink]="['/categorias']" [routerLinkActive]="'active-link'">
+      <button mat-menu-item [routerLink]="['/categorias-menu']" [routerLinkActive]="'active-link'">
         <mat-icon>list</mat-icon>
-        <span>{{ 'HEADER.CATEGORY_LIST' | translate }}</span>
+        <span>Lista de Categorías</span>
       </button>
-      <button mat-menu-item [routerLink]="['/categorias/nuevo']" [routerLinkActive]="'active-link'">
+      <button mat-menu-item [routerLink]="['/categorias-menu/nuevo']" [routerLinkActive]="'active-link'">
         <mat-icon>add_circle_outline</mat-icon>
-        <span>{{ 'HEADER.NEW_CATEGORY' | translate }}</span>
+        <span>Nueva Categoría</span>
       </button>
     </mat-menu>
     }
 
-    <!-- Vista de Asignaciones - Para TÉCNICO y ADMIN -->
-    @if (esTecnico() || esAdmin()) {
-    <button mat-button [routerLink]="['/asignaciones']" [routerLinkActive]="'active-nav-item'" class="nav-item">
-      <mat-icon>view_week</mat-icon>
-      <span>@if (esTecnico()) { {{ 'HEADER.MY_ASSIGNMENTS' | translate }} } @else { {{ 'HEADER.ASSIGNMENTS' | translate }} }</span>
+    <!-- Menú Productos - Para ADMIN -->
+    @if (esAdmin()) {
+    <button mat-button [matMenuTriggerFor]="productosMenu" class="nav-item">
+      <mat-icon>restaurant</mat-icon>
+      <span>Productos</span>
+      <mat-icon class="dropdown-icon">keyboard_arrow_down</mat-icon>
+    </button>
+    <mat-menu #productosMenu="matMenu" class="modern-menu">
+      <button mat-menu-item [routerLink]="['/productos']" [routerLinkActive]="'active-link'">
+        <mat-icon>list</mat-icon>
+        <span>Lista de Productos</span>
+      </button>
+      <button mat-menu-item [routerLink]="['/productos/nuevo']" [routerLinkActive]="'active-link'">
+        <mat-icon>add_circle_outline</mat-icon>
+        <span>Nuevo Producto</span>
+      </button>
+    </mat-menu>
+    }
+
+    <!-- Configuración - Solo para ADMIN -->
+    @if (esAdmin()) {
+    <button mat-button [routerLink]="['/configuracion']" [routerLinkActive]="'active-nav-item'" class="nav-item" matTooltip="Configuración del sistema">
+      <mat-icon>settings</mat-icon>
+      <span>Configuración</span>
     </button>
     }
     
@@ -88,29 +89,8 @@
 
   <!-- Sección de usuario y notificaciones -->
   <div class="user-section">
-    <!-- Cambio de Idioma -->
-    <button mat-icon-button class="language-button" [matMenuTriggerFor]="languageMenu" [matTooltip]="'HEADER.LANGUAGE' | translate">
-      <mat-icon>language</mat-icon>
-    </button>
-    <mat-menu #languageMenu="matMenu" class="modern-menu">
-      <button mat-menu-item (click)="changeLanguage('es')" [class.active]="isSpanish()">
-        <mat-icon>flag</mat-icon>
-        <span>{{ 'HEADER.SPANISH' | translate }}</span>
-        @if (isSpanish()) {
-          <mat-icon class="check-icon">check</mat-icon>
-        }
-      </button>
-      <button mat-menu-item (click)="changeLanguage('en')" [class.active]="!isSpanish()">
-        <mat-icon>flag</mat-icon>
-        <span>{{ 'HEADER.ENGLISH' | translate }}</span>
-        @if (!isSpanish()) {
-          <mat-icon class="check-icon">check</mat-icon>
-        }
-      </button>
-    </mat-menu>
-
     <!-- Notificaciones -->
-    <button mat-icon-button class="notification-button" [matTooltip]="'HEADER.NOTIFICATIONS' | translate" 
+    <button mat-icon-button class="notification-button" matTooltip="Notificaciones" 
             [matBadge]="cantidadNotificaciones().toString()" 
             matBadgeColor="warn" 
             [matBadgeHidden]="cantidadNotificaciones() === 0"
@@ -143,14 +123,14 @@
         <mat-divider></mat-divider>
         <button mat-menu-item (click)="logout()">
           <mat-icon>logout</mat-icon>
-          <span>{{ 'HEADER.LOGOUT' | translate }}</span>
+          <span>Cerrar Sesión</span>
         </button>
       </mat-menu>
     </div>
     } @else {
     <button mat-button [routerLink]="['/usuario/login']" class="nav-item">
       <mat-icon>login</mat-icon>
-      <span>{{ 'HEADER.LOGIN' | translate }}</span>
+      <span>Iniciar Sesión</span>
     </button>
     }
   </div>

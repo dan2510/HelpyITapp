@@ -1,27 +1,54 @@
-// Colores principales tipo Jira - Versión simplificada
+// Colores principales - La ventanita de GORROLES
 @use 'sass:map';
 
-// Variables de colores principales tipo Jira
-$jira-primary: #0052cc;
-$jira-primary-light: #0065ff;
-$jira-primary-dark: #003d80;
-$jira-success: #36b37e;
-$jira-warning: #ffab00;
-$jira-error: #de350b;
+// Variables de colores principales
+$gorroles-lime: #97BD25;        /* Verde Lima - Principal */
+$gorroles-lime-light: #B4D85A;
+$gorroles-lime-dark: #7A9A1D;
 
-// Colores base tipo Jira
-$surface: #ffffff;
-$background: #f4f5f7;
-$on-surface: #172b4d;
-$on-background: #172b4d;
+$gorroles-burgundy: #B61520;    /* Rojo Burdeos - Acento */
+$gorroles-burgundy-light: #D43A47;
+$gorroles-burgundy-dark: #8F0F18;
 
-// Mixins para gradientes tipo Jira
+$gorroles-olive: #5D6F25;       /* Verde Oliva - Navegación */
+$gorroles-olive-light: #7A8F3A;
+$gorroles-olive-dark: #4A5A1E;
+
+$gorroles-cream: #E9E4C0;       /* Crema/Beige - Fondo */
+$gorroles-white: #FDFDFC;       /* Blanco */
+$gorroles-black: #0C0707;       /* Negro - Texto */
+$gorroles-gray-light: #F5F5F5;  /* Gris Claro */
+$gorroles-gray-dark: #666666;   /* Gris Oscuro - Texto secundario */
+
+// Variables funcionales
+$jira-primary: $gorroles-lime;
+$jira-primary-light: $gorroles-lime-light;
+$jira-primary-dark: $gorroles-lime-dark;
+$jira-success: $gorroles-lime;
+$jira-warning: #FF9800;
+$jira-error: $gorroles-burgundy;
+
+// Colores base
+$surface: $gorroles-white;
+$background: $gorroles-cream;
+$on-surface: $gorroles-black;
+$on-background: $gorroles-black;
+
+// Mixins para gradientes GORROLES
 @mixin jira-gradient-primary {
-  background: linear-gradient(90deg, #{$jira-primary} 0%, #{$jira-primary-light} 100%);
+  background: linear-gradient(135deg, #{$gorroles-lime} 0%, #{$gorroles-lime-dark} 100%);
 }
 
 @mixin jira-gradient-success {
-  background: linear-gradient(135deg, #{$jira-success} 0%, #4caf50 100%);
+  background: linear-gradient(135deg, #{$gorroles-lime} 0%, #{$gorroles-lime-dark} 100%);
+}
+
+@mixin jira-gradient-accent {
+  background: linear-gradient(135deg, #{$gorroles-burgundy} 0%, #{$gorroles-burgundy-dark} 100%);
+}
+
+@mixin jira-gradient-navigation {
+  background: linear-gradient(135deg, #{$gorroles-olive} 0%, #{$gorroles-olive-dark} 100%);
 }
 
 @mixin jira-shadow-small {

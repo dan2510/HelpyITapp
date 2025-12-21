@@ -1,0 +1,355 @@
+<!-- Detalle de Orden -->
+<div class="orden-detail-container">
+  <!-- Header con navegación -->
+  <div class="header-navigation">
+    <button 
+      mat-button 
+      color="primary" 
+      (click)="regresarAlListado()"
+      class="back-button">
+      <mat-icon>arrow_back</mat-icon>
+      Volver al Listado
+    </button>
+  </div>
+
+  <!-- Loading -->
+  @if (loading()) {
+    <div class="loading-container">
+      <mat-spinner diameter="60"></mat-spinner>
+      <p>Cargando...</p>
+    </div>
+  }
+
+  <!-- Error -->
+  @if (error() && !loading()) {
+    <div class="error-container">
+      <mat-icon color="warn" class="error-icon">error_outline</mat-icon>
+      <h3>Error al Cargar</h3>
+      <p>{{ error() }}</p>
+      <div class="error-actions">
+        <button 
+          mat-raised-button 
+          color="primary" 
+          (click)="retry()"
+          class="retry-button">
+          <mat-icon>refresh</mat-icon>
+          Reintentar
+        </button>
+        <button 
+          mat-button 
+          (click)="regresarAlListado()"
+          class="back-button-error">
+          <mat-icon>arrow_back</mat-icon>
+          Volver
+        </button>
+      </div>
+    </div>
+  }
+
+  <!-- Contenido del detalle -->
+  @if (!loading() && !error() && orden(); as ordenActual) {
+    <div class="detail-content">
+      
+      <!-- SECCIÓN 1: Información Básica de la Orden -->
+      <mat-card class="info-card basic-info">
+        <mat-card-header class="card-header">
+          <div mat-card-avatar class="avatar-large">
+            <mat-icon class="avatar-icon">restaurant</mat-icon>
+          </div>
+          <mat-card-title>{{ ordenActual.numeropedido }}</mat-card-title>
+          <mat-card-subtitle>{{ formatearFecha(ordenActual.creadoen) }}</mat-card-subtitle>
+        </mat-card-header>
+
+        <mat-card-content>
+          <div class="info-grid">
+            <!-- Estado -->
+            <div class="info-item badges-item">
+              <mat-icon class="info-icon">label</mat-icon>
+              <div class="info-content">
+                <span class="info-label">Estado</span>
+                <div class="badges-container">
+                  <mat-chip 
+                    [class]="'status-chip-large ' + getEstadoColor(ordenActual.estado)">
+                    <mat-icon [class]="'status-icon ' + getEstadoColor(ordenActual.estado)">
+                      {{ getEstadoIcon(ordenActual.estado) }}
+                    </mat-icon>
+                    {{ getEstadoNombre(ordenActual.estado) }}
+                  </mat-chip>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tipo de Pedido -->
+            <div class="info-item">
+              <mat-icon class="info-icon">{{ getTipoPedidoIcon(ordenActual.tipopedido) }}</mat-icon>
+              <div class="info-content">
+                <span class="info-label">Tipo de Pedido</span>
+                <span class="info-value">{{ getTipoPedidoNombre(ordenActual.tipopedido) }}</span>
+              </div>
+            </div>
+
+            <!-- Total -->
+            <div class="info-item">
+              <mat-icon class="info-icon">attach_money</mat-icon>
+              <div class="info-content">
+                <span class="info-label">Total</span>
+                <span class="info-value total-amount">{{ ordenActual.total | number:'1.2-2' }}</span>
+              </div>
+            </div>
+
+            <!-- Cliente -->
+            <div class="info-item">
+              <mat-icon class="info-icon">person</mat-icon>
+              <div class="info-content">
+                <span class="info-label">Cliente</span>
+                <span class="info-value">{{ ordenActual.cliente?.nombrecompleto }}</span>
+                <span class="info-description">{{ ordenActual.cliente?.correo }}</span>
+              </div>
+            </div>
+
+            <!-- Notas -->
+            @if (ordenActual.notas) {
+              <div class="info-item description-item">
+                <mat-icon class="info-icon">note</mat-icon>
+                <div class="info-content">
+                  <span class="info-label">Notas</span>
+                  <p class="info-value description-text">{{ ordenActual.notas }}</p>
+                </div>
+              </div>
+            }
+
+            <!-- Fechas importantes -->
+            @if (ordenActual.preparadoen) {
+              <div class="info-item">
+                <mat-icon class="info-icon">schedule</mat-icon>
+                <div class="info-content">
+                  <span class="info-label">Preparado en</span>
+                  <span class="info-value">{{ formatearFecha(ordenActual.preparadoen) }}</span>
+                </div>
+              </div>
+            }
+
+            @if (ordenActual.entregadoen) {
+              <div class="info-item">
+                <mat-icon class="info-icon">done_all</mat-icon>
+                <div class="info-content">
+                  <span class="info-label">Entregado en</span>
+                  <span class="info-value">{{ formatearFecha(ordenActual.entregadoen) }}</span>
+                </div>
+              </div>
+            }
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- SECCIÓN 2: Items de la Orden -->
+      @if (ordenActual.items && ordenActual.items.length > 0) {
+        <mat-card class="info-card items-card">
+          <mat-card-header class="card-header">
+            <div mat-card-avatar class="avatar-form">
+              <mat-icon class="avatar-icon">shopping_cart</mat-icon>
+            </div>
+            <mat-card-title>Items de la Orden</mat-card-title>
+            <mat-card-subtitle>{{ ordenActual.items.length }} items</mat-card-subtitle>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="items-list">
+              @for (item of ordenActual.items; track item.id) {
+                <div class="item-row">
+                  <div class="item-info">
+                    <div class="item-name">{{ item.menuItem?.nombre || 'Item' }}</div>
+                    @if (item.menuItem?.descripcion) {
+                      <div class="item-description">{{ item.menuItem.descripcion }}</div>
+                    }
+                    @if (item.notas) {
+                      <div class="item-notes">
+                        <mat-icon class="note-icon">note</mat-icon>
+                        <span>{{ item.notas }}</span>
+                      </div>
+                    }
+                  </div>
+                  <div class="item-quantity">
+                    <span class="quantity-badge">{{ item.cantidad }}x</span>
+                  </div>
+                  <div class="item-price">
+                    <span class="price-value">{{ item.subtotal | number:'1.2-2' }}</span>
+                    <span class="price-unit">@ {{ item.precio | number:'1.2-2' }}</span>
+                  </div>
+                </div>
+              }
+            </div>
+            <div class="items-total">
+              <div class="total-label">Total:</div>
+              <div class="total-value">{{ ordenActual.total | number:'1.2-2' }}</div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      }
+
+      <!-- SECCIÓN 3: Formulario de Actualización de Estado -->
+      @if (puedeActualizarEstado()) {
+        <mat-card class="info-card estado-form-card">
+          <mat-card-header class="card-header">
+            <div mat-card-avatar class="avatar-form">
+              <mat-icon class="avatar-icon">edit</mat-icon>
+            </div>
+            <mat-card-title>Actualizar Estado de la Orden</mat-card-title>
+            <mat-card-subtitle>Cambiar el estado actual de la orden</mat-card-subtitle>
+          </mat-card-header>
+          <mat-card-content>
+            <form [formGroup]="estadoForm" (ngSubmit)="actualizarEstado()">
+              <!-- Estado Actual (Solo lectura) -->
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Estado Actual</mat-label>
+                <input matInput [value]="getEstadoNombre(ordenActual.estado)" readonly>
+                <mat-icon matPrefix>label</mat-icon>
+              </mat-form-field>
+
+              <!-- Nuevo Estado -->
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Nuevo Estado</mat-label>
+                <mat-select formControlName="nuevoEstado" required>
+                  <mat-select-trigger>
+                    @if (estadoForm.get('nuevoEstado')?.value) {
+                      {{ getEstadoNombre(estadoForm.get('nuevoEstado')?.value) }}
+                    }
+                  </mat-select-trigger>
+                  
+                  <!-- Estado Actual (por defecto) -->
+                  <mat-option [value]="getTodosEstadosDisponibles().actual">
+                    <div class="estado-option">
+                      <mat-icon>info</mat-icon>
+                      <span>{{ getEstadoNombre(getTodosEstadosDisponibles().actual) }}</span>
+                    </div>
+                  </mat-option>
+                  
+                  @if (getTodosEstadosDisponibles().siguiente) {
+                    <mat-option [value]="getTodosEstadosDisponibles().siguiente">
+                      <div class="estado-option">
+                        <mat-icon>arrow_forward</mat-icon>
+                        <span>{{ getEstadoNombre(getTodosEstadosDisponibles().siguiente!) }}</span>
+                      </div>
+                    </mat-option>
+                  }
+                </mat-select>
+                <mat-icon matPrefix>label</mat-icon>
+                <mat-hint>Seleccione el nuevo estado</mat-hint>
+                @if (estadoForm.get('nuevoEstado')?.hasError('required') && estadoForm.get('nuevoEstado')?.touched) {
+                  <mat-error>El estado es obligatorio</mat-error>
+                }
+              </mat-form-field>
+
+              <!-- Observación -->
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Observación (Obligatoria)</mat-label>
+                <textarea 
+                  matInput 
+                  formControlName="observacion" 
+                  rows="4"
+                  placeholder="Ingrese una observación sobre el cambio de estado (mínimo 10 caracteres)"
+                  required></textarea>
+                <mat-icon matPrefix>note</mat-icon>
+                <mat-hint>Mínimo 10 caracteres</mat-hint>
+                @if (estadoForm.get('observacion')?.hasError('required') && estadoForm.get('observacion')?.touched) {
+                  <mat-error>La observación es obligatoria</mat-error>
+                }
+                @if (estadoForm.get('observacion')?.hasError('minlength') && estadoForm.get('observacion')?.touched) {
+                  <mat-error>La observación debe tener al menos 10 caracteres</mat-error>
+                }
+              </mat-form-field>
+
+              <!-- Botones de acción -->
+              <div class="form-actions">
+                <button 
+                  mat-raised-button 
+                  color="primary" 
+                  type="submit"
+                  [disabled]="estadoForm.invalid || loading() || estadoForm.get('nuevoEstado')?.value === ordenActual.estado"
+                  class="submit-button">
+                  <mat-icon>save</mat-icon>
+                  Actualizar Estado
+                </button>
+                <button 
+                  mat-button 
+                  type="button"
+                  (click)="cancelarActualizacionEstado()"
+                  [disabled]="loading()"
+                  class="cancel-button">
+                  <mat-icon>close</mat-icon>
+                  Cancelar
+                </button>
+              </div>
+            </form>
+          </mat-card-content>
+        </mat-card>
+      }
+
+      <!-- SECCIÓN 4: Historial de Cambios -->
+      @if (ordenActual.historiales && ordenActual.historiales.length > 0) {
+        <mat-card class="info-card historial-card">
+          <mat-card-header class="card-header">
+            <div mat-card-avatar class="avatar-form">
+              <mat-icon class="avatar-icon">history</mat-icon>
+            </div>
+            <mat-card-title>Historial</mat-card-title>
+            <mat-card-subtitle>{{ ordenActual.historiales.length }} entradas</mat-card-subtitle>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="historial-list">
+              @for (historial of getHistorialesFiltrados(); track historial.id) {
+                <div class="historial-item">
+                  <div class="historial-icon">
+                    <mat-icon>{{ getEstadoIcon(historial.estadonuevo) }}</mat-icon>
+                  </div>
+                  <div class="historial-content">
+                    <div class="historial-header">
+                      <span class="historial-user">{{ historial.usuarioCambio?.nombrecompleto || 'Sistema' }}</span>
+                      <span class="historial-date">{{ formatearFecha(historial.cambiadoen) }}</span>
+                    </div>
+                    @if (historial.estadoanterior && historial.estadonuevo) {
+                      <div class="historial-state-change">
+                        <span class="state-old">{{ getEstadoNombre(historial.estadoanterior) }}</span>
+                        <mat-icon class="arrow-icon">arrow_forward</mat-icon>
+                        <span class="state-new">{{ getEstadoNombre(historial.estadonuevo) }}</span>
+                      </div>
+                    }
+                    @if (historial.observacion) {
+                      <div class="historial-observation">{{ historial.observacion }}</div>
+                    }
+                  </div>
+                </div>
+              }
+            </div>
+          </mat-card-content>
+        </mat-card>
+      }
+
+      <!-- SECCIÓN 5: Valoraciones -->
+      @if (ordenActual.valoraciones && ordenActual.valoraciones.length > 0) {
+        <mat-card class="info-card valoraciones-card">
+          <mat-card-header class="card-header">
+            <div mat-card-avatar class="avatar-form">
+              <mat-icon class="avatar-icon">star</mat-icon>
+            </div>
+            <mat-card-title>Valoraciones</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            @for (valoracion of ordenActual.valoraciones; track valoracion.id) {
+              <div class="valoracion-item">
+                <div class="valoracion-stars">
+                  @for (estrella of getEstrellas(valoracion.calificacion); track $index) {
+                    <mat-icon [class]="getColorCalificacion(valoracion.calificacion)">{{ estrella }}</mat-icon>
+                  }
+                </div>
+                @if (valoracion.comentario) {
+                  <div class="valoracion-comentario">{{ valoracion.comentario }}</div>
+                }
+                <div class="valoracion-fecha">{{ formatearFechaCorta(valoracion.creadaen) }}</div>
+              </div>
+            }
+          </mat-card-content>
+        </mat-card>
+      }
+    </div>
+  }
+</div>

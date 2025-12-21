@@ -6,63 +6,105 @@
       <!-- Logo y descripción -->
       <div class="footer-brand">
         <div class="footer-logo">
-          <mat-icon class="footer-icon">support_agent</mat-icon>
-          <span class="footer-title">HelpyIT</span>
+          <mat-icon class="footer-icon">restaurant</mat-icon>
+          <span class="footer-title">La Ventanita Gorroles</span>
         </div>
         <p class="footer-description">
-          {{ 'FOOTER.DESCRIPTION' | translate }}
+          Restaurante especializado en pollo frito en distintas presentaciones. 
+          Servicio express para llevar y consumo en sitio. 
+          Ubicaciones en San Joaquín de Flores y Heredia Centro.
         </p>
       </div>
 
       <!-- Enlaces rápidos -->
       <div class="footer-links">
         <div class="footer-column">
-          <h4 class="footer-heading">{{ 'FOOTER.PRODUCT' | translate }}</h4>
+          <h4 class="footer-heading">Servicios</h4>
           <ul class="footer-list">
-            <li><a href="#" class="footer-link">{{ 'FOOTER.TICKETS' | translate }}</a></li>
-            <li><a href="#" class="footer-link">{{ 'FOOTER.TECHNICIANS' | translate }}</a></li>
-            <li><a href="#" class="footer-link">{{ 'FOOTER.REPORTS' | translate }}</a></li>
+            <li><a [routerLink]="['/ordenes']" class="footer-link">Realizar Pedido</a></li>
+            <li><a [routerLink]="['/menu']" class="footer-link">Ver Menú</a></li>
+            <li><a [routerLink]="['/categorias-menu']" class="footer-link">Categorías</a></li>
           </ul>
         </div>
 
         <div class="footer-column">
-          <h4 class="footer-heading">{{ 'FOOTER.SUPPORT' | translate }}</h4>
+          <h4 class="footer-heading">Información</h4>
           <ul class="footer-list">
-            <li><a href="#" class="footer-link">{{ 'FOOTER.DOCUMENTATION' | translate }}</a></li>
-            <li><a href="#" class="footer-link">{{ 'FOOTER.API' | translate }}</a></li>
-            <li><a href="#" class="footer-link">{{ 'FOOTER.HELP_CENTER' | translate }}</a></li>
-            <li><a href="#" class="footer-link">{{ 'FOOTER.CONTACT' | translate }}</a></li>
+            <li>
+              <span class="footer-link">
+                <mat-icon style="font-size: 16px; vertical-align: middle; margin-right: 4px;">place</mat-icon>
+                San Joaquín de Flores, Heredia
+              </span>
+            </li>
+            <li>
+              <span class="footer-link">
+                <mat-icon style="font-size: 16px; vertical-align: middle; margin-right: 4px;">place</mat-icon>
+                Heredia Centro
+              </span>
+            </li>
+            <li>
+              <span class="footer-link">
+                <mat-icon style="font-size: 16px; vertical-align: middle; margin-right: 4px;">restaurant</mat-icon>
+                Servicio Express
+              </span>
+            </li>
+            <li>
+              <span class="footer-link">
+                <mat-icon style="font-size: 16px; vertical-align: middle; margin-right: 4px;">restaurant_menu</mat-icon>
+                Consumo en sitio
+              </span>
+            </li>
           </ul>
         </div>
 
         <div class="footer-column">
-          <h4 class="footer-heading">{{ 'FOOTER.COMPANY' | translate }}</h4>
+          <h4 class="footer-heading">Formas de Pago</h4>
           <ul class="footer-list">
-            <li><a href="#" class="footer-link">{{ 'FOOTER.ABOUT' | translate }}</a></li>
-            <li><a href="#" class="footer-link">{{ 'FOOTER.BLOG' | translate }}</a></li>
-            <li><a href="#" class="footer-link">{{ 'FOOTER.CAREERS' | translate }}</a></li>
-            <li><a href="#" class="footer-link">{{ 'FOOTER.PRIVACY' | translate }}</a></li>
+            <li>
+              <span class="footer-link">
+                <mat-icon style="font-size: 16px; vertical-align: middle; margin-right: 4px;">money</mat-icon>
+                Efectivo
+              </span>
+            </li>
+            <li>
+              <span class="footer-link">
+                <mat-icon style="font-size: 16px; vertical-align: middle; margin-right: 4px;">credit_card</mat-icon>
+                Tarjeta
+              </span>
+            </li>
+            <li>
+              <span class="footer-link">
+                <mat-icon style="font-size: 16px; vertical-align: middle; margin-right: 4px;">phone_android</mat-icon>
+                SINPE Móvil
+              </span>
+            </li>
+            <li>
+              <span class="footer-link">
+                <mat-icon style="font-size: 16px; vertical-align: middle; margin-right: 4px;">star</mat-icon>
+                4.6 ⭐ Google Reviews
+              </span>
+            </li>
           </ul>
         </div>
       </div>
 
       <!-- Redes sociales -->
       <div class="footer-social">
-        <h4 class="footer-heading">{{ 'FOOTER.FOLLOW_US' | translate }}</h4>
+        <h4 class="footer-heading">Síguenos</h4>
         <div class="social-links">
-          <button mat-icon-button class="social-btn" [matTooltip]="'FOOTER.LINKEDIN' | translate">
-            <mat-icon>work</mat-icon>
+          <button mat-icon-button class="social-btn" matTooltip="Facebook">
+            <mat-icon>facebook</mat-icon>
           </button>
-          <button mat-icon-button class="social-btn" [matTooltip]="'FOOTER.TWITTER' | translate">
-            <mat-icon>alternate_email</mat-icon>
+          <button mat-icon-button class="social-btn" matTooltip="TikTok">
+            <mat-icon>video_library</mat-icon>
           </button>
-          <button mat-icon-button class="social-btn" [matTooltip]="'FOOTER.GITHUB' | translate">
-            <mat-icon>code</mat-icon>
-          </button>
-          <button mat-icon-button class="social-btn" [matTooltip]="'FOOTER.YOUTUBE' | translate">
-            <mat-icon>play_arrow</mat-icon>
+          <button mat-icon-button class="social-btn" matTooltip="Google Reviews">
+            <mat-icon>star</mat-icon>
           </button>
         </div>
+        <p style="margin-top: 16px; color: var(--gorroles-cream); font-size: 0.85rem;">
+          Mencionado en el "Tour del Pollo Frito" de Costa Rica
+        </p>
       </div>
     </div>
 
@@ -72,15 +114,13 @@
     <!-- Copyright y información legal -->
     <div class="footer-bottom">
       <div class="footer-copyright">
-        <p>&copy; {{ today | date : "yyyy" }} HelpyIT. {{ 'FOOTER.COPYRIGHT' | translate }}</p>
-        <p class="footer-course">{{ 'FOOTER.COURSE' | translate }}</p>
+        <p>&copy; {{ today | date : "yyyy" }} La Ventanita Gorroles. Todos los derechos reservados.</p>
+        <p class="footer-course">Pollo frito crujiente con mayonesa casera - Combo Pechuga desde ₡3,800</p>
       </div>
       <div class="footer-legal">
-        <a href="#" class="footer-legal-link">{{ 'FOOTER.TERMS' | translate }}</a>
+        <span style="color: var(--gorroles-cream);">100% Recomendado en Facebook</span>
         <span class="footer-separator">|</span>
-        <a href="#" class="footer-legal-link">{{ 'FOOTER.PRIVACY' | translate }}</a>
-        <span class="footer-separator">|</span>
-        <a href="#" class="footer-legal-link">{{ 'FOOTER.COOKIES' | translate }}</a>
+        <span style="color: var(--gorroles-cream);">4.6 ⭐ Google Reviews</span>
       </div>
     </div>
   </div>

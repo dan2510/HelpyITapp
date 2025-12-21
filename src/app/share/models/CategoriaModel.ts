@@ -1,16 +1,14 @@
 // src/app/share/models/CategoriaModel.ts
-//import { PoliticaSlaModel } from './PoliticaSlaModel';
 
 export interface CategoriaModel {
   id: number;
   nombre: string;
   descripcion: string;
-  idsla: number;
   activo: boolean;
+  orden: number;
+  creadoen?: Date;
+  actualizadoen?: Date;
   
   // Relaciones sin tipado estricto 
-  politicaSla?: any;
-  sla?: any;
-  etiquetas?: any[];
-  especialidades?: any[];
+  itemsMenu?: any[];
 }

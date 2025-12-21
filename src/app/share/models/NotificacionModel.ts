@@ -1,9 +1,11 @@
+import { TipoNotificacion, EstadoNotificacion } from './EnumsModel';
+
 export interface NotificacionModel {
   id: number;
   tipo: TipoNotificacion;
   idusuariodestino: number;
   idusuarioorigen?: number | null;
-  idtiquete?: number | null;
+  idorden?: number | null;
   titulo: string;
   contenido: string;
   estado: EstadoNotificacion;
@@ -19,22 +21,9 @@ export interface NotificacionModel {
     nombrecompleto: string;
     correo: string;
   } | null;
-  tiquete?: {
+  orden?: {
     id: number;
-    titulo: string;
+    numeropedido: string;
     estado: string;
   } | null;
-}
-
-export enum TipoNotificacion {
-  ASIGNACION = 'ASIGNACION',
-  CAMBIO_ESTADO = 'CAMBIO_ESTADO',
-  MENSAJE = 'MENSAJE',
-  RECORDATORIO = 'RECORDATORIO',
-  INICIO_SESION = 'INICIO_SESION'
-}
-
-export enum EstadoNotificacion {
-  NO_LEIDA = 'NO_LEIDA',
-  LEIDA = 'LEIDA'
 }

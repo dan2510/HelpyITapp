@@ -3,36 +3,36 @@
     <!-- Logo/Header -->
     <div class="login-header">
       <div class="logo-container">
-        <mat-icon class="logo-icon">support_agent</mat-icon>
+        <mat-icon class="logo-icon">restaurant</mat-icon>
       </div>
-      <h1 class="login-title">{{ 'LOGIN.TITLE' | translate }}</h1>
-      <p class="login-subtitle">{{ 'LOGIN.SUBTITLE' | translate }}</p>
+      <h1 class="login-title">La Ventanita Gorroles</h1>
+      <p class="login-subtitle">Inicia sesión en tu cuenta</p>
     </div>
 
     <!-- Formulario -->
     <form [formGroup]="formulario" novalidate class="login-form">
       <mat-form-field appearance="outline" class="full-width">
-        <mat-label>{{ 'LOGIN.EMAIL' | translate }}</mat-label>
-        <input matInput type="email" [placeholder]="'LOGIN.EMAIL_PLACEHOLDER' | translate" formControlName="correo" />
+        <mat-label>Correo electrónico</mat-label>
+        <input matInput type="email" placeholder="tu@correo.com" formControlName="correo" />
         <mat-icon matPrefix>email</mat-icon>
         
         @if (formulario.get('correo')?.invalid &&
         (formulario.get('correo')?.dirty || formulario.get('correo')?.touched || makeSubmit)) {
           @if (formulario.get('correo')?.errors?.['required']) {
-            <mat-error>{{ 'LOGIN.EMAIL_REQUIRED' | translate }}</mat-error>
+            <mat-error>El correo es obligatorio</mat-error>
           }
           @if (formulario.get('correo')?.errors?.['email']) {
-            <mat-error>{{ 'LOGIN.EMAIL_INVALID' | translate }}</mat-error>
+            <mat-error>Formato de correo inválido</mat-error>
           }
         }
       </mat-form-field>
 
       <mat-form-field appearance="outline" class="full-width">
-        <mat-label>{{ 'LOGIN.PASSWORD' | translate }}</mat-label>
-        <input matInput [type]="hide ? 'password' : 'text'" [placeholder]="'LOGIN.PASSWORD_PLACEHOLDER' | translate"
+        <mat-label>Contraseña</mat-label>
+        <input matInput [type]="hide ? 'password' : 'text'" placeholder="Ingresa tu contraseña"
           formControlName="password" />
         <mat-icon matPrefix>lock</mat-icon>
-        <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'LOGIN.SHOW_PASSWORD' | translate"
+        <button mat-icon-button matSuffix (click)="hide = !hide" aria-label="Mostrar contraseña"
           [attr.aria-pressed]="!hide" type="button">
           <mat-icon>{{ hide ? 'visibility_off' : 'visibility' }}</mat-icon>
         </button>
@@ -40,7 +40,7 @@
         @if (formulario.get('password')?.invalid &&
         (formulario.get('password')?.dirty || formulario.get('password')?.touched || makeSubmit)) {
           @if (formulario.get('password')?.errors?.['required']) {
-            <mat-error>{{ 'LOGIN.PASSWORD_REQUIRED' | translate }}</mat-error>
+            <mat-error>La contraseña es obligatoria</mat-error>
           }
         }
       </mat-form-field>
@@ -49,21 +49,18 @@
         <button mat-flat-button color="primary" class="login-button" (click)="submitForm()" [disabled]="loading()">
           @if (loading()) {
             <mat-spinner diameter="20" class="spinner"></mat-spinner>
-            <span>{{ 'LOGIN.LOGGING_IN' | translate }}</span>
+            <span>Iniciando sesión...</span>
           } @else {
-            <span>{{ 'LOGIN.LOGIN_BUTTON' | translate }}</span>
+            <span>Iniciar sesión</span>
           }
         </button>
       </div>
 
       <div class="login-footer">
         <p class="forgot-password-link">
-          <a [routerLink]="['/usuario/forgot-password']" class="link">{{ 'LOGIN.FORGOT_PASSWORD' | translate }}</a>
+          <a [routerLink]="['/usuario/forgot-password']" class="link">¿Olvidaste tu contraseña?</a>
         </p>
-        <p class="register-link">
-          {{ 'LOGIN.NO_ACCOUNT' | translate }}
-          <a [routerLink]="['/usuario/registrar']" class="link">{{ 'LOGIN.REGISTER_HERE' | translate }}</a>
-        </p>
+        <!-- Enlace de registro público eliminado - el registro ahora se hace a través del flujo de pedidos -->
       </div>
     </form>
   </div>

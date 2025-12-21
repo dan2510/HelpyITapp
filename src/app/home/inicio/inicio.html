@@ -1,23 +1,25 @@
 <div class="hero-section">
   <div class="hero-content">
     <div class="hero-text">
-      <h1 class="hero-title">{{ 'HOME.TITLE' | translate }}</h1>
-      <p class="hero-subtitle">{{ 'HOME.SUBTITLE' | translate }}</p>
+      <h1 class="hero-title">La Ventanita Gorroles</h1>
+      <p class="hero-subtitle">Restaurante especializado en pollo frito</p>
       <p class="hero-description">
-        {{ 'HOME.DESCRIPTION' | translate }}
+        Disfruta de nuestro delicioso pollo frito crujiente con mayonesa casera. 
+        Ofrecemos servicio express para llevar y consumo en sitio. 
+        Múltiples formas de pago disponibles.
       </p>
       <div class="hero-actions">
-        <button mat-raised-button color="primary" class="cta-button" [routerLink]="['/tiquetes/nuevo']">
-          <mat-icon>add_circle</mat-icon>
-          {{ 'HOME.CREATE_TICKET' | translate }}
+        <button mat-raised-button color="primary" class="cta-button" [routerLink]="['/pedidos/telefono']">
+          <mat-icon>restaurant_menu</mat-icon>
+          Realizar Pedido
         </button>
       </div>
     </div>
     <div class="hero-image">
       <div class="feature-card">
-        <mat-icon class="feature-icon">support_agent</mat-icon>
-        <h3>{{ 'HOME.SUPPORT_24_7' | translate }}</h3>
-        <p>{{ 'HOME.SUPPORT_24_7_DESC' | translate }}</p>
+        <mat-icon class="feature-icon">star</mat-icon>
+        <h3>4.6 Estrellas</h3>
+        <p>100% Recomendado en Facebook</p>
       </div>
     </div>
   </div>
@@ -25,20 +27,20 @@
 
 <div class="features-section">
   <div class="container">
-    <h2 class="section-title">{{ 'HOME.WHY_CHOOSE' | translate }}</h2>
+    <h2 class="section-title">Nuestros Servicios</h2>
     <div class="features-grid">
       
       <mat-card class="feature-card-modern">
         <mat-card-content>
           <div class="feature-header">
-            <mat-icon class="feature-icon-large primary">flash_on</mat-icon>
-            <h3>{{ 'HOME.FEATURE_FAST_RESOLUTION' | translate }}</h3>
+            <mat-icon class="feature-icon-large primary">restaurant</mat-icon>
+            <h3>Servicio Express</h3>
           </div>
-          <p>{{ 'HOME.FEATURE_FAST_RESOLUTION_DESC' | translate }}</p>
+          <p>Para llevar - Preparación rápida y deliciosa para que disfrutes en casa</p>
           <div class="feature-stats">
             <span class="stat">
-              <strong>95%</strong>
-              <small>{{ 'HOME.STAT_SATISFACTION' | translate }}</small>
+              <strong>Express</strong>
+              <small>Para llevar</small>
             </span>
           </div>
         </mat-card-content>
@@ -47,14 +49,14 @@
       <mat-card class="feature-card-modern">
         <mat-card-content>
           <div class="feature-header">
-            <mat-icon class="feature-icon-large success">groups</mat-icon>
-            <h3>{{ 'HOME.FEATURE_SPECIALIZED_TEAM' | translate }}</h3>
+            <mat-icon class="feature-icon-large success">place</mat-icon>
+            <h3>Ubicaciones</h3>
           </div>
-          <p>{{ 'HOME.FEATURE_SPECIALIZED_TEAM_DESC' | translate }}</p>
+          <p>San Joaquín de Flores, Heredia y Heredia Centro</p>
           <div class="feature-stats">
             <span class="stat">
-              <strong>50+</strong>
-              <small>{{ 'HOME.STAT_TECHNICIANS' | translate }}</small>
+              <strong>2</strong>
+              <small>Sucursales</small>
             </span>
           </div>
         </mat-card-content>
@@ -63,14 +65,14 @@
       <mat-card class="feature-card-modern">
         <mat-card-content>
           <div class="feature-header">
-            <mat-icon class="feature-icon-large warning">analytics</mat-icon>
-            <h3>{{ 'HOME.FEATURE_DETAILED_REPORTS' | translate }}</h3>
+            <mat-icon class="feature-icon-large warning">payment</mat-icon>
+            <h3>Formas de Pago</h3>
           </div>
-          <p>{{ 'HOME.FEATURE_DETAILED_REPORTS_DESC' | translate }}</p>
+          <p>Efectivo, Tarjeta y SINPE Móvil - Múltiples opciones para tu comodidad</p>
           <div class="feature-stats">
             <span class="stat">
-              <strong>24h</strong>
-              <small>{{ 'HOME.STAT_AVERAGE' | translate }}</small>
+              <strong>3</strong>
+              <small>Métodos</small>
             </span>
           </div>
         </mat-card-content>
@@ -79,14 +81,14 @@
       <mat-card class="feature-card-modern">
         <mat-card-content>
           <div class="feature-header">
-            <mat-icon class="feature-icon-large accent">security</mat-icon>
-            <h3>{{ 'HOME.FEATURE_TOTAL_SECURITY' | translate }}</h3>
+            <mat-icon class="feature-icon-large accent">star</mat-icon>
+            <h3>Calidad Garantizada</h3>
           </div>
-          <p>{{ 'HOME.FEATURE_TOTAL_SECURITY_DESC' | translate }}</p>
+          <p>Pollo frito crujiente con mayonesa casera - Mencionado en el Tour del Pollo Frito de Costa Rica</p>
           <div class="feature-stats">
             <span class="stat">
-              <strong>100%</strong>
-              <small>{{ 'HOME.STAT_SECURE' | translate }}</small>
+              <strong>4.6</strong>
+              <small>Estrellas</small>
             </span>
           </div>
         </mat-card-content>
@@ -100,24 +102,24 @@
   <div class="container">
     <div class="stats-grid">
       <div class="stat-item">
-        <mat-icon class="stat-icon">confirmation_number</mat-icon>
-        <div class="stat-number">1,247</div>
-        <div class="stat-label">{{ 'HOME.STATS_RESOLVED_TICKETS' | translate }}</div>
-      </div>
-      <div class="stat-item">
-        <mat-icon class="stat-icon">schedule</mat-icon>
-        <div class="stat-number">2.3h</div>
-        <div class="stat-label">{{ 'HOME.STATS_AVERAGE_TIME' | translate }}</div>
-      </div>
-      <div class="stat-item">
-        <mat-icon class="stat-icon">trending_up</mat-icon>
-        <div class="stat-number">98.5%</div>
-        <div class="stat-label">{{ 'HOME.STATS_UPTIME' | translate }}</div>
-      </div>
-      <div class="stat-item">
         <mat-icon class="stat-icon">star</mat-icon>
-        <div class="stat-number">4.9/5</div>
-        <div class="stat-label">{{ 'HOME.STATS_RATING' | translate }}</div>
+        <div class="stat-number">4.6</div>
+        <div class="stat-label">Google Reviews</div>
+      </div>
+      <div class="stat-item">
+        <mat-icon class="stat-icon">thumb_up</mat-icon>
+        <div class="stat-number">100%</div>
+        <div class="stat-label">Recomendado Facebook</div>
+      </div>
+      <div class="stat-item">
+        <mat-icon class="stat-icon">place</mat-icon>
+        <div class="stat-number">2</div>
+        <div class="stat-label">Ubicaciones</div>
+      </div>
+      <div class="stat-item">
+        <mat-icon class="stat-icon">restaurant_menu</mat-icon>
+        <div class="stat-number">₡3,800</div>
+        <div class="stat-label">Combo Pechuga</div>
       </div>
     </div>
   </div>

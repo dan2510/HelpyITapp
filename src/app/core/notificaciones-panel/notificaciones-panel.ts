@@ -1,10 +1,9 @@
 import { Component, OnInit, inject, computed } from '@angular/core';
 import { Router } from '@angular/router';
 import { NotificacionService } from '../../share/services/app/notificacion.service';
-import { NotificacionModel, TipoNotificacion, EstadoNotificacion } from '../../share/models/NotificacionModel';
+import { NotificacionModel } from '../../share/models/NotificacionModel';
+import { TipoNotificacion, EstadoNotificacion } from '../../share/models/EnumsModel';
 import { NotificationService } from '../../share/services/app/notification.service';
-import { TranslateService } from '@ngx-translate/core';
-
 @Component({
   selector: 'app-notificaciones-panel',
   standalone: false,
@@ -15,7 +14,6 @@ export class NotificacionesPanel implements OnInit {
   private notificacionService = inject(NotificacionService);
   private router = inject(Router);
   private notification = inject(NotificationService);
-  private translate = inject(TranslateService);
 
   readonly notificaciones = computed(() => this.notificacionService.notificacionesOrdenadas());
   readonly cantidadNoLeidas = computed(() => this.notificacionService.cantidadNoLeidas());
@@ -36,8 +34,10 @@ export class NotificacionesPanel implements OnInit {
     switch (tipo) {
       case TipoNotificacion.CAMBIO_ESTADO:
         return 'swap_horiz';
-      case TipoNotificacion.ASIGNACION:
-        return 'assignment_ind';
+      case TipoNotificacion.NUEVA_ORDEN:
+        return 'add_shopping_cart';
+      case TipoNotificacion.ORDEN_LISTA:
+        return 'check_circle';
       case TipoNotificacion.INICIO_SESION:
         return 'login';
       case TipoNotificacion.MENSAJE:
@@ -53,8 +53,10 @@ export class NotificacionesPanel implements OnInit {
     switch (tipo) {
       case TipoNotificacion.CAMBIO_ESTADO:
         return 'primary';
-      case TipoNotificacion.ASIGNACION:
+      case TipoNotificacion.NUEVA_ORDEN:
         return 'accent';
+      case TipoNotificacion.ORDEN_LISTA:
+        return 'primary';
       case TipoNotificacion.INICIO_SESION:
         return 'primary';
       case TipoNotificacion.MENSAJE:
@@ -73,29 +75,24 @@ export class NotificacionesPanel implements OnInit {
     const diffMins = Math.floor(diffMs / 60000);
     const diffHours = Math.floor(diffMs / 3600000);
     const diffDays = Math.floor(diffMs / 86400000);
-    const currentLang = this.translate.currentLang || 'es';
 
     if (diffMins < 1) {
-      return this.translate.instant('NOTIFICATIONS.TIME.JUST_NOW');
+      return 'Hace un momento';
     }
     
     if (diffMins < 60) {
-      const key = diffMins === 1 ? 'NOTIFICATIONS.TIME.MINUTE_AGO' : 'NOTIFICATIONS.TIME.MINUTES_AGO';
-      return this.translate.instant(key, { minutes: diffMins });
+      return diffMins === 1 ? 'Hace 1 minuto' : `Hace ${diffMins} minutos`;
     }
     
     if (diffHours < 24) {
-      const key = diffHours === 1 ? 'NOTIFICATIONS.TIME.HOUR_AGO' : 'NOTIFICATIONS.TIME.HOURS_AGO';
-      return this.translate.instant(key, { hours: diffHours });
+      return diffHours === 1 ? 'Hace 1 hora' : `Hace ${diffHours} horas`;
     }
     
     if (diffDays < 7) {
-      const key = diffDays === 1 ? 'NOTIFICATIONS.TIME.DAY_AGO' : 'NOTIFICATIONS.TIME.DAYS_AGO';
-      return this.translate.instant(key, { days: diffDays });
+      return diffDays === 1 ? 'Hace 1 día' : `Hace ${diffDays} días`;
     }
     
-    const locale = currentLang === 'en' ? 'en-US' : 'es-ES';
-    return date.toLocaleDateString(locale, {
+    return date.toLocaleDateString('es-ES', {
       day: 'numeric',
       month: 'short',
       year: date.getFullYear() !== ahora.getFullYear() ? 'numeric' : undefined
@@ -117,16 +114,16 @@ export class NotificacionesPanel implements OnInit {
       next: (response) => {
         if (response.success) {
           this.notification.success(
-            this.translate.instant('NOTIFICATIONS.TITLE'),
-            this.translate.instant('NOTIFICATIONS.NOTIFICATION_MARKED')
+            'Notificaciones',
+            'Notificación marcada como leída'
           );
         }
       },
       error: (error) => {
         console.error('Error al marcar notificación como leída:', error);
         this.notification.error(
-          this.translate.instant('COMMON.ERROR'),
-          this.translate.instant('NOTIFICATIONS.ERROR_MARKING')
+          'Error',
+          'Error al marcar la notificación como leída'
         );
       }
     });
@@ -141,16 +138,16 @@ export class NotificacionesPanel implements OnInit {
       next: (response) => {
         if (response.success) {
           this.notification.success(
-            this.translate.instant('NOTIFICATIONS.TITLE'),
-            this.translate.instant('NOTIFICATIONS.ALL_MARKED_READ')
+            'Notificaciones',
+            'Todas las notificaciones fueron marcadas como leídas'
           );
         }
       },
       error: (error) => {
         console.error('Error al marcar todas como leídas:', error);
         this.notification.error(
-          this.translate.instant('COMMON.ERROR'),
-          this.translate.instant('NOTIFICATIONS.ERROR_MARKING_ALL')
+          'Error',
+          'Error al marcar todas las notificaciones como leídas'
         );
       }
     });
@@ -163,8 +160,8 @@ export class NotificacionesPanel implements OnInit {
     }
 
     // Navegar según el tipo de notificación
-    if (notificacion.tiquete && notificacion.idtiquete) {
-      this.router.navigate(['/tiquetes', notificacion.idtiquete]);
+    if (notificacion.orden && notificacion.idorden) {
+      this.router.navigate(['/ordenes', notificacion.idorden]);
     }
   }
 

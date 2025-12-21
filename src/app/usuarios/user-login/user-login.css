@@ -3,19 +3,37 @@
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--gorroles-navigation) 0%, var(--gorroles-navigation-dark) 100%);
   padding: 20px;
   box-sizing: border-box;
+  position: relative;
+  overflow: hidden;
+}
+
+.login-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  /* background: url('/images/game.jpg') center/cover; */
+  background: linear-gradient(135deg, rgba(151, 189, 37, 0.2) 0%, rgba(101, 126, 25, 0.2) 100%);
+  opacity: 0.1;
+  z-index: 0;
 }
 
 .login-box {
   width: 100%;
   max-width: 400px;
-  background: #ffffff;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+  background: var(--gorroles-bg-secondary);
+  border-radius: 12px;
+  box-shadow: var(--gorroles-shadow-large);
   padding: 48px 40px;
   box-sizing: border-box;
+  position: relative;
+  z-index: 1;
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .login-header {
@@ -33,20 +51,24 @@
   font-size: 48px;
   width: 48px;
   height: 48px;
-  color: #667eea;
+  color: var(--gorroles-primary);
+  background: rgba(151, 189, 37, 0.1);
+  border-radius: 50%;
+  padding: 12px;
 }
 
 .login-title {
   font-size: 28px;
-  font-weight: 600;
+  font-weight: 700;
   margin: 0 0 8px 0;
-  color: #172b4d;
+  color: var(--gorroles-text-primary);
   letter-spacing: -0.5px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
 .login-subtitle {
   font-size: 14px;
-  color: #6b778c;
+  color: var(--gorroles-text-secondary);
   margin: 0;
 }
 
@@ -68,13 +90,29 @@
   width: 100%;
   height: 44px;
   font-size: 16px;
-  font-weight: 500;
+  font-weight: 600;
   text-transform: none;
-  border-radius: 4px;
+  border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
+  background: var(--gorroles-primary) !important;
+  color: var(--gorroles-text-primary) !important;
+  box-shadow: 0 4px 12px rgba(151, 189, 37, 0.3);
+  transition: all 0.3s ease;
+}
+
+.login-button:hover:not(:disabled) {
+  background: var(--gorroles-primary-dark) !important;
+  color: var(--gorroles-white) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(151, 189, 37, 0.4);
+}
+
+.login-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 .login-button .spinner {
@@ -88,12 +126,12 @@
 
 .register-link {
   font-size: 14px;
-  color: #6b778c;
+  color: var(--gorroles-text-secondary);
   margin: 0;
 }
 
 .register-link .link {
-  color: #667eea;
+  color: var(--gorroles-primary);
   text-decoration: none;
   font-weight: 500;
   margin-left: 4px;
@@ -101,7 +139,23 @@
 }
 
 .register-link .link:hover {
-  color: #5568d3;
+  color: var(--gorroles-primary-dark);
+  text-decoration: underline;
+}
+
+.forgot-password-link {
+  margin-bottom: 12px;
+}
+
+.forgot-password-link .link {
+  color: var(--gorroles-accent);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.forgot-password-link .link:hover {
+  color: var(--gorroles-accent-dark);
   text-decoration: underline;
 }
 
@@ -111,15 +165,44 @@
 }
 
 ::ng-deep .mat-mdc-text-field-wrapper {
-  background-color: #fafbfc;
+  background-color: var(--gorroles-bg-soft);
 }
 
 ::ng-deep .mat-mdc-form-field.mat-focused .mat-mdc-text-field-wrapper {
-  background-color: #ffffff;
+  background-color: var(--gorroles-bg-secondary);
 }
 
 ::ng-deep .mat-mdc-form-field-subscript-wrapper {
   margin-top: 4px;
+}
+
+/* Estilos para los campos de entrada con la paleta de Gorroles */
+::ng-deep .mat-mdc-form-field.mat-focused .mat-mdc-form-field-label {
+  color: var(--gorroles-primary) !important;
+}
+
+::ng-deep .mat-mdc-form-field.mat-focused .mdc-notched-outline__leading,
+::ng-deep .mat-mdc-form-field.mat-focused .mdc-notched-outline__notch,
+::ng-deep .mat-mdc-form-field.mat-focused .mdc-notched-outline__trailing {
+  border-color: var(--gorroles-primary) !important;
+}
+
+::ng-deep .mat-mdc-form-field .mdc-text-field--outlined .mdc-notched-outline__leading,
+::ng-deep .mat-mdc-form-field .mdc-text-field--outlined .mdc-notched-outline__notch,
+::ng-deep .mat-mdc-form-field .mdc-text-field--outlined .mdc-notched-outline__trailing {
+  border-color: var(--gorroles-border-light);
+}
+
+::ng-deep .mat-mdc-form-field .mat-mdc-form-field-icon-prefix {
+  color: var(--gorroles-text-secondary);
+}
+
+::ng-deep .mat-mdc-form-field.mat-focused .mat-mdc-form-field-icon-prefix {
+  color: var(--gorroles-primary);
+}
+
+::ng-deep .mat-mdc-form-field-error {
+  color: var(--gorroles-error) !important;
 }
 
 /* Responsive */

@@ -1,0 +1,162 @@
+<!-- Listado de Órdenes filtrado por Rol -->
+<div class="ordenes-container">
+  <mat-card class="main-card">
+    <mat-card-header class="header-section">
+      <div mat-card-avatar class="header-icon">
+        <mat-icon>restaurant_menu</mat-icon>
+      </div>
+      <mat-card-title>{{ getTituloSegunRol() }}</mat-card-title>
+      <mat-card-subtitle>{{ getSubtituloSegunRol() }}</mat-card-subtitle>
+      <div class="header-actions">
+        <button 
+          mat-raised-button 
+          color="primary" 
+          (click)="crearNuevaOrden()"
+          class="create-button">
+          <mat-icon>add</mat-icon>
+          Nueva Orden
+        </button>
+      </div>
+    </mat-card-header>
+
+    <mat-card-content>
+    
+      <mat-divider></mat-divider>
+
+      <!-- Estado de carga -->
+      @if (loading()) {
+        <div class="loading-container">
+          <mat-spinner diameter="50"></mat-spinner>
+          <p>Cargando...</p>
+        </div>
+      }
+
+      <!-- Estado de error -->
+      @if (error() && !loading()) {
+        <div class="error-container">
+          <mat-icon color="warn" class="error-icon">error_outline</mat-icon>
+          <h3>Error al Cargar</h3>
+          <p>{{ error() }}</p>
+          <button 
+            mat-raised-button 
+            color="primary" 
+            (click)="retry()"
+            class="retry-button">
+            <mat-icon>refresh</mat-icon>
+            Reintentar
+          </button>
+        </div>
+      }
+
+      <!-- Lista de órdenes -->
+      @if (!loading() && !error() && ordenes().length > 0) {
+        <div class="ordenes-grid">
+          @for (orden of ordenes(); track orden.id) {
+            <mat-card 
+              class="orden-card"
+              (click)="verDetalle(orden.id)"
+              matRipple
+              [matRippleColor]="'rgba(220, 20, 60, 0.1)'">
+              
+              <!-- Header con número de pedido y estado -->
+              <mat-card-header>
+                <div mat-card-avatar class="avatar-container">
+                  <mat-icon class="orden-icon">restaurant</mat-icon>
+                </div>
+                <mat-card-title class="orden-title">
+                  {{ orden.numeropedido }}
+                </mat-card-title>
+                <mat-card-subtitle class="orden-subtitle">
+                  {{ formatearFechaHora(orden.creadoen) }}
+                </mat-card-subtitle>
+              </mat-card-header>
+
+              <mat-card-content>
+                <!-- Campo 1: Tipo de Pedido -->
+                <div class="info-row tipo-section">
+                  <mat-icon class="tipo-icon">
+                    {{ getTipoPedidoIcon(orden.tipopedido) }}
+                  </mat-icon>
+                  <span class="tipo-text">
+                    {{ getTipoPedidoNombre(orden.tipopedido) }}
+                  </span>
+                </div>
+
+                <!-- Campo 2: Estado -->
+                <div class="info-row status-section">
+                  <mat-icon 
+                    [class]="'status-icon ' + getEstadoColor(orden.estado)">
+                    {{ getEstadoIcon(orden.estado) }}
+                  </mat-icon>
+                  <mat-chip 
+                    [class]="'status-chip ' + getEstadoColor(orden.estado)">
+                    {{ getEstadoNombre(orden.estado) }}
+                  </mat-chip>
+                </div>
+
+                <!-- Campo 3: Total -->
+                <div class="info-row total-section">
+                  <mat-icon class="total-icon">attach_money</mat-icon>
+                  <span class="total-text">
+                    <strong>{{ orden.total | number:'1.2-2' }}</strong>
+                  </span>
+                </div>
+
+                <!-- Campo 4: Cliente (solo para ADMIN) -->
+                @if (rolActual() === 'ADMIN' && orden.cliente) {
+                  <div class="info-row user-section">
+                    <mat-icon class="user-icon">person</mat-icon>
+                    <span class="user-text">
+                      Cliente: <strong>{{ orden.cliente?.nombrecompleto }}</strong>
+                    </span>
+                  </div>
+                }
+                
+
+                <!-- Campo 6: Items count -->
+                @if (orden.items && orden.items.length > 0) {
+                  <div class="info-row items-section">
+                    <mat-icon class="items-icon">shopping_cart</mat-icon>
+                    <span class="items-text">
+                      {{ orden.items.length }} items
+                    </span>
+                  </div>
+                }
+              </mat-card-content>
+
+              <!-- Acciones -->
+              <mat-card-actions align="end">
+                <button 
+                  mat-button 
+                  color="primary"
+                  (click)="verDetalle(orden.id); $event.stopPropagation()"
+                  class="detail-button">
+                  <mat-icon>visibility</mat-icon>
+                  Ver Detalle
+                </button>
+              </mat-card-actions>
+            </mat-card>
+          }
+        </div>
+      }
+
+      <!-- Estado vacío -->
+      @if (!loading() && !error() && ordenes().length === 0) {
+        <div class="empty-state">
+          <mat-icon class="empty-icon">restaurant_menu</mat-icon>
+          <h3>No hay Órdenes</h3>
+          <p>No se encontraron órdenes. Crea una nueva orden para comenzar.</p>
+          <button 
+            mat-raised-button 
+            color="primary" 
+            (click)="crearNuevaOrden()"
+            class="create-button">
+            <mat-icon>add</mat-icon>
+            Nueva Orden
+          </button>
+        </div>
+      }
+    </mat-card-content>
+  </mat-card>
+</div>
+

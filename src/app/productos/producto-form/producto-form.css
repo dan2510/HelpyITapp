@@ -1,0 +1,372 @@
+.producto-form-wrapper {
+  min-height: 100vh;
+  background: linear-gradient(135deg, rgba(var(--gorroles-primary-rgb, 25, 118, 210), 0.05) 0%, rgba(var(--gorroles-accent-rgb, 255, 152, 0), 0.05) 100%);
+  padding: 40px 20px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.producto-form-container {
+  width: 100%;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.form-card {
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+  border-radius: 16px;
+  background: white;
+  overflow: hidden;
+}
+
+.form-card .mat-card-header {
+  padding: 20px;
+  border-bottom: 1px solid var(--gorroles-border-color);
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.header-title {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.header-title h1 {
+  margin: 0;
+  font-size: 1.8em;
+  color: var(--gorroles-primary);
+}
+
+.title-icon {
+  font-size: 2em;
+  width: 2em;
+  height: 2em;
+  color: var(--gorroles-primary);
+}
+
+.form-card .mat-card-content {
+  padding: 30px;
+}
+
+.form-section {
+  padding: 20px 0;
+}
+
+.section-subtitle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--gorroles-primary, #1976d2);
+  margin: 20px 0 15px 0;
+}
+
+.section-subtitle .info-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+  color: #999;
+  cursor: help;
+}
+
+.field-with-tooltip {
+  position: relative;
+  width: 100%;
+}
+
+.field-with-tooltip mat-icon[matSuffix] {
+  cursor: help;
+  color: #999;
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+}
+
+.info-icon-small {
+  font-size: 16px !important;
+  width: 16px !important;
+  height: 16px !important;
+  color: #999;
+  cursor: help;
+  margin-left: 4px;
+}
+
+.toggle-section {
+  margin: 30px 0;
+  padding: 20px;
+  background: rgba(var(--gorroles-primary-rgb, 25, 118, 210), 0.03);
+  border-radius: 8px;
+}
+
+.toggle-section-inline {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin: 15px 0;
+}
+
+.toggles-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+  margin-top: 15px;
+}
+
+.toggle-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.imagen-section {
+  margin: 30px 0;
+  padding: 20px;
+  background: rgba(var(--gorroles-accent-rgb, 255, 152, 0), 0.03);
+  border-radius: 8px;
+}
+
+.imagen-options {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-top: 15px;
+}
+
+.imagen-upload {
+  display: flex;
+  justify-content: center;
+}
+
+.imagen-preview-container {
+  position: relative;
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+}
+
+.imagen-preview {
+  max-width: 100%;
+  max-height: 300px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  object-fit: contain;
+}
+
+.eliminar-imagen-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.full-width {
+  width: 100%;
+  margin-bottom: 15px;
+}
+
+.form-row {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 15px;
+}
+
+.half-width {
+  flex: 1;
+}
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  text-align: center;
+}
+
+.variantes-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.variantes-header h3 {
+  margin: 0;
+  color: var(--gorroles-primary);
+}
+
+.grupo-variante-panel {
+  margin-bottom: 15px;
+  border: 1px solid var(--gorroles-border-color);
+}
+
+.grupo-variante-content {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.opciones-section {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid var(--gorroles-border-color);
+}
+
+.opciones-section h4 {
+  margin: 0 0 15px 0;
+  color: var(--gorroles-accent);
+}
+
+.opcion-variante-card {
+  padding: 15px;
+  margin-bottom: 15px;
+  border: 1px solid var(--gorroles-border-color);
+  border-radius: var(--gorroles-border-radius-medium);
+  background: rgba(var(--gorroles-surface-rgb), 0.5);
+  position: relative;
+}
+
+.opcion-variante-card button[color="warn"] {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+
+.empty-message,
+.info-message {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 30px;
+  text-align: center;
+  color: var(--gorroles-text-secondary);
+}
+
+.info-message {
+  flex-direction: column;
+}
+
+.info-message mat-icon {
+  font-size: 3em;
+  width: 3em;
+  height: 3em;
+  color: var(--gorroles-primary);
+}
+
+.error-message {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 15px;
+  margin: 20px 0;
+  background: rgba(var(--gorroles-error-rgb), 0.1);
+  border-radius: var(--gorroles-border-radius-medium);
+  color: var(--gorroles-error);
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 15px;
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid var(--gorroles-border-color);
+}
+
+.form-actions button {
+  min-width: 120px;
+}
+
+/* Mejoras adicionales */
+.form-card .mat-card-content {
+  padding: 30px 40px;
+}
+
+.full-width mat-form-field {
+  margin-bottom: 5px;
+}
+
+.toggle-item mat-slide-toggle {
+  flex: 1;
+}
+
+.imagen-upload button {
+  width: 100%;
+  padding: 12px;
+  font-size: 16px;
+}
+
+.imagen-upload button mat-icon {
+  margin-right: 8px;
+}
+
+/* Mejoras de accesibilidad y UX */
+.field-with-tooltip mat-icon[matSuffix]:hover {
+  color: var(--gorroles-primary, #1976d2);
+}
+
+.toggle-item:hover {
+  background: rgba(var(--gorroles-primary-rgb, 25, 118, 210), 0.05);
+  transition: background 0.2s ease;
+}
+
+.imagen-preview-container:hover .eliminar-imagen-btn {
+  opacity: 1;
+}
+
+.eliminar-imagen-btn {
+  opacity: 0.8;
+  transition: opacity 0.2s ease;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .producto-form-wrapper {
+    padding: 20px 10px;
+  }
+
+  .form-card .mat-card-content {
+    padding: 20px;
+  }
+
+  .form-row {
+    flex-direction: column;
+  }
+
+  .half-width {
+    width: 100%;
+  }
+
+  .variantes-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+
+  .toggles-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .toggle-section-inline {
+    flex-direction: column;
+  }
+
+  .imagen-options {
+    flex-direction: column;
+  }
+}
+

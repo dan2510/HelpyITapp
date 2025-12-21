@@ -12,8 +12,6 @@ import { MatBadgeModule } from '@angular/material/badge';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { TranslateModule } from '@ngx-translate/core';
-
 @NgModule({
   declarations: [
     Header,
@@ -30,8 +28,7 @@ import { TranslateModule } from '@ngx-translate/core';
     MatBadgeModule,
     MatGridListModule,
     MatDividerModule,
-    MatTooltipModule,
-    TranslateModule
+    MatTooltipModule
   ],
   exports: [
     Header,

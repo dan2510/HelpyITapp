@@ -1,6 +1,5 @@
 export enum RoleNombre {
   ADMIN = 'ADMIN',
-  TECNICO = 'TECNICO',
   CLIENTE = 'CLIENTE'
 }
 
@@ -11,37 +10,31 @@ export enum Disponibilidad {
   INACTIVO = 'INACTIVO'
 }
 
-export enum NivelExperiencia {
-  JUNIOR = 'JUNIOR',
-  INTERMEDIO = 'INTERMEDIO',
-  SENIOR = 'SENIOR',
-  EXPERTO = 'EXPERTO'
-}
-
-export enum Prioridad {
-  BAJA = 'BAJA',
-  MEDIA = 'MEDIA',
-  ALTA = 'ALTA',
-  CRITICA = 'CRITICA'
-}
-
-export enum EstadoTiquete {
+export enum EstadoOrden {
   PENDIENTE = 'PENDIENTE',
-  EN_PROGRESO = 'EN_PROGRESO',
-  RESUELTO = 'RESUELTO',
-  CERRADO = 'CERRADO',
-  CANCELADO = 'CANCELADO',
-  ASIGNADO = 'ASIGNADO'
+  RECIBIDO = 'RECIBIDO',
+  EN_PREPARACION = 'EN_PREPARACION',
+  LISTO = 'LISTO',
+  EN_CAMINO = 'EN_CAMINO',
+  ENTREGADO = 'ENTREGADO',
+  CANCELADO = 'CANCELADO'
 }
 
-export enum MetodoAsignacion {
-  MANUAL = 'MANUAL',
-  AUTOMATICO = 'AUTOMATICO',
-  REGLA = 'REGLA'
+export enum MetodoPago {
+  EFECTIVO = 'EFECTIVO',
+  TARJETA = 'TARJETA',
+  SINPE_MOVIL = 'SINPE_MOVIL'
+}
+
+export enum TipoPedido {
+  COMER_AQUI = 'COMER_AQUI',
+  PARA_LLEVAR = 'PARA_LLEVAR',
+  DELIVERY = 'DELIVERY'
 }
 
 export enum TipoNotificacion {
-  ASIGNACION = 'ASIGNACION',
+  NUEVA_ORDEN = 'NUEVA_ORDEN',
+  ORDEN_LISTA = 'ORDEN_LISTA',
   CAMBIO_ESTADO = 'CAMBIO_ESTADO',
   MENSAJE = 'MENSAJE',
   RECORDATORIO = 'RECORDATORIO',
@@ -51,4 +44,9 @@ export enum TipoNotificacion {
 export enum EstadoNotificacion {
   NO_LEIDA = 'NO_LEIDA',
   LEIDA = 'LEIDA'
+}
+
+export enum TipoHistorial {
+  CAMBIO_ESTADO = 'CAMBIO_ESTADO',
+  COMENTARIO_CLIENTE = 'COMENTARIO_CLIENTE'
 }

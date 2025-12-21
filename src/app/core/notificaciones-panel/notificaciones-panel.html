@@ -1,10 +1,10 @@
 <div class="notificaciones-panel">
   <!-- Header del panel -->
   <div class="panel-header">
-    <h3>{{ 'NOTIFICATIONS.TITLE' | translate }}</h3>
+    <h3>Notificaciones</h3>
     @if (cantidadNoLeidas() > 0) {
       <button mat-icon-button 
-              [matTooltip]="'NOTIFICATIONS.MARK_ALL_READ' | translate" 
+              matTooltip="Marcar todas como leídas" 
               (click)="marcarTodasComoLeidas()"
               class="mark-all-read">
         <mat-icon>done_all</mat-icon>
@@ -38,7 +38,7 @@
             <div class="notificacion-footer">
               <span class="notificacion-fecha">{{ formatearFecha(notificacion.creadaen) }}</span>
               @if (notificacion.usuarioOrigen) {
-                <span class="notificacion-usuario">{{ 'COMMON.BY' | translate }} {{ notificacion.usuarioOrigen.nombrecompleto }}</span>
+                <span class="notificacion-usuario">Por {{ notificacion.usuarioOrigen.nombrecompleto }}</span>
               }
             </div>
           </div>
@@ -46,7 +46,7 @@
           <div class="notificacion-actions">
             @if (esNoLeida(notificacion.estado)) {
               <button mat-icon-button 
-                      [matTooltip]="'NOTIFICATIONS.MARK_AS_READ' | translate"
+                      matTooltip="Marcar como leída"
                       (click)="marcarComoLeida(notificacion, $event)"
                       class="mark-read-button">
                 <mat-icon>check_circle_outline</mat-icon>
@@ -61,7 +61,7 @@
     } @else {
       <div class="no-notificaciones">
         <mat-icon>notifications_off</mat-icon>
-        <p>{{ 'NOTIFICATIONS.NO_NOTIFICATIONS' | translate }}</p>
+        <p>No hay notificaciones</p>
       </div>
     }
   </div>

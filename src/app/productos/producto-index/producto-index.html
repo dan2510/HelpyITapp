@@ -1,0 +1,148 @@
+<div class="productos-wrapper">
+  <div class="productos-container">
+    <mat-card class="header-card">
+      <div class="header-content">
+        <div class="header-title">
+          <mat-icon class="title-icon">restaurant_menu</mat-icon>
+          <h1>Gestión de Productos</h1>
+        </div>
+        <button mat-raised-button color="primary" (click)="crearNuevoProducto()" matTooltip="Crear un nuevo producto en el menú">
+          <mat-icon>add</mat-icon>
+          Nuevo Producto
+        </button>
+      </div>
+    </mat-card>
+
+    <!-- Filtros -->
+    <mat-card class="filters-card">
+      <div class="filters-header">
+        <h3 class="section-subtitle">
+          <mat-icon>filter_list</mat-icon>
+          Filtros de Búsqueda
+        </h3>
+      </div>
+      <div class="filters-content">
+        <div class="field-with-tooltip filter-field">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Categoría</mat-label>
+            <mat-select [value]="categoriaFiltro()" (selectionChange)="categoriaFiltro.set($event.value)">
+              <mat-option [value]="null">Todas las categorías</mat-option>
+              @for (categoria of categorias(); track categoria.id) {
+                <mat-option [value]="categoria.id">{{ categoria.nombre }}</mat-option>
+              }
+            </mat-select>
+            <mat-icon matSuffix matTooltip="Filtre los productos por categoría para encontrar más rápido lo que busca" matTooltipPosition="above">info</mat-icon>
+          </mat-form-field>
+        </div>
+
+        <div class="field-with-tooltip filter-field">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Buscar</mat-label>
+            <input matInput [value]="busqueda()" (input)="busqueda.set($any($event.target).value)" placeholder="Buscar por nombre o descripción...">
+            <mat-icon matSuffix matTooltip="Busque productos por nombre o descripción. La búsqueda es en tiempo real." matTooltipPosition="above">info</mat-icon>
+          </mat-form-field>
+        </div>
+      </div>
+    </mat-card>
+
+    <!-- Lista de productos -->
+    @if (loading()) {
+    <div class="loading-container">
+      <mat-spinner diameter="50"></mat-spinner>
+      <p>Cargando productos...</p>
+    </div>
+  } @else if (error()) {
+    <mat-card class="error-card">
+      <mat-icon color="warn">error_outline</mat-icon>
+      <h3>Error al Cargar Productos</h3>
+      <p>{{ error() }}</p>
+      <button mat-raised-button color="primary" (click)="loadProductos()">
+        <mat-icon>refresh</mat-icon>
+        Reintentar
+      </button>
+    </mat-card>
+  } @else if (productosFiltrados().length === 0) {
+    <mat-card class="empty-card">
+      <mat-icon>inventory_2</mat-icon>
+      <h3>No hay productos</h3>
+      <p>{{ busqueda() ? 'No se encontraron productos con ese criterio' : 'Aún no hay productos registrados' }}</p>
+      <button mat-raised-button color="primary" (click)="crearNuevoProducto()">
+        <mat-icon>add</mat-icon>
+        Crear Primer Producto
+      </button>
+    </mat-card>
+    } @else {
+      <div class="productos-grid">
+        @for (producto of productosFiltrados(); track producto.id) {
+          <mat-card class="producto-card" (click)="verDetalleProducto(producto)">
+            <mat-card-header>
+              <mat-card-title>
+                {{ producto.nombre }}
+                <mat-icon matTooltip="Haga clic en cualquier parte de la tarjeta para ver todos los detalles del producto" matTooltipPosition="above" class="info-icon-card">info</mat-icon>
+              </mat-card-title>
+              <mat-card-subtitle>
+                <mat-icon>category</mat-icon>
+                {{ getNombreCategoria(producto.idcategoria) }}
+              </mat-card-subtitle>
+            </mat-card-header>
+            <mat-card-content>
+              @if (producto.descripcion) {
+                <p class="descripcion">{{ producto.descripcion }}</p>
+              }
+              <div class="producto-info">
+                <div class="info-row">
+                  <mat-icon matTooltip="Precio base del producto. Si tiene 'Precio Variable', este puede cambiar según las variantes seleccionadas." matTooltipPosition="above">attach_money</mat-icon>
+                  <span class="precio">{{ formatearPrecio(Number(producto.precio)) }}</span>
+                </div>
+                <div class="chips-container">
+                  @if (producto.tieneVariantes) {
+                    <mat-chip color="primary" matTooltip="Este producto tiene opciones personalizables (tamaños, acompañamientos, extras, etc.)" matTooltipPosition="above">
+                      <mat-icon>tune</mat-icon>
+                      Tiene Variantes
+                    </mat-chip>
+                  }
+                  @if (producto.precioVariable) {
+                    <mat-chip color="accent" matTooltip="El precio base puede cambiar según la variante seleccionada (ej: tamaño pequeño/mediano/grande)" matTooltipPosition="above">
+                      <mat-icon>price_change</mat-icon>
+                      Precio Variable
+                    </mat-chip>
+                  }
+                  <mat-chip [color]="producto.disponible ? 'primary' : 'warn'" 
+                    [matTooltip]="producto.disponible ? 'Este producto está disponible para los clientes en el menú' : 'Este producto no está disponible actualmente para los clientes'" 
+                    matTooltipPosition="above">
+                    <mat-icon>{{ producto.disponible ? 'check_circle' : 'cancel' }}</mat-icon>
+                    {{ producto.disponible ? 'Disponible' : 'No Disponible' }}
+                  </mat-chip>
+                  <mat-chip [color]="producto.activo ? 'primary' : 'warn'" 
+                    [matTooltip]="producto.activo ? 'El producto está activo y visible en el sistema' : 'El producto está inactivo y no se mostrará en ninguna parte del sistema'" 
+                    matTooltipPosition="above">
+                    <mat-icon>{{ producto.activo ? 'check_circle' : 'cancel' }}</mat-icon>
+                    {{ producto.activo ? 'Activo' : 'Inactivo' }}
+                  </mat-chip>
+                </div>
+              </div>
+            </mat-card-content>
+            <mat-card-actions align="end">
+              <button mat-button color="primary" (click)="verDetalleProducto(producto); $event.stopPropagation()" 
+                matTooltip="Ver información completa del producto incluyendo variantes, precios y configuración" matTooltipPosition="above">
+                <mat-icon>visibility</mat-icon>
+                Ver Detalle
+              </button>
+              <button mat-button color="primary" (click)="editarProducto(producto.id); $event.stopPropagation()" 
+                matTooltip="Editar la información y configuración de este producto" matTooltipPosition="above">
+                <mat-icon>edit</mat-icon>
+                Editar
+              </button>
+              <button mat-button color="warn" (click)="eliminarProducto(producto); $event.stopPropagation()" 
+                matTooltip="Eliminar este producto del sistema (funcionalidad pendiente)" matTooltipPosition="above">
+                <mat-icon>delete</mat-icon>
+                Eliminar
+              </button>
+            </mat-card-actions>
+          </mat-card>
+        }
+      </div>
+    }
+  </div>
+</div>
+

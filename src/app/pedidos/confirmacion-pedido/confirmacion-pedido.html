@@ -1,0 +1,102 @@
+<div class="confirmacion-container">
+  @if (loading()) {
+    <div class="loading-container">
+      <mat-spinner></mat-spinner>
+      <p>Cargando...</p>
+    </div>
+  } @else {
+    <mat-card class="confirmacion-card">
+      <div class="success-icon">
+        <mat-icon>check_circle</mat-icon>
+      </div>
+      
+      <h1 class="titulo-exito">¡PEDIDO CONFIRMADO!</h1>
+      
+      <div class="orden-info">
+        <div class="info-item">
+          <mat-icon>receipt</mat-icon>
+          <div>
+            <span class="label">Número de orden:</span>
+            <span class="valor">{{ orden()?.numeropedido }}</span>
+          </div>
+        </div>
+
+        @if (cliente()) {
+          <div class="info-item">
+            <mat-icon>person</mat-icon>
+            <div>
+              <span class="label">Cliente:</span>
+              <span class="valor">{{ cliente()?.nombrecompleto }}</span>
+            </div>
+          </div>
+
+          <div class="info-item">
+            <mat-icon>phone</mat-icon>
+            <div>
+              <span class="label">Teléfono:</span>
+              <span class="valor">{{ cliente()?.telefono }}</span>
+            </div>
+          </div>
+
+          @if (cliente()?.direccion) {
+            <div class="info-item">
+              <mat-icon>home</mat-icon>
+              <div>
+                <span class="label">Dirección:</span>
+                <span class="valor">{{ cliente()?.direccion }}</span>
+              </div>
+            </div>
+          }
+        }
+
+        <div class="info-item">
+          <mat-icon>attach_money</mat-icon>
+          <div>
+            <span class="label">Total pagado:</span>
+            <span class="valor">{{ formatearPrecio(Number(orden()?.total || 0)) }}</span>
+          </div>
+        </div>
+
+        <div class="info-item">
+          <mat-icon>payment</mat-icon>
+          <div>
+            <span class="label">Método de pago:</span>
+            <span class="valor">{{ formatearMetodoPago(orden()?.metodopago) }}</span>
+          </div>
+        </div>
+
+        <div class="info-item">
+          <mat-icon>schedule</mat-icon>
+          <div>
+            <span class="label">Tiempo estimado:</span>
+            <span class="valor">30-45 minutos</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="whatsapp-info">
+        <mat-icon>phone_android</mat-icon>
+        <p>📱 Link de seguimiento enviado a tu WhatsApp</p>
+      </div>
+
+      <div class="actions">
+        <button 
+          mat-raised-button 
+          color="primary"
+          (click)="verSeguimiento()"
+          class="action-button">
+          <mat-icon>visibility</mat-icon>
+          Ver Seguimiento
+        </button>
+        <button 
+          mat-stroked-button
+          (click)="volverAlInicio()"
+          class="action-button">
+          <mat-icon>home</mat-icon>
+          Volver al Inicio
+        </button>
+      </div>
+    </mat-card>
+  }
+</div>
+

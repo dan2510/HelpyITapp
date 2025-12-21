@@ -1,7 +1,8 @@
 import { Injectable, signal, computed, effect, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
-import { NotificacionModel, EstadoNotificacion } from '../../models/NotificacionModel';
+import { NotificacionModel } from '../../models/NotificacionModel';
+import { EstadoNotificacion } from '../../models/EnumsModel';
 import { environment } from '../../../../environments/environment.development';
 
 @Injectable({

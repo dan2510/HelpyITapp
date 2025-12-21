@@ -9,8 +9,6 @@ import { AcercaDe } from './acerca-de/acerca-de';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { TranslateModule } from '@ngx-translate/core';
-
 @NgModule({
   declarations: [
     Inicio,
@@ -22,8 +20,7 @@ import { TranslateModule } from '@ngx-translate/core';
     HomeRoutingModule,
     MatCardModule,
     MatButtonModule,
-    MatIconModule,
-    TranslateModule
+    MatIconModule
   ]
 })
 export class HomeModule { }

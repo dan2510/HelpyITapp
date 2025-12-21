@@ -1,5 +1,4 @@
-import { Component, signal, OnInit, inject } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
+import { Component, signal, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-root',
@@ -9,12 +8,8 @@ import { TranslateService } from '@ngx-translate/core';
 })
 export class App implements OnInit {
   protected readonly title = signal('app');
-  private translate = inject(TranslateService);
 
   ngOnInit(): void {
-    // Obtener idioma guardado en localStorage o usar español por defecto
-    const savedLanguage = localStorage.getItem('language') || 'es';
-    this.translate.setDefaultLang(savedLanguage);
-    this.translate.use(savedLanguage);
+    // Inicialización de la aplicación
   }
 }

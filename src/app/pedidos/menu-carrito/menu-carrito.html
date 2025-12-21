@@ -1,0 +1,237 @@
+<div class="menu-carrito-container">
+  <!-- Header con carrito flotante -->
+  <div class="header-sticky">
+    <div class="header-content">
+      <div class="header-left">
+        <h1>🍗 Menú - La Ventanita Gorroles</h1>
+        @if (nombreCliente()) {
+          <div class="saludo-cliente">
+            <mat-icon class="saludo-icon">waving_hand</mat-icon>
+            <span class="saludo-texto">
+              {{ getSaludo() }}, <strong>{{ nombreCliente() }}</strong> 👋
+            </span>
+          </div>
+        }
+      </div>
+      <button 
+        mat-fab 
+        color="primary" 
+        class="carrito-button"
+        (click)="toggleCarrito()"
+        [matBadge]="cantidadItems().toString()"
+        [matBadgeHidden]="cantidadItems() === 0">
+        <mat-icon>shopping_cart</mat-icon>
+      </button>
+    </div>
+  </div>
+
+  <!-- Contenido principal -->
+  <div class="content-wrapper">
+    <!-- Menú -->
+    <div class="menu-section" [class.carrito-abierto]="mostrarCarrito()">
+      @if (loading()) {
+        <div class="loading-container">
+          <mat-spinner></mat-spinner>
+          <p>Cargando menú...</p>
+        </div>
+      }
+
+      @if (error() && !loading()) {
+        <div class="error-container">
+          <mat-icon color="warn">error_outline</mat-icon>
+          <p>{{ error() }}</p>
+          <button mat-raised-button color="primary" (click)="loadMenu()">Reintentar</button>
+        </div>
+      }
+
+      @if (!loading() && !error()) {
+        <!-- Categorías -->
+        <div class="categorias-tabs">
+          <button 
+            mat-button 
+            [class.active]="categoriaSeleccionada() === null"
+            (click)="categoriaSeleccionada.set(null)">
+            Todas
+          </button>
+          @for (categoria of categorias(); track categoria.id) {
+            <button 
+              mat-button 
+              [class.active]="categoriaSeleccionada() === categoria.id.toString()"
+              (click)="categoriaSeleccionada.set(categoria.id.toString())">
+              {{ categoria.nombre }}
+            </button>
+          }
+        </div>
+
+        <!-- Items del menú -->
+        <div class="menu-grid">
+          @for (categoria of categorias(); track categoria.id) {
+            @if (!categoriaSeleccionada() || categoriaSeleccionada() === categoria.id.toString()) {
+              @if (getItemsPorCategoria(categoria.id).length > 0) {
+                <div class="categoria-section">
+                  <h2 class="categoria-title">{{ categoria.nombre }}</h2>
+                  @if (categoria.descripcion) {
+                    <p class="categoria-desc">{{ categoria.descripcion }}</p>
+                  }
+                  
+                  <div class="items-grid">
+                    @for (item of getItemsPorCategoria(categoria.id); track item.id) {
+                      <mat-card class="menu-item-card">
+                        @if (item.imagen) {
+                          <img [src]="item.imagen" [alt]="item.nombre" class="item-image">
+                        } @else {
+                          <div class="item-image-placeholder">
+                            <mat-icon>restaurant</mat-icon>
+                          </div>
+                        }
+                        
+                        <mat-card-content>
+                          <h3 class="item-name">{{ item.nombre }}</h3>
+                          @if (item.descripcion) {
+                            <p class="item-desc">{{ item.descripcion }}</p>
+                          }
+                          <div class="item-footer">
+                            <span class="item-price">
+                              @if (item.precioVariable) {
+                                Desde {{ formatearPrecio(Number(item.precio)) }}
+                              } @else {
+                                {{ formatearPrecio(Number(item.precio)) }}
+                              }
+                            </span>
+                            <button 
+                              mat-raised-button 
+                              color="primary"
+                              (click)="abrirDialogoProducto(item)"
+                              class="add-button">
+                              <mat-icon>add</mat-icon>
+                              @if (item.tieneVariantes) {
+                                Personalizar
+                              } @else {
+                                Agregar
+                              }
+                            </button>
+                          </div>
+                        </mat-card-content>
+                      </mat-card>
+                    }
+                  </div>
+                </div>
+              }
+            }
+          }
+        </div>
+      }
+    </div>
+
+    <!-- Carrito lateral -->
+    <div class="carrito-sidebar" [class.abierto]="mostrarCarrito()">
+      <div class="carrito-header">
+        <h2>🛒 Mi Carrito</h2>
+        <button mat-icon-button (click)="toggleCarrito()">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+
+      <div class="carrito-content">
+        @if (carrito().length === 0) {
+          <div class="carrito-vacio">
+            <mat-icon>shopping_cart</mat-icon>
+            <p>Tu carrito está vacío</p>
+            <button mat-stroked-button (click)="toggleCarrito()">Continuar Comprando</button>
+          </div>
+        } @else {
+          <div class="carrito-items">
+            @for (item of carrito(); track $index) {
+              <div class="carrito-item">
+                <div class="item-info">
+                  <h4>{{ item.menuItem.nombre }}</h4>
+                  @if (item.variantesSeleccionadas && item.variantesSeleccionadas.length > 0) {
+                    <div class="variantes-info">
+                      @for (variante of item.variantesSeleccionadas; track variante.grupoId) {
+                        <div class="variante-item">
+                          <span class="variante-grupo">{{ variante.grupoNombre }}:</span>
+                          <span class="variante-opciones">
+                            {{ formatearVariantes(variante.opcionesSeleccionadas) }}
+                          </span>
+                        </div>
+                      }
+                    </div>
+                  }
+                  @if (item.notas) {
+                    <p class="item-notas">
+                      <mat-icon class="notas-icon">note</mat-icon>
+                      {{ item.notas }}
+                    </p>
+                  }
+                  <p class="item-subtotal">{{ formatearPrecio(item.subtotal) }}</p>
+                </div>
+                <div class="item-controls">
+                  <button mat-icon-button (click)="disminuirCantidad(item)">
+                    <mat-icon>remove</mat-icon>
+                  </button>
+                  <span class="cantidad">{{ item.cantidad }}</span>
+                  <button mat-icon-button (click)="aumentarCantidad(item)">
+                    <mat-icon>add</mat-icon>
+                  </button>
+                  <button mat-icon-button color="warn" (click)="eliminarDelCarrito(item)">
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </div>
+              </div>
+            }
+          </div>
+
+          <mat-divider></mat-divider>
+
+          <div class="carrito-totales">
+            <div class="total-line">
+              <span>Subtotal:</span>
+              <span>{{ formatearPrecio(subtotal()) }}</span>
+            </div>
+            <div class="total-line">
+              <div class="servicio-express-row">
+                <div class="servicio-express-info">
+                  <span>Servicio Express:</span>
+                  @if (distanciaKm() > 0) {
+                    <span class="distancia-info" matTooltip="Distancia calculada entre el restaurante y la dirección de entrega">
+                      ({{ distanciaKm() }} km)
+                    </span>
+                  }
+                </div>
+                <span>{{ formatearPrecio(servicioExpress()) }}</span>
+              </div>
+            </div>
+            <mat-divider></mat-divider>
+            <div class="total-line total-final">
+              <span>TOTAL:</span>
+              <span>{{ formatearPrecio(total()) }}</span>
+            </div>
+          </div>
+
+          <div class="carrito-actions">
+            <button 
+              mat-stroked-button 
+              (click)="continuarComprando()"
+              class="action-button">
+              Continuar Comprando
+            </button>
+            <button 
+              mat-raised-button 
+              color="primary"
+              (click)="finalizarPedido()"
+              class="action-button finalizar-button">
+              <mat-icon>check</mat-icon>
+              Finalizar Pedido
+            </button>
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- Overlay para cerrar carrito -->
+    @if (mostrarCarrito()) {
+      <div class="overlay" (click)="toggleCarrito()"></div>
+    }
+  </div>
+</div>
+

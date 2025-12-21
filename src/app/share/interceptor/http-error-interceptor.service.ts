@@ -28,12 +28,22 @@ export class HttpErrorInterceptorService implements HttpInterceptor {
     // Excluir peticiones a assets (archivos estáticos) del manejo de errores
     const isAssetRequest = request.url.includes('/assets/');
     
+    // Excluir la búsqueda por teléfono del manejo de errores (el componente maneja el 404)
+    const isBuscarTelefono = request.url.includes('/usuario/buscar-telefono/');
+    
     //Capturar el error
     return next.handle(request).pipe(
       catchError((error: HttpErrorResponse) => {
         // No mostrar errores para peticiones a assets
         if (isAssetRequest) {
           throw new Error(error.message);
+        }
+        
+        // No interceptar errores 404 o 401 de búsqueda por teléfono (es un caso esperado)
+        // El 401 puede ocurrir si hay un token inválido, pero la ruta es pública
+        if (isBuscarTelefono && (error.status === 404 || error.status === 401)) {
+          // Re-lanzar el error original para que el componente lo maneje
+          throw error;
         }
         
         let message: string | null = null;
